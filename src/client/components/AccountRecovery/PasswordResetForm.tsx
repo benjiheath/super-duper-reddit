@@ -1,0 +1,142 @@
+import { FormControl, FormLabel, Heading, Input, useToast, VStack } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useHistory, useParams } from 'react-router-dom';
+import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { axiosRequest } from '../../utils/axiosMethods';
+import AlertPop from '../register/AlertPop';
+import ButtonSubmit from '../generic/ButtonSubmit';
+import FormBox from '../generic/FormBox';
+
+export default function PasswordResetForm() {
+  const { logIn, setResponseError } = useGlobalUserContext();
+  const toast = useToast();
+  const [loggingIn, setLoggingIn] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const history = useHistory();
+  const { id: token } = useParams<{ id: string }>();
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const res = await axiosRequest('get', `user/account/${token}`);
+      if (res!.status === 'fail') {
+        toast({
+          title: 'Invalid request. Enter your username or email below to recieve a new reset-link',
+          status: 'warning',
+          duration: 5000,
+          isClosable: true,
+          position: 'top',
+        });
+        setLoading(false);
+        history.push({ pathname: '/reset-password' });
+      }
+    };
+
+    checkToken();
+  }, []);
+
+  const {
+    register,
+    reset,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm();
+
+  interface ResetPWFormData {
+    newPassword: string;
+    newPassword2: string;
+  }
+
+  const onSubmit = async (data: ResetPWFormData): Promise<void> => {
+    if (data.newPassword2 !== data.newPassword) {
+      setError('newPassword2', { message: 'Passwords must match' });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await axiosRequest('patch', `user/account/${token}`, data);
+
+      setLoggingIn(true);
+
+      toast({
+        title: 'Your password was reset successfully!',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+        position: 'top',
+      });
+
+      setTimeout(() => {
+        logIn(res.username!);
+        setLoading(false);
+        setLoggingIn(false);
+        history.push({ pathname: '/' });
+      }, 2000);
+    } catch (err) {
+      setResponseError(err);
+    }
+
+    reset();
+  };
+
+  return (
+    <FormBox secondary p='40px 0 50px' w={430}>
+      <Heading as='h2' mb='40px' fontSize='32px' color='sec.900'>
+        Choose a new password
+      </Heading>
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <VStack width={275} spacing='3px' m='0 auto'>
+          <FormControl>
+            <FormLabel color='sec.900'>Password</FormLabel>
+            <Input
+              type='password'
+              placeholder='Password'
+              focusBorderColor='sec.800'
+              {...register('newPassword', {
+                required: 'Please specify your password',
+                minLength: { value: 4, message: 'Password must have at least 4 characters' },
+              })}
+            />
+          </FormControl>
+          {errors.newPassword && <AlertPop title={errors.newPassword.message} />}
+          <FormControl>
+            <FormLabel color='sec.900'>Verify password</FormLabel>
+            <Input
+              type='password'
+              focusBorderColor='sec.800'
+              placeholder='Password'
+              {...register('newPassword2', {
+                required: 'Please verify your password',
+                minLength: { value: 4, message: 'Password must have at least 4 characters' },
+              })}
+            />
+          </FormControl>
+          {errors.newPassword2 && <AlertPop title={errors.newPassword2.message} />}
+          <ButtonSubmit
+            variant='secondary'
+            text='Submit '
+            colorScheme='green'
+            m='30px 0 0'
+            loading={loading}
+            loadingText='Verifying'
+          />
+        </VStack>
+      </form>
+
+      {loggingIn && (
+        <>
+          <Heading mt={5} as='h4' fontSize='20px' color='green'>
+            Your password reset successfully
+          </Heading>
+          <Heading mt={2} as='h5' fontSize='16px'>
+            Please wait while we log you in
+          </Heading>
+        </>
+      )}
+    </FormBox>
+  );
+}
