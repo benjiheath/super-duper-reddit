@@ -1,4 +1,5 @@
-export const url = process.env.REACT_APP_ENV === 'dev' ? 'http://localhost:3001' : '??';
+// export const url = process.env.REACT_APP_ENV === 'dev' ? 'http://localhost:3001' : '??';
+export const url = 'http://localhost:3000';
 
 export const axiosOptions = {
   headers: {

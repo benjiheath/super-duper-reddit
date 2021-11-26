@@ -15,6 +15,8 @@ export const login: RequestHandler = async (req, res, _): Promise<void> => {
 
     await findUserValue('username', 'username', username);
 
+    console.log('cockzzzzzzzzzzzzzzzzzz:', process.env.LOCAL_DB_PW);
+
     //2 check pw against user ID; if valid, add userID to sess to authenticate
     const hashedPassword = await findUserValue('password', 'username', username);
 
