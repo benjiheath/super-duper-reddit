@@ -75,24 +75,24 @@ export const theme = extendTheme({
       variants: {
         primary: {
           bg: 'prim.800',
-          border: '1px solid transparent',
+          border: '2px solid transparent',
           _hover: {
-            bg: 'prim.200',
+            bg: 'prim.100',
             _disabled: { bg: 'prim.800' },
             color: 'prim.900',
-            border: '1px solid',
+            border: '2px solid',
             borderColor: 'prim.900',
           },
         },
         secondary: {
           bg: 'sec.900',
-          border: '1px solid transparent',
+          border: '2px solid transparent',
 
           _hover: {
             bg: 'sec.100',
             _disabled: { bg: 'sec.900' },
             color: 'sec.900',
-            border: '1px solid',
+            border: '2px solid',
             borderColor: 'sec.900',
           },
         },
