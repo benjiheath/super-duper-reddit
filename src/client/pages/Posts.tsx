@@ -28,10 +28,12 @@ const Posts = () => {
 
   return (
     <Switch>
-      <NavBar />
-      <Route path={`${match.path}/create`}>
-        <NewPost />
-      </Route>
+      <>
+        <NavBar />
+        <Route path={`${match.path}/create`}>
+          <NewPost />
+        </Route>
+      </>
     </Switch>
   );
 };
