@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import { RequestHandler } from 'express';
-import { findUserValue } from '../utils/dbQueries';
+import { DbTables } from '../../common/types/dbTypes';
+import { dbQuery } from '../utils/dbQueries';
 import { FieldError } from '../utils/errors';
 
 declare module 'express-session' {
@@ -13,12 +14,14 @@ export const login: RequestHandler = async (req, res, _): Promise<void> => {
   try {
     const { username, password } = req.body;
 
-    await findUserValue('username', 'username', username);
+    const userQuery = dbQuery(DbTables.users);
+
+    await userQuery.findValue('username', 'username', username);
 
     console.log('cockzzzzzzzzzzzzzzzzzz:', process.env.LOCAL_DB_PW);
 
     //2 check pw against user ID; if valid, add userID to sess to authenticate
-    const hashedPassword = await findUserValue('password', 'username', username);
+    const hashedPassword = await userQuery.findValue('password', 'username', username);
 
     const match = await bcrypt.compare(password, hashedPassword!);
     if (match) {

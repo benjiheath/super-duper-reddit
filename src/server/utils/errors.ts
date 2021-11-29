@@ -1,4 +1,4 @@
-import { FieldErrorData } from './../../../common/types/forms';
+import { FieldErrorData } from '../../common/types/forms';
 
 export enum ErrorTypes {
   UserDataAlreadyExists = 'User data already exists',

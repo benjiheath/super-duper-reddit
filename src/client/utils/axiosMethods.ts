@@ -1,5 +1,6 @@
-import { ServerResponse } from './../../../common/types/forms';
+// import { ServerResponse } from './../../../common/types/forms';
 import axios, { Method } from 'axios';
+import { ServerResponse } from '../../common/types/forms';
 import { axiosOptions, url } from '../constants';
 
 export const axiosRequest = async <T extends unknown>(

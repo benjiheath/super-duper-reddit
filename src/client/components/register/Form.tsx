@@ -33,6 +33,7 @@ export default function Builder({ formMode, setFormMode }: Props) {
 
     try {
       const endpoint = formMode === 'Register' ? 'user' : 'session';
+
       const res = await axiosRequest('post', endpoint, data);
 
       res.status === 'success' ? setLoggingIn(true) : setLoading(false);

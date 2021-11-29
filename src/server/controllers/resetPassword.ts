@@ -1,7 +1,8 @@
+import { dbQuery } from './../utils/dbQueries';
 import { RequestHandler } from 'express';
 import { pool } from '../db';
 import bcrypt from 'bcrypt';
-import { findUserValue } from '../utils/dbQueries';
+import { DbTables } from '../../common/types/dbTypes';
 
 declare module 'express-session' {
   interface SessionData {
@@ -18,7 +19,7 @@ export const resetPasswordHandler: RequestHandler = async (req, res, _): Promise
     await pool.query('UPDATE users SET reset_pw_token = NULL WHERE password = $1', [hashedNewPassword]); // delete token
 
     // get username so we can log user in / authenticate
-    const username = await findUserValue('username', 'password', hashedNewPassword);
+    const username = await dbQuery(DbTables.users).findValue('username', 'password', hashedNewPassword);
     req.session.userID = username!;
 
     res.status(200).send({ status: 'success', username });
