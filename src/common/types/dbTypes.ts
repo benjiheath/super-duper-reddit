@@ -6,7 +6,6 @@ export enum DbTables {
   session = 'session',
 }
 
-// export type UserColumn = 'id' | 'username' | 'email' | 'password' | 'reset_pw_token';
 export type UserColumn = keyof UserColumns;
 export type PostsColumn = keyof PostsColumns;
 
