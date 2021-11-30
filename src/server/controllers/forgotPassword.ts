@@ -10,6 +10,7 @@ export const forgotPasswordHandler: RequestHandler = async (req, res, _): Promis
   try {
     const [idType] = Object.keys(req.body) as UserColumn[];
     const [id]: string[] = Object.values(req.body);
+    const token = uuidv4();
     const userQuery = dbQuery(DbTables.users);
 
     const idMatch = await userQuery.findValue(idType, idType, id);

@@ -6,7 +6,16 @@ import UserMenu from './UserMenu';
 
 const NavBar = () => {
   return (
-    <Flex position='sticky' top={0} zIndex={1} bg='prim.300' p='20px 30px' align='center' justify='flex-end'>
+    <Flex
+      position='sticky'
+      top={0}
+      zIndex={1}
+      bg='prim.300'
+      p='20px 30px'
+      align='center'
+      justify='flex-end'
+      mb='100px'
+    >
       <Heading color='sec.100'>Super Reddit</Heading>
       <Spacer />
       <Link to='/posts/create'>

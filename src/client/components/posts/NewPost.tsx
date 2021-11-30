@@ -38,7 +38,7 @@ const NewPost = () => {
   // const Spin = () => (loading ? <Spinner color='prim.800' /> : null);
 
   return (
-    <FormBox w='80vw' maxW='800px' m='100px auto'>
+    <FormBox w='80vw' maxW='800px'>
       <Heading as='h2' mb='40px' color='prim.800' fontSize='3xl'>
         New Post
       </Heading>

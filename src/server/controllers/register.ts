@@ -32,5 +32,3 @@ export const register: RequestHandler = async (req, res, _): Promise<void> => {
     }
   }
 };
-
-// if 1st arg = user
