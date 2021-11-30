@@ -20,20 +20,18 @@ export const forgotPasswordHandler: RequestHandler = async (req, res, _): Promis
       return;
     }
 
-    const token = uuidv4();
-
     await pool.query(`UPDATE users SET reset_pw_token = $2 WHERE ${idType} = $1`, [id, token]);
 
     const targetEmail =
       idType === 'email' ? id : await userQuery.findValue('email', `${idType as UserColumn}`, id);
-    const link = `<a href='http://localhost:3001/reset-password/${token}' target="_blank">Reset password</a>`;
-    await sendRecEmail_test(targetEmail!, link);
+    const link = `<a href='${process.env.CLIENT_URL_DEV}/reset-password/${token}' target="_blank">Reset password</a>`;
+    await sendRecEmail_test(targetEmail, link);
 
     res.status(200).send({ status: 'ok', message: 'Email sent!', sentTo: targetEmail });
   } catch (error) {
     if (error instanceof FieldError) {
       res.status(200).send(error.info);
-      console.log('errdsadas343333or:', error.info);
+      console.info('Error with recovery-email ID submission:', error.info);
     }
   }
 };
