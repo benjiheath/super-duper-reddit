@@ -2,8 +2,6 @@ import { Pool } from 'pg';
 
 const e = process.env;
 
-console.log('axcasdsad:', e.LOCAL_DB_PW);
-
 export const pool = new Pool({
   user: e.LOCAL_DB_USER,
   password: e.LOCAL_DB_PW as string,

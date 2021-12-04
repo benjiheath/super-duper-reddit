@@ -2,9 +2,19 @@ import { DbTables, PostsColumn, PostsColumns, UserColumn, UserColumns } from '..
 import { pool } from '../db';
 import { ErrorTypes, FieldError } from './errors';
 
+type updateFieldOverload<T> = {
+  (field: T, conditionalValue: string): {
+    whereColumnMatchesValue: (column: T, conditionalValue: string) => Promise<void>;
+  };
+  (field: 'points', conditionalValue: number): {
+    whereColumnMatchesValue: (column: T, conditionalValue: number) => Promise<void>;
+  };
+};
+
 interface DbQueryMethods<T, U> {
   findValue: (columnOfInterest: U, conditionColumn: U, conditionValue: string) => Promise<string>;
   insertRow: (options: T) => Promise<void>;
+  updateField: updateFieldOverload<U>;
 }
 
 type DbQueryOverload = {
@@ -14,7 +24,7 @@ type DbQueryOverload = {
 
 export const dbQuery: DbQueryOverload = (table: DbTables) => {
   return {
-    findValue: async (columnOfInterest, conditionColumn, conditionValue: string) => {
+    findValue: async (columnOfInterest, conditionColumn, conditionValue) => {
       try {
         const {
           rows: [{ [columnOfInterest]: result }],
@@ -41,8 +51,21 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
         const message = `The ${field} '${value}' is already taken`;
 
         console.error('DB insertion error:', err);
-        throw new FieldError({ message, errors: [{ field, message }] });
+        throw new FieldError({
+          message,
+          errors: [{ field, message }],
+        });
       }
+    },
+    updateField: (field, value) => {
+      return {
+        whereColumnMatchesValue: async (column, conditionalValue) => {
+          await pool.query(`UPDATE ${table} SET ${field} = $1 WHERE ${column} = $2`, [
+            value,
+            conditionalValue,
+          ]);
+        },
+      };
     },
   };
 };

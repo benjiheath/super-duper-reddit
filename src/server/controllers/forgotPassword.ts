@@ -20,7 +20,7 @@ export const forgotPasswordHandler: RequestHandler = async (req, res, _): Promis
       return;
     }
 
-    await pool.query(`UPDATE users SET reset_pw_token = $2 WHERE ${idType} = $1`, [id, token]);
+    await userQuery.updateField('reset_pw_token', token).whereColumnMatchesValue(idType, id);
 
     const targetEmail =
       idType === 'email' ? id : await userQuery.findValue('email', `${idType as UserColumn}`, id);
