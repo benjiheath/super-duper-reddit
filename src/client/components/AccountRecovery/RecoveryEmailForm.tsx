@@ -29,9 +29,12 @@ export default function RecoveryEmailForm() {
     try {
       const res = await axiosRequest('post', 'user/account', { [idType]: id });
 
-      if (res?.error) {
-        const { field, message } = res.error;
-        setError(field, { message });
+      // TODO need guard clause for atypical/unexpected errors. if so, setResponseError to something generic that CTX can handle, then return
+
+      if (res?.errors) {
+        const [{ message }] = res.errors;
+        setError('id', { message });
+        setLoading(false);
         return;
       }
       toast({
