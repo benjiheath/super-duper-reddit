@@ -1,4 +1,4 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, Flex } from '@chakra-ui/react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import PostsProvider from './contexts/posts/PostsContext';
 import GlobalUserProvider from './contexts/user/GlobalUserContext';
@@ -18,12 +18,14 @@ export const App = () => (
             <Route path='/posts'>
               <Posts />
             </Route>
-            <Route exact path={['/register', '/login']}>
-              <Register />
-            </Route>
-            <Route path='/reset-password'>
-              <AccountRecovery />
-            </Route>
+            <Flex minH='100vh' alignItems='center'>
+              <Route exact path={['/register', '/login']}>
+                <Register />
+              </Route>
+              <Route path='/reset-password'>
+                <AccountRecovery />
+              </Route>
+            </Flex>
             <Route exact path='/test'>
               <Test />
             </Route>

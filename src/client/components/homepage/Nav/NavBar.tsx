@@ -1,5 +1,4 @@
 import { Button, Flex, Heading, Icon, Spacer } from '@chakra-ui/react';
-import React from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import UserMenu from './UserMenu';
@@ -14,7 +13,7 @@ const NavBar = () => {
       p='20px 30px'
       align='center'
       justify='flex-end'
-      mb='100px'
+      mb='80px'
     >
       <Heading color='sec.100'>Super Reddit</Heading>
       <Spacer />

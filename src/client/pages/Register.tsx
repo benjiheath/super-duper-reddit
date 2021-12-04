@@ -3,8 +3,8 @@ import { Flex, Heading, Text } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
 import Form from '../components/register/Form';
 import { FormMode } from '../types/general';
-import FormBox from '../components/generic/FormBox';
 import { capitalize } from '../utils/misc';
+import FormBox from '../components/generic/FormBox';
 
 const Register = () => {
   // using pathname for formMode ('register' or 'login') to allow naviation to /login or /register via browser url
