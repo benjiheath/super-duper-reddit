@@ -35,7 +35,10 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
         return result;
       } catch (err) {
         const message = ErrorTypes.AccountNotFound;
-        throw new FieldError({ message, errors: [{ field: columnOfInterest, message }] });
+        throw new FieldError({
+          message,
+          errors: [{ field: columnOfInterest, message }],
+        });
       }
     },
     insertRow: async (columns) => {
