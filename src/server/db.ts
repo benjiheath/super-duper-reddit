@@ -7,5 +7,5 @@ export const pool = new Pool({
   password: e.LOCAL_DB_PW as string,
   host: e.LOCAL_DB_HOST,
   port: e.LOCAL_DB_PORT as number | undefined,
-  database: e.LOCAL_DB_DB,
+  database: e.LOCAL_DB_NAME,
 });
