@@ -13,7 +13,7 @@
     "start": "node dist/src/server/main.js",
     "db:create": "docker build -t sr-db ./ && docker run --env-file ./.env -d --name sr-db-container -p 5433:5432 sr-db",
     "db:start": "docker start sr-db-container",
-    "fresh-start": "touch .env && echo 'DB_PW=pgdocker' && yarn && yarn db:create && yarn dev && code ."
+    "fresh": "touch .env && echo 'DB_PW=pgdocker' && yarn && yarn db:create && yarn dev && code ."
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",
