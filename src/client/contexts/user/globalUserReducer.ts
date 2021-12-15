@@ -1,16 +1,24 @@
 import { UserState } from '../../types/user';
 
+export enum UserContextActions {
+  SET_AUTH = 'SET_AUTH',
+  SET_USERNAME = 'SET_USERNAME',
+  LOG_IN = 'LOG_IN',
+  LOG_OUT = 'LOG_OUT',
+  SET_CTX_ERR = 'SET_CTX_ERR',
+}
+
 type ACTIONTYPE =
-  | { type: 'SET_AUTH'; payload: boolean }
-  | { type: 'SET_USERNAME'; payload: string | null }
-  | { type: 'LOG_IN'; payload: string }
-  | { type: 'LOG_OUT'; payload?: undefined }
-  | { type: 'SET_CTX_ERR'; payload: any };
+  | { type: UserContextActions.SET_AUTH; payload: boolean }
+  | { type: UserContextActions.SET_USERNAME; payload: string | null }
+  | { type: UserContextActions.LOG_IN; payload: string }
+  | { type: UserContextActions.LOG_OUT; payload?: undefined }
+  | { type: UserContextActions.SET_CTX_ERR; payload: any };
 
 const lsUsername = localStorage.getItem('username');
 
 export const initState: UserState = {
-  authorized: lsUsername ? true : false,
+  authorized: lsUsername !== null,
   username: lsUsername ?? null,
   err: null,
 };
