@@ -8,9 +8,10 @@ import { sessionRouter, postsRouter, userRouter } from './routes';
 import cookieParser from 'cookie-parser';
 import { authChecker } from './controllers';
 import path from 'path';
+import { config } from './config';
 
 const app = express();
-export const PostgreSqlStore = require('connect-pg-simple')(session);
+const PostgreSqlStore = require('connect-pg-simple')(session);
 
 // Middleware
 app.use(
@@ -23,9 +24,9 @@ app.use(
 app.use(
   session({
     store: new PostgreSqlStore({
-      conString: process.env.CON_STRING,
+      conString: config.pg.conString,
     }),
-    secret: process.env.COOKIE_SECRET as string,
+    secret: config.esCookieSecret,
     resave: false,
     cookie: { maxAge: 24 * 60 * 60 * 1000, path: '/', secure: __prod__, sameSite: 'lax' }, // 1 day
     saveUninitialized: false,

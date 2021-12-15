@@ -1,5 +1,7 @@
+import { config } from '../config';
+
 const sendGridMail = require('@sendgrid/mail');
-sendGridMail.setApiKey(process.env.SG_API_KEY);
+sendGridMail.setApiKey(config.sgApiKey);
 
 export async function sendEmail(to: string, html: string): Promise<void> {
   try {

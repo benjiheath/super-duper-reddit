@@ -5,6 +5,7 @@ import { DbTables, UserColumn } from '../../common/types/dbTypes';
 import { FieldError } from '../utils/errors';
 import { sendRecEmail_test } from '../utils/sendRecEmail_test';
 import { dbQuery } from '../utils/dbQueries';
+import { config } from '../config';
 
 export const forgotPasswordHandler: RequestHandler = async (req, res, _): Promise<void> => {
   try {
@@ -24,7 +25,7 @@ export const forgotPasswordHandler: RequestHandler = async (req, res, _): Promis
 
     const targetEmail =
       idType === 'email' ? id : await userQuery.findValue('email', `${idType as UserColumn}`, id);
-    const link = `<a href='${process.env.CLIENT_URL_DEV}/reset-password/${token}' target="_blank">Reset password</a>`;
+    const link = `<a href='${config.urls.client.dev}/reset-password/${token}' target="_blank">Reset password</a>`;
     await sendRecEmail_test(targetEmail, link);
 
     res.status(200).send({ status: 'ok', message: 'Email sent!', sentTo: targetEmail });
