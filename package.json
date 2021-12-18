@@ -8,12 +8,9 @@
     "client:build": "vite build",
     "server:dev": "ts-node-dev --respawn --transpile-only ./src/server/main.ts",
     "server:build": "tsc",
-    "dev": "run-p server:dev client:dev",
+    "dev": "docker-compose up && run-p server:dev client:dev",
     "build": "run-s clean server:build client:build",
-    "start": "node dist/src/server/main.js",
-    "db:create": "docker build -t sr-db ./ && docker run --env-file ./.env -d --name sr-db-container -p 5433:5432 sr-db",
-    "db:start": "docker start sr-db-container",
-    "fresh": "touch .env && echo 'DB_PW=pgdocker' && yarn && yarn db:create && yarn dev && code ."
+    "start": "node dist/src/server/main.js"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",
