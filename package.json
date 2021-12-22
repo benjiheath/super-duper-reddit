@@ -8,7 +8,7 @@
     "client:build": "vite build",
     "server:dev": "ts-node-dev --respawn --transpile-only ./src/server/main.ts",
     "server:build": "tsc",
-    "dev": "docker-compose up && run-p server:dev client:dev",
+    "dev": "docker-compose up -d && run-p server:dev client:dev",
     "build": "run-s clean server:build client:build",
     "start": "node dist/src/server/main.js"
   },
