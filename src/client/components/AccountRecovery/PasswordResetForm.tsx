@@ -83,13 +83,9 @@ export default function PasswordResetForm() {
   };
 
   return (
-    <FormBox secondary p='40px 0 50px' w={430}>
-      <Heading as='h2' mb='40px' fontSize='32px' color='sec.900'>
-        Choose a new password
-      </Heading>
-
+    <FormBox secondary title='Choose a new password'>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <VStack width={275} spacing='3px' m='0 auto'>
+        <VStack width={275} spacing='3px' m='20px auto 0'>
           <FormControl>
             <FormLabel color='sec.900'>Password</FormLabel>
             <Input

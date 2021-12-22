@@ -1,3 +1,4 @@
+import { Flex } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import { NavBar } from '../components/homepage';
@@ -28,12 +29,12 @@ const Posts = () => {
 
   return (
     <Switch>
-      <>
+      <Flex flexDir='column'>
         <NavBar />
         <Route path={`${match.path}/create`}>
           <NewPost />
         </Route>
-      </>
+      </Flex>
     </Switch>
   );
 };

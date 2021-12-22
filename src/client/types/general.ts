@@ -26,3 +26,5 @@ export interface InputFieldType {
   stateName: string;
   register: Partial<RegisterProps>;
 }
+
+export type ComponentVariant = 'primary' | 'secondary';

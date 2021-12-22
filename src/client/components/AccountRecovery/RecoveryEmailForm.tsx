@@ -52,16 +52,14 @@ export default function RecoveryEmailForm() {
   };
 
   return (
-    <FormBox secondary p='50px 0' w={480}>
-      <Heading as='h2' mb='40px' color='sec.900'>
-        Reset your password
-      </Heading>
-
-      <Text fontSize='sm'>Enter your username or email to recieve a recovery link.</Text>
-
-      <VStack mt={4} spacing='3px'>
+    <FormBox
+      secondary
+      title='Reset your password'
+      subTitle='Enter your username or email to recieve a recovery link.'
+    >
+      <VStack mt={10} spacing='3px'>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <VStack w='240px'>
+          <VStack w='260px'>
             <Input
               focusBorderColor='sec.800'
               type='text'
@@ -86,47 +84,3 @@ export default function RecoveryEmailForm() {
     </FormBox>
   );
 }
-
-// v1
-
-// <Text fontSize='md'>Enter your {inputType} to recieve a recovery link.</Text>
-
-// <VStack mt={8} spacing='3px'>
-//   <Box width={275} textAlign='left'>
-//     <form onSubmit={handleSubmit(onSubmit)}>
-//       <FormControl id='username'>
-//         {/* <FormLabel>Enter your {inputType}</FormLabel> */}
-//         <Input
-//           type='text'
-//           placeholder={capitalize(inputType)}
-//           {...register(inputType, {
-//             required: `Please specify your ${inputType}`,
-//             shouldUnregister: true,
-//             minLength:
-//               inputType === 'username'
-//                 ? { value: 4, message: 'Username must have at least 4 characters' }
-//                 : undefined,
-//             pattern:
-//               inputType === 'email'
-//                 ? { value: regEmailPattern, message: 'Please enter a valid email' }
-//                 : undefined,
-//           })}
-//         />
-//         {errors[inputType] && <AlertPop title={errors[inputType].message} />}
-
-//         <FormHelperText>
-//           <Link
-//             color='#caaec6'
-//             onClick={() => {
-//               reset();
-//               setInputType(inputType === 'email' ? 'username' : 'email');
-//             }}
-//           >
-//             Click here
-//           </Link>
-//           &nbsp; to use your {inputType === 'email' ? 'username' : 'email'} instead.
-//         </FormHelperText>
-//       </FormControl>
-
-//       <ButtonSubmit text='Send email ' colorScheme='green' m='20px' />
-//     </form>
