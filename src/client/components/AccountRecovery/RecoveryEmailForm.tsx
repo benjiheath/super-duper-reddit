@@ -1,12 +1,14 @@
 import { Heading, Input, Text, useToast, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { FaArrowLeft } from 'react-icons/fa';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { RecoveryEmailFormData } from '../../types/user';
 import { axiosRequest } from '../../utils/axiosMethods';
 import { obscureEmail } from '../../utils/misc';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
+import RoutingLink from '../generic/RoutingLink';
 import AlertPop from '../register/AlertPop';
 
 export default function RecoveryEmailForm() {
@@ -78,6 +80,7 @@ export default function RecoveryEmailForm() {
               loadingText='Sending'
               variant='secondary'
             />
+            {!loading && <RoutingLink to='/login' text='Back to login' icon={FaArrowLeft} subtle />}
           </VStack>
         </form>
       </VStack>
