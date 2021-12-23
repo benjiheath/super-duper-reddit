@@ -1,26 +1,24 @@
 import { Button, Flex, Heading, Icon, Spacer } from '@chakra-ui/react';
-import { FaPlus } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { FaArrowLeft, FaPlus } from 'react-icons/fa';
+import { Link, useHistory } from 'react-router-dom';
 import UserMenu from './UserMenu';
 
 const NavBar = () => {
+  const { location } = useHistory();
+
+  const [linkTo, btnVariant, btnText, btnIcon, btnColor] =
+    location.pathname === '/posts/create'
+      ? ['/', 'basicInv', 'Back', FaArrowLeft, 'black']
+      : ['/posts/create', 'secondary', 'Create Post', FaPlus, 'white'];
+
   return (
-    <Flex
-      position='sticky'
-      top={0}
-      zIndex={1}
-      bg='prim.300'
-      p='20px 30px'
-      align='center'
-      justify='flex-end'
-      mb='80px'
-    >
-      <Heading color='sec.100'>Super Reddit</Heading>
+    <Flex position='sticky' top={0} zIndex={1} bg='white' p='20px 30px' mb='80px'>
+      <Heading color='prim.800'>Super Reddit</Heading>
       <Spacer />
-      <Link to='/posts/create'>
-        <Button color='white' mr={4} variant='secondary'>
-          <Icon as={FaPlus} mr={2} />
-          Create Post
+      <Link to={linkTo}>
+        <Button mr={4} variant={btnVariant}>
+          <Icon as={btnIcon} mr={2} />
+          {btnText}
         </Button>
       </Link>
       <UserMenu />

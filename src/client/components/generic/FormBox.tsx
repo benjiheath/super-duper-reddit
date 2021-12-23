@@ -6,10 +6,11 @@ interface Props {
   secondary?: any;
   title: string;
   subTitle?: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 }
 
 const FormBox = (props: Props) => {
-  const { children, secondary, title, subTitle } = props;
+  const { children, secondary, title, subTitle, size } = props;
 
   const heaadingStyles: HeadingProps = secondary
     ? { as: 'h1', color: 'sec.900' }
@@ -26,7 +27,7 @@ const FormBox = (props: Props) => {
       flexDir='column'
       alignItems='center'
     >
-      <Heading {...heaadingStyles} mb={3}>
+      <Heading {...heaadingStyles} mb={3} size={size || 'xl'}>
         {title}
       </Heading>
       <Text>{subTitle}</Text>

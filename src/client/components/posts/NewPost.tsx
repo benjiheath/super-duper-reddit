@@ -38,7 +38,7 @@ const NewPost = () => {
   // const Spin = () => (loading ? <Spinner color='prim.800' /> : null);
 
   return (
-    <FormBox title='New Post'>
+    <FormBox title='New Post' size='lg'>
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack width='80vw' maxW='800px' spacing='10px' m='0 auto'>
           <FormControl>
@@ -72,7 +72,7 @@ const NewPost = () => {
             />
           </FormControl>
           {errors.body && <AlertPop title={errors.body.message} />}
-          <ButtonSubmit text='Submit' variant='primInv' />
+          <ButtonSubmit text='Submit' />
         </VStack>
       </form>
     </FormBox>

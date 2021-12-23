@@ -1,5 +1,19 @@
 import { extendTheme } from '@chakra-ui/react';
 
+const primaryColors = {
+  50: '#fff0f7e1',
+  100: '#FFE3F0',
+  200: '#FFC6E0',
+  300: '#FFB0D4',
+  400: '#FF99C7',
+  500: '#FF83BB',
+  600: '#FF6BAE',
+  700: '#FF509F',
+  800: '#FF3D95',
+  900: '#FF1780',
+  btn: '',
+};
+
 export const theme = extendTheme({
   styles: {
     global: {
@@ -14,19 +28,7 @@ export const theme = extendTheme({
       100: '#B83280',
       els: '#fff',
     },
-    prim: {
-      50: '#fff0f7e1',
-      100: '#FFE3F0',
-      200: '#FFC6E0',
-      300: '#FFB0D4',
-      400: '#FF99C7',
-      500: '#FF83BB',
-      600: '#FF6BAE',
-      700: '#FF509F',
-      800: '#FF3D95',
-      900: '#FF1780',
-      btn: '',
-    },
+    prim: primaryColors,
     sec: {
       100: '#E3FFF2',
       200: '#C6FFE5',
@@ -87,6 +89,7 @@ export const theme = extendTheme({
         secondary: {
           bg: 'sec.900',
           border: '2px solid transparent',
+          color: 'white',
 
           _hover: {
             bg: 'sec.100',
@@ -108,6 +111,14 @@ export const theme = extendTheme({
           _hover: {
             bg: 'prim.500',
             _disabled: { bg: 'prim.500' },
+          },
+        },
+        basicInv: {
+          border: `2px solid ${primaryColors[600]}`,
+          bg: 'white',
+          color: 'prim.800',
+          _hover: {
+            bg: 'prim.100',
           },
         },
       },
