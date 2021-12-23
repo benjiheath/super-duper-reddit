@@ -1,6 +1,7 @@
 import { Box, Heading, Link, Spinner, Text, useToast, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { FaAlignLeft, FaArrowLeft } from 'react-icons/fa';
 import { Link as RRLink, useHistory } from 'react-router-dom';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { FormProps } from '../../types/general';
@@ -8,6 +9,7 @@ import { FormData } from '../../types/user';
 import { axiosRequest } from '../../utils/axiosMethods';
 import { generateFormToast } from '../../utils/generateToast';
 import ButtonSubmit from '../generic/ButtonSubmit';
+import RoutingLink from '../generic/RoutingLink';
 import { FormModeToggler } from './FormModeToggler';
 import { InputFields } from './InputFields';
 
@@ -86,20 +88,7 @@ export default function Builder({ formMode, setFormMode }: Props) {
 
   const PasswordActions = () => {
     if (formMode === 'Login' && !loggingIn) {
-      return (
-        <Text fontSize='xs' mt='2px !important'>
-          <Link
-            as={RRLink}
-            to='/reset-password'
-            color='#caaec6'
-            onClick={() => {
-              reset();
-            }}
-          >
-            Forgot your password?
-          </Link>
-        </Text>
-      );
+      return <RoutingLink text='Forgot your password?' to='/reset-password' subtle />;
     }
     return null;
   };
