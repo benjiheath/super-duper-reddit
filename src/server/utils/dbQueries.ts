@@ -21,6 +21,7 @@ type updateFieldOverload<T> = {
 
 interface DbQueryMethods<T, U> {
   findValue: (columnOfInterest: U, conditionColumn: U, conditionValue: string) => Promise<string>;
+  findValues: (columnsOfInterest: U[], conditionColumn: U, conditionValue: string) => any;
   insertRow: (options: T) => Promise<void>;
   updateField: updateFieldOverload<U>;
 }
@@ -47,6 +48,24 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
         throw new FieldError({
           message,
           errors: [{ field: columnOfInterest, message }],
+        });
+      }
+    },
+    findValues: async (columnsOfInterest, conditionColumn, conditionValue) => {
+      try {
+        const res = await pool.query(
+          `SELECT ${columnsOfInterest} FROM ${table} WHERE ${conditionColumn} = $1`,
+          [conditionValue]
+        );
+        const [rows] = res.rows;
+        return rows;
+      } catch (err) {
+        const message = ErrorTypes.AccountNotFound;
+        throw new FieldError({
+          message,
+          errors: columnsOfInterest.map((column) => {
+            return { field: column, message };
+          }),
         });
       }
     },

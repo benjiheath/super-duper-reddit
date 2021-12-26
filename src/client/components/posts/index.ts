@@ -1,3 +1,3 @@
-import NewPost from './NewPost';
+import CreatePost from './CreatePost';
 
-export { NewPost };
+export { CreatePost as NewPost };

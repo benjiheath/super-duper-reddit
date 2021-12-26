@@ -30,6 +30,7 @@ export interface ThreadsColumns {
   updated_at: string;
   points: number;
   creator_user_id: string;
+  current_status: 'normal' | 'removed';
 }
 
 export interface PostsColumns {
@@ -43,6 +44,7 @@ export interface PostsColumns {
   updated_at: string;
   points: number;
   creator_user_id: string;
+  current_status: 'normal' | 'removed';
 }
 
 export interface ThreadsVotesColumns {

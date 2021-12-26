@@ -9,8 +9,12 @@ const useGlobalUserReducer = (): [UserState, UserDispatchers] => {
     setAuth: (value: boolean) => {
       dispatch({ type: UserContextActions.SET_AUTH, payload: value });
     },
-    setUser: (value: string | null) => {
+    setUser: (value: string) => {
       dispatch({ type: UserContextActions.SET_USERNAME, payload: value });
+    },
+    setUserID: (value: number) => {
+      dispatch({ type: UserContextActions.SET_USER_ID, payload: value });
+      localStorage.setItem('userID', value?.toString()!);
     },
     logIn: (value: string) => {
       dispatch({ type: UserContextActions.LOG_IN, payload: value });

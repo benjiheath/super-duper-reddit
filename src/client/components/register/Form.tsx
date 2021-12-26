@@ -16,7 +16,7 @@ import { InputFields } from './InputFields';
 type Props = Pick<FormProps, 'formMode' | 'setFormMode'>;
 
 export default function Builder({ formMode, setFormMode }: Props) {
-  const { logIn, setResponseError } = useGlobalUserContext();
+  const { logIn, setResponseError, setUserID } = useGlobalUserContext();
   const history = useHistory();
   const toast = useToast();
   const [loggingIn, setLoggingIn] = useState(false);
@@ -47,6 +47,7 @@ export default function Builder({ formMode, setFormMode }: Props) {
           setLoading(false);
           formMode === 'Register' ? setLoggingIn(false) : setLoggingIn(true);
           logIn(data.username);
+          setUserID(res.id!);
           history.push({ pathname: '/' });
         } else {
           setLoading(false);

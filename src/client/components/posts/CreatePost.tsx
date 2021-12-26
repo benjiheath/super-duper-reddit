@@ -7,8 +7,8 @@ import AlertPop from '../register/AlertPop';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
 
-const NewPost = () => {
-  const { setResponseError, username } = useGlobalUserContext();
+const CreatePost = () => {
+  const { setResponseError, username, userID } = useGlobalUserContext();
   const {
     register,
     reset,
@@ -24,7 +24,7 @@ const NewPost = () => {
   }
 
   const onSubmit = async (data: Post): Promise<void> => {
-    const newPostData = { creator: username, ...data };
+    const newPostData = { creator_user_id: userID, ...data };
 
     setLoading(true);
 
@@ -79,4 +79,4 @@ const NewPost = () => {
   );
 };
 
-export default NewPost;
+export default CreatePost;

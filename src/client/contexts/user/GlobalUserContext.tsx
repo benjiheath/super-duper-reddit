@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useRef } from 'react';
+import { createContext, useContext, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { ProviderProps } from '../../types/general';
 import { UserCtx, useUserCtx } from '../../types/user';

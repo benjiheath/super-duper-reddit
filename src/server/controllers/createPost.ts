@@ -10,15 +10,9 @@ declare module 'express-session' {
 
 export const createPost: RequestHandler = async (req, res, next) => {
   try {
-    const { creator, title, body } = req.body;
+    const { creator_user_id, title, body } = req.body;
 
-    const userQuery = dbQuery(DbTables.users);
     const PostsQuery = dbQuery(DbTables.threads);
-
-    const creator_user_id = await userQuery.findValue('id', 'username', creator);
-
-    console.log({ creator });
-    console.log({ creator_user_id });
 
     await PostsQuery.insertRow({ creator_user_id, title, body });
 
