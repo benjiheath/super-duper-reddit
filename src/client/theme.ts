@@ -121,6 +121,15 @@ export const theme = extendTheme({
             bg: 'prim.100',
           },
         },
+        basicHoverInv: {
+          border: `2px solid transparent`,
+          bg: 'white',
+          color: 'prim.800',
+          _hover: {
+            bg: 'prim.100',
+            border: `2px solid ${primaryColors[600]}`,
+          },
+        },
       },
     },
   },

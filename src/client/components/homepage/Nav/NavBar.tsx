@@ -8,7 +8,7 @@ const NavBar = () => {
 
   const [linkTo, btnVariant, btnText, btnIcon, btnColor] =
     location.pathname === '/posts/create'
-      ? ['/', 'basicInv', 'Back', FaArrowLeft, 'black']
+      ? ['/', 'basicHoverInv', 'Back', FaArrowLeft, 'black']
       : ['/posts/create', 'secondary', 'Create Post', FaPlus, 'white'];
 
   return (
