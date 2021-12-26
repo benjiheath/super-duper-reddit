@@ -1,5 +1,13 @@
-import { DbTables, PostsColumn, PostsColumns, UserColumn, UserColumns } from '../../common/types/dbTypes';
+import {
+  DbTables,
+  PostsColumn,
+  PostsColumns,
+  ThreadsColumn,
+  UserColumn,
+  UserColumns,
+} from '../../common/types/dbTypes';
 import { pool } from '../db';
+import { ThreadsColumns } from './../../common/types/dbTypes';
 import { ErrorTypes, FieldError } from './errors';
 
 type updateFieldOverload<T> = {
@@ -19,6 +27,7 @@ interface DbQueryMethods<T, U> {
 
 type DbQueryOverload = {
   (table: DbTables.users): DbQueryMethods<Partial<UserColumns>, UserColumn>;
+  (table: DbTables.threads): DbQueryMethods<Partial<ThreadsColumns>, ThreadsColumn>;
   (table: DbTables.posts): DbQueryMethods<Partial<PostsColumns>, PostsColumn>;
 };
 
@@ -51,7 +60,7 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
       } catch (err: any) {
         const field = err.detail.substring(5, err.detail.indexOf(')'));
         const value = err.detail.substring(err.detail.lastIndexOf('(') + 1, err.detail.lastIndexOf(')'));
-        const message = `The ${field} '${value}' is already taken`;
+        const message = `insertRow err: The ${field} '${value}' is already taken`;
 
         console.error('DB insertion error:', err);
         throw new FieldError({
