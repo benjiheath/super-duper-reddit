@@ -14,7 +14,7 @@ export type ThreadsColumn = keyof ThreadsColumns;
 export type PostsColumn = keyof PostsColumns;
 
 export interface UserColumns {
-  id: number;
+  id: string;
   username: string;
   email: string;
   password: string;
@@ -35,10 +35,8 @@ export interface ThreadsColumns {
 
 export interface PostsColumns {
   id: string;
-  user_id: string;
   thread_id: string;
   parent_post_id: string;
-  title: string;
   body: string;
   created_at: string;
   updated_at: string;
