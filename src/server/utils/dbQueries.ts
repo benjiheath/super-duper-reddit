@@ -8,7 +8,7 @@ import {
 } from '../../common/types/dbTypes';
 import { pool } from '../db';
 import { ThreadsColumns } from './../../common/types/dbTypes';
-import { ErrorTypes, FieldError } from './errors';
+import { ErrorTypes, FieldError, generateErrorType } from './errors';
 
 type updateFieldOverload<T> = {
   (field: T, conditionalValue: string): {
@@ -57,16 +57,21 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
           `SELECT ${columnsOfInterest} FROM ${table} WHERE ${conditionColumn} = $1`,
           [conditionValue]
         );
+
+        if (res.rowCount === 0) {
+          const message = generateErrorType(conditionColumn);
+          throw new FieldError({
+            message,
+            errors: columnsOfInterest.map((column) => {
+              return { field: column, message };
+            }),
+          });
+        }
+
         const [rows] = res.rows;
         return rows;
       } catch (err) {
-        const message = ErrorTypes.AccountNotFound;
-        throw new FieldError({
-          message,
-          errors: columnsOfInterest.map((column) => {
-            return { field: column, message };
-          }),
-        });
+        throw err;
       }
     },
     insertRow: async (columns) => {
@@ -78,8 +83,7 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
         await pool.query(`INSERT INTO ${table} (${parsedColumns}) VALUES (${valueIDs})`, values);
       } catch (err: any) {
         const field = err.detail.substring(5, err.detail.indexOf(')'));
-        const value = err.detail.substring(err.detail.lastIndexOf('(') + 1, err.detail.lastIndexOf(')'));
-        const message = `insertRow err: The ${field} '${value}' is already taken`;
+        const message = `Sorry, that ${field} is already taken`;
 
         console.error('DB insertion error:', err);
         throw new FieldError({

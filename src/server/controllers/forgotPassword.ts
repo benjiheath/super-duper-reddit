@@ -1,11 +1,10 @@
 import { RequestHandler } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { pool } from '../db';
 import { DbTables, UserColumn } from '../../common/types/dbTypes';
+import { config } from '../config';
+import { dbQuery } from '../utils/dbQueries';
 import { FieldError } from '../utils/errors';
 import { sendRecEmail_test } from '../utils/sendRecEmail_test';
-import { dbQuery } from '../utils/dbQueries';
-import { config } from '../config';
 
 export const forgotPasswordHandler: RequestHandler = async (req, res, _): Promise<void> => {
   try {
@@ -14,12 +13,7 @@ export const forgotPasswordHandler: RequestHandler = async (req, res, _): Promis
     const token = uuidv4();
     const userQuery = dbQuery(DbTables.users);
 
-    const idMatch = await userQuery.findValue(idType, idType, id);
-
-    if (!idMatch) {
-      res.status(200).send({ status: 'fail', error: { field: 'id', message: 'Account not found' } });
-      return;
-    }
+    await userQuery.findValue(idType, idType, id);
 
     await userQuery.updateField('reset_pw_token', token).whereColumnMatchesValue(idType, id);
 

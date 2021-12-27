@@ -1,8 +1,10 @@
+import { PostsColumn, ThreadsColumn, UserColumn } from '../../common/types/dbTypes';
 import { FieldErrorData } from '../../common/types/forms';
 
 export enum ErrorTypes {
   UserDataAlreadyExists = 'User data already exists',
   AccountNotFound = 'Account not found',
+  UnknownError = 'An unknown error occured',
 }
 
 interface FieldErrorInfo {
@@ -19,3 +21,14 @@ export class FieldError extends Error {
     this.info = { status: 'fail', ...response };
   }
 }
+
+export const generateErrorType = (conditionColumn: UserColumn | ThreadsColumn | PostsColumn) => {
+  switch (conditionColumn) {
+    case 'username':
+    case 'email':
+      return ErrorTypes.AccountNotFound;
+
+    default:
+      return ErrorTypes.UnknownError;
+  }
+};
