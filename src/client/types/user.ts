@@ -3,7 +3,7 @@ type Dispatch<T> = (value: T) => void;
 export interface UserDispatchers {
   setAuth: Dispatch<boolean>;
   setUser: Dispatch<string>;
-  setUserID: Dispatch<number>;
+  setUserID: Dispatch<string>;
   logIn: Dispatch<string>;
   logOut: () => void;
   setResponseError: (value: any) => void;
@@ -12,7 +12,7 @@ export interface UserDispatchers {
 export interface UserState {
   authorized: boolean;
   username: string | null;
-  userID: number | null;
+  userID: string | null;
   err: any;
 }
 

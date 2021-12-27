@@ -12,13 +12,13 @@ export enum UserContextActions {
 type ACTIONTYPE =
   | { type: UserContextActions.SET_AUTH; payload: boolean }
   | { type: UserContextActions.SET_USERNAME; payload: string | null }
-  | { type: UserContextActions.SET_USER_ID; payload: number | null }
+  | { type: UserContextActions.SET_USER_ID; payload: string | null }
   | { type: UserContextActions.LOG_IN; payload: string }
   | { type: UserContextActions.LOG_OUT; payload?: undefined }
   | { type: UserContextActions.SET_CTX_ERR; payload: any };
 
 const lsUsername = localStorage.getItem('username');
-const lsUserID = Number(localStorage.getItem('userID'));
+const lsUserID = localStorage.getItem('userID');
 
 export const initState: UserState = {
   authorized: lsUsername !== null,
