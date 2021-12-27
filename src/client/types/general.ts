@@ -16,7 +16,7 @@ export interface FormProps {
 export interface RegisterProps {
   required: string;
   minLength: { value: number; message: string };
-  maxLength: number;
+  maxLength: { value: number; message: string };
   pattern: { value: RegExp; message: string };
 }
 

@@ -12,7 +12,7 @@ const INPUTFIELDS: InputFieldType[] = [
     register: {
       required: 'Please enter a username',
       minLength: { value: 4, message: 'Username must have at least 4 characters' },
-      maxLength: 20,
+      maxLength: { value: 20, message: 'Username must have less than 20 characters' },
       pattern: { value: /^[A-Za-z0-9]+$/i, message: 'Username can only include letters & numbers' },
     },
   },
