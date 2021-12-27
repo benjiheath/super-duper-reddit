@@ -11,8 +11,10 @@ const Register = () => {
   const formattedPathname = capitalize(pathname) as FormMode;
   const [formMode, setFormMode] = useState<FormMode>(formattedPathname);
 
+  const minH = formMode === 'Login' ? '450px' : '490px';
+
   return (
-    <FormBox title='Super Reddit' subTitle={formMode}>
+    <FormBox title='Super Reddit' subTitle={formMode} minH={minH}>
       <Form formMode={formMode} setFormMode={setFormMode} />
     </FormBox>
   );
