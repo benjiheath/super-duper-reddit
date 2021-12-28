@@ -1,11 +1,11 @@
 import {
   CommentsColumn,
   DbComment,
-  DbTables,
-  PostsColumn,
   DbPost,
-  UserColumn,
+  DbTables,
   DbUser,
+  PostsColumn,
+  UserColumn,
 } from '../../common/types/dbTypes';
 import { pool } from '../db';
 import { ErrorTypes, FieldError, generateErrorType } from './errors';
@@ -20,6 +20,10 @@ type updateFieldOverload<T> = {
 };
 
 interface DbQueryMethods<T, U> {
+  selectAll: (
+    whereConditions?: string | string[],
+    options?: { limit: number; orderBy: string }
+  ) => Promise<T[]>;
   findValue: (columnOfInterest: U) => {
     where: (column: U) => { equals: (value: string) => Promise<string> };
   };
@@ -38,6 +42,15 @@ type DbQueryOverload = {
 
 export const dbQuery: DbQueryOverload = (table: DbTables) => {
   return {
+    selectAll: async (whereConditions, options) => {
+      if (whereConditions) {
+        const { rows } = await pool.query(`SELECT * FROM ${table} WHERE ${whereConditions}`);
+        return rows;
+      }
+
+      const { rows } = await pool.query(`SELECT * FROM ${table}`);
+      return rows;
+    },
     findValue: (columnOfInterest) => {
       return {
         where: (column) => {
