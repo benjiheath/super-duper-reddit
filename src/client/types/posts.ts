@@ -1,12 +1,12 @@
-import { DbPost } from '../../common/types/dbTypes';
+import { PostWithComments } from './../../common/types/dbTypes';
 import { Dispatch } from './general';
 
 export interface PostsDispatchers {
-  setPosts: Dispatch<DbPost[] | null>;
+  setPosts: Dispatch<PostWithComments[] | null>;
 }
 
 export interface PostsState {
-  posts: DbPost[] | null;
+  posts: PostWithComments[] | null;
 }
 
 export type PostsCtx = PostsDispatchers & PostsState;

@@ -32,6 +32,10 @@ export interface DbPost {
   current_status: 'normal' | 'removed';
 }
 
+export interface PostWithComments extends DbPost {
+  comments: DbComment[];
+}
+
 export interface DbComment {
   id: string;
   post_id: string;

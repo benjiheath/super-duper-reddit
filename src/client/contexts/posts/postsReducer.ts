@@ -1,11 +1,11 @@
-import { DbPost } from '../../../common/types/dbTypes';
 import { PostsState } from '../../types/posts';
+import { PostWithComments } from './../../../common/types/dbTypes';
 
 export enum PostsActions {
   SET_POSTS = 'SET_POSTS',
 }
 
-type ACTIONTYPE = { type: 'SET_POSTS'; payload: DbPost[] | null };
+type ACTIONTYPE = { type: 'SET_POSTS'; payload: PostWithComments[] | null };
 
 export const initState: PostsState = {
   posts: null,

@@ -1,11 +1,11 @@
-// import { ServerResponse } from './../../../common/types/forms';
 import axios, { Method } from 'axios';
+import { Endpoint } from '../../common/types/endpoints';
 import { ServerResponse } from '../../common/types/forms';
 import { axiosOptions, url } from '../constants';
 
 export const axiosRequest = async <T extends unknown>(
   method: Method,
-  endpoint: string,
+  endpoint: Endpoint,
   data?: T
 ): Promise<ServerResponse> => {
   try {
