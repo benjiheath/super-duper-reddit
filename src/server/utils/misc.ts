@@ -1,4 +1,4 @@
-import { PostsColumn, CommentsColumn, UserColumn, OneOfDbTables } from './../../common/types/dbTypes';
+import { PostsColumn, CommentsColumn, UserColumn } from './../../common/types/dbTypes';
 export const createWhereConditionsFromList = <T>(
   list: T[],
   valueA: PostsColumn | CommentsColumn | UserColumn,

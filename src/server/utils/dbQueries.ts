@@ -20,10 +20,7 @@ type updateFieldOverload<T> = {
 };
 
 interface DbQueryMethods<T, U> {
-  selectAll: (
-    whereConditions?: string | string[],
-    options?: { limit: number; orderBy: string }
-  ) => Promise<T[]>;
+  selectAll: (options?: { whereConditions?: string | string[]; limit?: number; orderBy?: U }) => Promise<T[]>;
   findValue: (columnOfInterest: U) => {
     where: (column: U) => { equals: (value: string) => Promise<string> };
   };
@@ -42,13 +39,14 @@ type DbQueryOverload = {
 
 export const dbQuery: DbQueryOverload = (table: DbTables) => {
   return {
-    selectAll: async (whereConditions, options) => {
-      if (whereConditions) {
-        const { rows } = await pool.query(`SELECT * FROM ${table} WHERE ${whereConditions}`);
-        return rows;
-      }
+    selectAll: async (options) => {
+      const whereConditions = options?.whereConditions ? `WHERE ${options.whereConditions}` : '';
+      const limitClause = options?.limit ? `LIMIT ${options.limit}` : '';
+      const orderByClause = options?.orderBy ? `ORDER BY ${options.orderBy}` : '';
 
-      const { rows } = await pool.query(`SELECT * FROM ${table}`);
+      const { rows } = await pool.query(
+        `SELECT * FROM ${table} ${whereConditions} ${limitClause} ${orderByClause}`
+      );
       return rows;
     },
     findValue: (columnOfInterest) => {

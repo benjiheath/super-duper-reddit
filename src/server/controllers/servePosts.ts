@@ -10,7 +10,7 @@ export const servePosts: RequestHandler = async (req, res, _): Promise<void> => 
     const whereConditions = createWhereConditionsFromList(posts, 'post_id', 'id');
 
     // get all comments that are children of the retrieved posts
-    const comments = await dbComments.selectAll(whereConditions);
+    const comments = await dbComments.selectAll({ whereConditions });
 
     // combining data into list where each post has its comments included
     const postsIncludingComments = posts.map((post) => {
@@ -21,7 +21,7 @@ export const servePosts: RequestHandler = async (req, res, _): Promise<void> => 
       };
     });
 
-    res.status(200).send('dataaaa');
+    res.status(200).send({ data: postsIncludingComments });
   } catch (err) {
     console.log(err);
   }
