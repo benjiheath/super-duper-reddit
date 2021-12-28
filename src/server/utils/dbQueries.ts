@@ -1,13 +1,13 @@
 import {
+  CommentsColumn,
+  CommentsColumns,
   DbTables,
   PostsColumn,
   PostsColumns,
-  ThreadsColumn,
   UserColumn,
   UserColumns,
 } from '../../common/types/dbTypes';
 import { pool } from '../db';
-import { ThreadsColumns } from './../../common/types/dbTypes';
 import { ErrorTypes, FieldError, generateErrorType } from './errors';
 
 type updateFieldOverload<T> = {
@@ -28,8 +28,8 @@ interface DbQueryMethods<T, U> {
 
 type DbQueryOverload = {
   (table: DbTables.users): DbQueryMethods<Partial<UserColumns>, UserColumn>;
-  (table: DbTables.threads): DbQueryMethods<Partial<ThreadsColumns>, ThreadsColumn>;
   (table: DbTables.posts): DbQueryMethods<Partial<PostsColumns>, PostsColumn>;
+  (table: DbTables.comments): DbQueryMethods<Partial<CommentsColumns>, CommentsColumn>;
 };
 
 export const dbQuery: DbQueryOverload = (table: DbTables) => {

@@ -1,4 +1,4 @@
-import { PostsColumn, ThreadsColumn, UserColumn } from '../../common/types/dbTypes';
+import { PostsColumn, CommentsColumn, UserColumn } from '../../common/types/dbTypes';
 import { FieldErrorData } from '../../common/types/forms';
 
 export enum ErrorTypes {
@@ -22,7 +22,7 @@ export class FieldError extends Error {
   }
 }
 
-export const generateErrorType = (conditionColumn: UserColumn | ThreadsColumn | PostsColumn) => {
+export const generateErrorType = (conditionColumn: UserColumn | CommentsColumn | PostsColumn) => {
   switch (conditionColumn) {
     case 'username':
     case 'email':

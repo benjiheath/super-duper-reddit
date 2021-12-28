@@ -1,4 +1,4 @@
-import Register from './Register';
+import Register from './RegisterLogin';
 import Home from './Home';
 import AccountRecovery from './AccountRecovery';
 import Posts from './Posts';

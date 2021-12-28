@@ -2,16 +2,16 @@ export type Table = 'session' | 'users';
 
 export enum DbTables {
   users = 'users',
-  threads = 'threads',
   posts = 'posts',
-  threadsVotes = 'threads_votes',
+  comments = 'comments',
   postsVotes = 'posts_votes',
+  commentsVotes = 'comments_votes',
   session = 'session',
 }
 
 export type UserColumn = keyof UserColumns;
-export type ThreadsColumn = keyof ThreadsColumns;
 export type PostsColumn = keyof PostsColumns;
+export type CommentsColumn = keyof CommentsColumns;
 
 export interface UserColumns {
   id: string;
@@ -22,7 +22,7 @@ export interface UserColumns {
   reset_pw_token: string;
 }
 
-export interface ThreadsColumns {
+export interface PostsColumns {
   id: string;
   title: string;
   body: string;
@@ -33,9 +33,9 @@ export interface ThreadsColumns {
   current_status: 'normal' | 'removed';
 }
 
-export interface PostsColumns {
+export interface CommentsColumns {
   id: string;
-  thread_id: string;
+  post_id: string;
   parent_post_id: string;
   body: string;
   created_at: string;
@@ -45,16 +45,16 @@ export interface PostsColumns {
   current_status: 'normal' | 'removed';
 }
 
-export interface ThreadsVotesColumns {
+export interface PostsVotesColumns {
   id: string;
-  thread_id: string;
+  post_id: string;
   user_id: string;
   vote_status: number;
 }
 
-export interface PostsVotesColumns {
+export interface CommentsVotesColumns {
   id: string;
-  posts_id: string;
+  comment_id: string;
   user_id: string;
   vote_status: number;
 }

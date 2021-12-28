@@ -1,8 +1,7 @@
-import { Box, Heading, Link, Spinner, Text, useToast, VStack } from '@chakra-ui/react';
+import { Box, Heading, Spinner, useToast, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaAlignLeft, FaArrowLeft } from 'react-icons/fa';
-import { Link as RRLink, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { FormProps } from '../../types/general';
 import { FormData } from '../../types/user';
@@ -15,7 +14,7 @@ import { InputFields } from './InputFields';
 
 type Props = Pick<FormProps, 'formMode' | 'setFormMode'>;
 
-export default function Builder({ formMode, setFormMode }: Props) {
+export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
   const { logIn, setResponseError, setUserID } = useGlobalUserContext();
   const history = useHistory();
   const toast = useToast();

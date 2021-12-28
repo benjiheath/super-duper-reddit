@@ -22,7 +22,7 @@ CREATE TABLE users(
     points SMALLINT
 );
 
-CREATE TABLE threads(
+CREATE TABLE posts(
     id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
     title VARCHAR(100),
     body VARCHAR(5000),
@@ -33,45 +33,45 @@ CREATE TABLE threads(
     CONSTRAINT creator_user_id FOREIGN KEY(creator_user_id) REFERENCES users(id)
 );
 
-CREATE TABLE posts(
+CREATE TABLE comments(
     id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
-    thread_id uuid,
+    post_id uuid,
     creator_user_id uuid,
-    parent_post_id uuid,
+    parent_comment_id uuid,
     body VARCHAR(5000),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     current_status normal_or_removed NOT NULL DEFAULT 'normal',
-    CONSTRAINT thread_id FOREIGN KEY(thread_id ) REFERENCES threads(id),
+    CONSTRAINT post_id FOREIGN KEY(post_id ) REFERENCES posts(id),
     CONSTRAINT creator_user_id FOREIGN KEY(creator_user_id) REFERENCES users(id),
-    CONSTRAINT parent_post_id FOREIGN KEY(parent_post_id) REFERENCES posts(id)
-);
-
-CREATE TABLE threads_votes (
-    id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
-    thread_id uuid,
-    user_id uuid,
-    vote_status INT CHECK (vote_status = 1 OR vote_status = -1) NOT NULL,
-    CONSTRAINT thread_id FOREIGN KEY(thread_id) REFERENCES threads(id),
-    CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES users(id)
+    CONSTRAINT parent_comment_id FOREIGN KEY(parent_comment_id) REFERENCES comments(id)
 );
 
 CREATE TABLE posts_votes (
     id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
-    posts_id uuid,
+    post_id uuid,
     user_id uuid,
     vote_status INT CHECK (vote_status = 1 OR vote_status = -1) NOT NULL,
-    CONSTRAINT posts_id FOREIGN KEY(posts_id) REFERENCES posts(id),
+    CONSTRAINT post_id FOREIGN KEY(post_id) REFERENCES posts(id),
+    CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES users(id)
+);
+
+CREATE TABLE comments_votes (
+    id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
+    comment_id uuid,
+    user_id uuid,
+    vote_status INT CHECK (vote_status = 1 OR vote_status = -1) NOT NULL,
+    CONSTRAINT comment_id FOREIGN KEY(comment_id) REFERENCES comment(id),
     CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON threads
+BEFORE UPDATE ON posts
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON posts
+BEFORE UPDATE ON comments
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
