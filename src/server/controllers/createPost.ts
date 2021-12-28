@@ -14,7 +14,7 @@ export const createPost: RequestHandler = async (req, res, next) => {
 
     await dbQuery(DbTables.posts).insertRow({ creator_user_id, title, body });
 
-    res.status(200).send({ data: 'posted' });
+    res.status(200).send({ status: 'posted successfully' });
   } catch (err) {
     console.error(err);
   }

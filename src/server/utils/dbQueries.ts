@@ -20,8 +20,12 @@ type updateFieldOverload<T> = {
 };
 
 interface DbQueryMethods<T, U> {
-  findValue: (columnOfInterest: U, conditionColumn: U, conditionValue: string) => Promise<string>;
-  findValues: (columnsOfInterest: U[], conditionColumn: U, conditionValue: string) => any;
+  findValue: (columnOfInterest: U) => {
+    where: (column: U) => { equals: (value: string) => Promise<string> };
+  };
+  findValues: (columnsOfInterest: U[]) => {
+    where: (column: U) => { equals: (value: string) => Promise<T> };
+  };
   insertRow: (options: T) => Promise<void>;
   updateField: updateFieldOverload<U>;
 }
@@ -34,45 +38,61 @@ type DbQueryOverload = {
 
 export const dbQuery: DbQueryOverload = (table: DbTables) => {
   return {
-    findValue: async (columnOfInterest, conditionColumn, conditionValue) => {
-      try {
-        const {
-          rows: [{ [columnOfInterest]: result }],
-        } = await pool.query(`SELECT ${columnOfInterest} FROM ${table} WHERE ${conditionColumn} = $1`, [
-          conditionValue,
-        ]);
+    findValue: (columnOfInterest) => {
+      return {
+        where: (column) => {
+          return {
+            equals: async (value) => {
+              try {
+                const {
+                  rows: [{ [columnOfInterest]: result }],
+                } = await pool.query(`SELECT ${columnOfInterest} FROM ${table} WHERE ${column} = $1`, [
+                  value,
+                ]);
 
-        return result;
-      } catch (err) {
-        const message = ErrorTypes.AccountNotFound;
-        throw new FieldError({
-          message,
-          errors: [{ field: columnOfInterest, message }],
-        });
-      }
+                return result;
+              } catch (err) {
+                const message = ErrorTypes.AccountNotFound;
+                throw new FieldError({
+                  message,
+                  errors: [{ field: columnOfInterest, message }],
+                });
+              }
+            },
+          };
+        },
+      };
     },
-    findValues: async (columnsOfInterest, conditionColumn, conditionValue) => {
-      try {
-        const res = await pool.query(
-          `SELECT ${columnsOfInterest} FROM ${table} WHERE ${conditionColumn} = $1`,
-          [conditionValue]
-        );
+    findValues: (columnsOfInterest) => {
+      return {
+        where: (column) => {
+          return {
+            equals: async (value) => {
+              try {
+                const res = await pool.query(
+                  `SELECT ${columnsOfInterest} FROM ${table} WHERE ${column} = $1`,
+                  [value]
+                );
 
-        if (res.rowCount === 0) {
-          const message = generateErrorType(conditionColumn);
-          throw new FieldError({
-            message,
-            errors: columnsOfInterest.map((column) => {
-              return { field: column, message };
-            }),
-          });
-        }
+                if (res.rowCount === 0) {
+                  const message = generateErrorType(column);
+                  throw new FieldError({
+                    message,
+                    errors: columnsOfInterest.map((column) => {
+                      return { field: column, message };
+                    }),
+                  });
+                }
 
-        const [rows] = res.rows;
-        return rows;
-      } catch (err) {
-        throw err;
-      }
+                const [rows] = res.rows;
+                return rows;
+              } catch (err) {
+                throw err;
+              }
+            },
+          };
+        },
+      };
     },
     insertRow: async (columns) => {
       try {
@@ -104,3 +124,7 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
     },
   };
 };
+
+export const dbUsers = dbQuery(DbTables.users);
+export const dbPosts = dbQuery(DbTables.posts);
+export const dbComments = dbQuery(DbTables.comments);

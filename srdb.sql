@@ -61,7 +61,7 @@ CREATE TABLE comments_votes (
     comment_id uuid,
     user_id uuid,
     vote_status INT CHECK (vote_status = 1 OR vote_status = -1) NOT NULL,
-    CONSTRAINT comment_id FOREIGN KEY(comment_id) REFERENCES comment(id),
+    CONSTRAINT comment_id FOREIGN KEY(comment_id) REFERENCES comments(id),
     CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES users(id)
 );
 

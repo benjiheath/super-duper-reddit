@@ -2,7 +2,7 @@ import { RequestHandler } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { DbTables, UserColumn } from '../../common/types/dbTypes';
 import { config } from '../config';
-import { dbQuery } from '../utils/dbQueries';
+import { dbQuery, dbUsers } from '../utils/dbQueries';
 import { FieldError } from '../utils/errors';
 import { sendRecEmail_test } from '../utils/sendRecEmail_test';
 
@@ -11,14 +11,18 @@ export const forgotPasswordHandler: RequestHandler = async (req, res, _): Promis
     const [idType] = Object.keys(req.body) as UserColumn[];
     const [id]: string[] = Object.values(req.body);
     const token = uuidv4();
-    const userQuery = dbQuery(DbTables.users);
 
-    await userQuery.findValue(idType, idType, id);
+    await dbUsers.findValue(idType).where(idType).equals(id);
 
-    await userQuery.updateField('reset_pw_token', token).whereColumnMatchesValue(idType, id);
+    await dbUsers.updateField('reset_pw_token', token).whereColumnMatchesValue(idType, id);
 
     const targetEmail =
-      idType === 'email' ? id : await userQuery.findValue('email', `${idType as UserColumn}`, id);
+      idType === 'email'
+        ? id
+        : await dbUsers
+            .findValue('email')
+            .where(`${idType as UserColumn}`)
+            .equals(id);
     const link = `<a href='${config.urls.client.dev}/reset-password/${token}' target="_blank">Reset password</a>`;
     await sendRecEmail_test(targetEmail, link);
 

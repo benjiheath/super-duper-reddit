@@ -46,7 +46,7 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
           setLoading(false);
           formMode === 'Register' ? setLoggingIn(false) : setLoggingIn(true);
           logIn(data.username);
-          setUserID(res.id!);
+          setUserID(res.userID!);
           history.push({ pathname: '/' });
         } else {
           setLoading(false);

@@ -1,8 +1,7 @@
-import { dbQuery } from './../utils/dbQueries';
 import bcrypt from 'bcrypt';
 import { RequestHandler } from 'express';
-import { DbTables } from '../../common/types/dbTypes';
 import { FieldError } from '../utils/errors';
+import { dbUsers } from './../utils/dbQueries';
 
 declare module 'express-session' {
   interface SessionData {
@@ -16,16 +15,18 @@ export const register: RequestHandler = async (req, res, _): Promise<void> => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await dbQuery(DbTables.users).insertRow({
+    await dbUsers.insertRow({
       username,
       password: hashedPassword,
       email,
     });
 
+    const userID = await dbUsers.findValue('id').where('username').equals(username);
+
     // authenticate session
     req.session.userID = username;
 
-    res.status(201).send({ status: 'success' });
+    res.status(201).send({ status: 'success', userID });
   } catch (error) {
     if (error instanceof FieldError) {
       res.status(200).send(error.info);

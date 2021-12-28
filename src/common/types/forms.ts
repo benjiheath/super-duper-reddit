@@ -24,5 +24,4 @@ export interface ServerResponse extends StatusAndMessage {
   sentTo?: string;
   username?: string;
   userID?: string | null;
-  id?: string | null;
 }
