@@ -1,12 +1,13 @@
 import { useReducer } from 'react';
-import { initState, postsReducer } from './postsReducer';
+import { PostsDispatchers, PostsState } from '../../types/posts';
+import { initState, PostsActions, postsReducer } from './postsReducer';
 
-const usePostsReducer = (): any => {
+const usePostsReducer = (): [PostsState, PostsDispatchers] => {
   const [state, dispatch] = useReducer(postsReducer, initState);
 
-  const dispatchers = {
-    setPosts: (value: any) => {
-      dispatch({ type: 'SET_POSTS', payload: value });
+  const dispatchers: PostsDispatchers = {
+    setPosts: (value) => {
+      dispatch({ type: PostsActions.SET_POSTS, payload: value });
     },
   };
 

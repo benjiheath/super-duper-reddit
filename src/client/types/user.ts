@@ -1,4 +1,4 @@
-type Dispatch<T> = (value: T) => void;
+import { Dispatch } from './general';
 
 export interface UserDispatchers {
   setAuth: Dispatch<boolean>;

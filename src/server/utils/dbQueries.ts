@@ -1,11 +1,11 @@
 import {
   CommentsColumn,
-  CommentsColumns,
+  DbComment,
   DbTables,
   PostsColumn,
-  PostsColumns,
+  DbPost,
   UserColumn,
-  UserColumns,
+  DbUser,
 } from '../../common/types/dbTypes';
 import { pool } from '../db';
 import { ErrorTypes, FieldError, generateErrorType } from './errors';
@@ -31,9 +31,9 @@ interface DbQueryMethods<T, U> {
 }
 
 type DbQueryOverload = {
-  (table: DbTables.users): DbQueryMethods<Partial<UserColumns>, UserColumn>;
-  (table: DbTables.posts): DbQueryMethods<Partial<PostsColumns>, PostsColumn>;
-  (table: DbTables.comments): DbQueryMethods<Partial<CommentsColumns>, CommentsColumn>;
+  (table: DbTables.users): DbQueryMethods<Partial<DbUser>, UserColumn>;
+  (table: DbTables.posts): DbQueryMethods<Partial<DbPost>, PostsColumn>;
+  (table: DbTables.comments): DbQueryMethods<Partial<DbComment>, CommentsColumn>;
 };
 
 export const dbQuery: DbQueryOverload = (table: DbTables) => {

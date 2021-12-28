@@ -9,11 +9,11 @@ export enum DbTables {
   session = 'session',
 }
 
-export type UserColumn = keyof UserColumns;
-export type PostsColumn = keyof PostsColumns;
-export type CommentsColumn = keyof CommentsColumns;
+export type UserColumn = keyof DbUser;
+export type PostsColumn = keyof DbPost;
+export type CommentsColumn = keyof DbComment;
 
-export interface UserColumns {
+export interface DbUser {
   id: string;
   username: string;
   email: string;
@@ -22,7 +22,7 @@ export interface UserColumns {
   reset_pw_token: string;
 }
 
-export interface PostsColumns {
+export interface DbPost {
   id: string;
   title: string;
   body: string;
@@ -33,7 +33,7 @@ export interface PostsColumns {
   current_status: 'normal' | 'removed';
 }
 
-export interface CommentsColumns {
+export interface DbComment {
   id: string;
   post_id: string;
   parent_post_id: string;
@@ -45,14 +45,14 @@ export interface CommentsColumns {
   current_status: 'normal' | 'removed';
 }
 
-export interface PostsVotesColumns {
+export interface DbPostVote {
   id: string;
   post_id: string;
   user_id: string;
   vote_status: number;
 }
 
-export interface CommentsVotesColumns {
+export interface DbCommentVote {
   id: string;
   comment_id: string;
   user_id: string;

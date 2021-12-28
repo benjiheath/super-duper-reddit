@@ -1,12 +1,19 @@
-type ACTIONTYPE = { type: 'SET_POSTS'; payload: any };
+import { DbPost } from '../../../common/types/dbTypes';
+import { PostsState } from '../../types/posts';
 
-export const initState = {
+export enum PostsActions {
+  SET_POSTS = 'SET_POSTS',
+}
+
+type ACTIONTYPE = { type: 'SET_POSTS'; payload: DbPost[] | null };
+
+export const initState: PostsState = {
   posts: null,
 };
 
-export const postsReducer = (state: any, action: any) => {
+export const postsReducer = (state: PostsState, action: ACTIONTYPE) => {
   switch (action.type) {
-    case 'SET_POSTS':
+    case PostsActions.SET_POSTS:
       return { ...state, posts: action.payload };
 
     default:

@@ -28,3 +28,5 @@ export interface InputFieldType {
 }
 
 export type ComponentVariant = 'primary' | 'secondary';
+
+export type Dispatch<T> = (value: T) => void;
