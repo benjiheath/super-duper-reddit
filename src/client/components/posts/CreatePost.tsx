@@ -1,14 +1,16 @@
-import { FormControl, FormLabel, Heading, Input, Textarea, VStack } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { axiosRequest } from '../../utils/axiosMethods';
-import AlertPop from '../register/AlertPop';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
+import AlertPop from '../register/AlertPop';
 
 const CreatePost = () => {
   const { setResponseError, username, userID } = useGlobalUserContext();
+  const history = useHistory();
   const {
     register,
     reset,
@@ -30,6 +32,8 @@ const CreatePost = () => {
 
     try {
       await axiosRequest('post', 'posts', newPostData);
+
+      setLoading(false);
     } catch (err) {
       setResponseError(err);
     }

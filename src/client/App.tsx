@@ -1,5 +1,5 @@
 import { ChakraProvider, Flex } from '@chakra-ui/react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import PostsProvider from './contexts/posts/PostsContext';
 import GlobalUserProvider from './contexts/user/GlobalUserContext';
 import { Home, Posts, Register, AccountRecovery } from './pages';
@@ -13,7 +13,7 @@ export const App = () => (
         <PostsProvider>
           <ChakraProvider theme={theme}>
             <Route exact path='/'>
-              <Home />
+              <Redirect to='/posts' />
             </Route>
             <Route path='/posts'>
               <Posts />
