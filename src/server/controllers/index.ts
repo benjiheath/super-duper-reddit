@@ -3,7 +3,7 @@ import { login } from './login';
 import { logout } from './logout';
 import { register } from './register';
 import { authChecker } from './authChecker';
-import { test } from './test';
+import { servePosts } from './servePosts';
 import { sendSessionStatus } from './sendSessionStatus';
 import { forgotPasswordHandler } from './forgotPassword';
 import { resetPasswordHandler } from './resetPassword';
@@ -15,7 +15,7 @@ export {
   logout,
   register,
   authChecker,
-  test,
+  servePosts,
   sendSessionStatus,
   forgotPasswordHandler,
   resetPasswordHandler,

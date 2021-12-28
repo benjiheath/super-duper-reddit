@@ -1,9 +1,9 @@
 import express from 'express';
-import { createPost, test } from '../controllers';
+import { createPost, servePosts } from '../controllers';
 
 const router = express.Router();
 
-router.get('/', test);
+router.get('/', servePosts);
 router.post('/', createPost);
 
 export { router as postsRouter };

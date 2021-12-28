@@ -28,7 +28,6 @@ export interface DbPost {
   body: string;
   created_at: string;
   updated_at: string;
-  points: number;
   creator_user_id: string;
   current_status: 'normal' | 'removed';
 }
@@ -40,7 +39,6 @@ export interface DbComment {
   body: string;
   created_at: string;
   updated_at: string;
-  points: number;
   creator_user_id: string;
   current_status: 'normal' | 'removed';
 }
