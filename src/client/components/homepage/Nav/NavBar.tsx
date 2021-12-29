@@ -13,7 +13,9 @@ const NavBar = () => {
 
   return (
     <Flex position='sticky' top={0} zIndex={1} bg='white' p='20px 30px' mb='80px'>
-      <Heading color='prim.800'>Super Reddit</Heading>
+      <Link to='/'>
+        <Heading color='prim.800'>Super Reddit</Heading>
+      </Link>
       <Spacer />
       <Link to={linkTo}>
         <Button mr={4} variant={btnVariant}>
