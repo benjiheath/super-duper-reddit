@@ -2,14 +2,19 @@ import { FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/reac
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
+import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { Posts } from '../../pages';
 import { axiosRequest } from '../../utils/axiosMethods';
+import { createPostSlugs } from '../../utils/misc';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
+import FormTextArea from '../generic/FormTextArea';
 import AlertPop from '../register/AlertPop';
 
 const CreatePost = () => {
   const { setResponseError, username, userID } = useGlobalUserContext();
+  const { setPosts, posts } = usePostsContext();
   const history = useHistory();
   const {
     register,
@@ -26,12 +31,25 @@ const CreatePost = () => {
   }
 
   const onSubmit = async (data: Post): Promise<void> => {
-    const newPostData = { creator_user_id: userID, ...data };
+    const newPostData = { creator_user_id: userID, creator_username: username, ...data };
 
     setLoading(true);
 
     try {
-      await axiosRequest('post', 'posts', newPostData);
+      const { post } = await axiosRequest('post', 'posts', newPostData);
+
+      if (!post) {
+        return;
+        // TODO handle later - throw err?
+      }
+
+      const postSlugs = createPostSlugs(post.id, post.title);
+
+      if (posts) {
+        setPosts([post, ...posts]);
+      }
+
+      history.push({ pathname: `${postSlugs}` });
 
       setLoading(false);
     } catch (err) {
@@ -63,17 +81,7 @@ const CreatePost = () => {
 
           <FormControl mt='30px !important'>
             <FormLabel color='prim.800'>Body</FormLabel>
-            <Textarea
-              minH={150}
-              borderColor='prim.100'
-              _hover={{ borderColor: 'sec.400' }}
-              placeholder='Enter your text here...'
-              focusBorderColor='sec.300'
-              {...register('body', {
-                required: 'Body required',
-              })}
-              _focus={{ boxShadow: '1px 1px 10px 3px #bcffe1b2', borderColor: 'sec.400' }}
-            />
+            <FormTextArea register={register} />
           </FormControl>
           {errors.body && <AlertPop title={errors.body.message} />}
           <ButtonSubmit text='Submit' />
