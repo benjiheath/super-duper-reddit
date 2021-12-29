@@ -25,18 +25,22 @@ CREATE TABLE users(
 CREATE TABLE posts(
     id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
     title VARCHAR(100),
+    content_url VARCHAR(200),
     body VARCHAR(5000),
     creator_user_id uuid,
+    creator_username VARCHAR(80) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     current_status normal_or_removed  NOT NULL DEFAULT 'normal',
-    CONSTRAINT creator_user_id FOREIGN KEY(creator_user_id) REFERENCES users(id)
+    CONSTRAINT creator_user_id FOREIGN KEY(creator_user_id) REFERENCES users(id),
+    CONSTRAINT creator_username FOREIGN KEY(creator_username) REFERENCES users(username)
 );
 
 CREATE TABLE comments(
     id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
     post_id uuid,
     creator_user_id uuid,
+    creator_username VARCHAR(80) NOT NULL,
     parent_comment_id uuid,
     body VARCHAR(5000),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -44,6 +48,7 @@ CREATE TABLE comments(
     current_status normal_or_removed NOT NULL DEFAULT 'normal',
     CONSTRAINT post_id FOREIGN KEY(post_id ) REFERENCES posts(id),
     CONSTRAINT creator_user_id FOREIGN KEY(creator_user_id) REFERENCES users(id),
+    CONSTRAINT creator_username FOREIGN KEY(creator_username) REFERENCES users(username),
     CONSTRAINT parent_comment_id FOREIGN KEY(parent_comment_id) REFERENCES comments(id)
 );
 
