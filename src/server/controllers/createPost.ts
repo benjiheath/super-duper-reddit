@@ -10,11 +10,18 @@ declare module 'express-session' {
 
 export const createPost: RequestHandler = async (req, res, next) => {
   try {
-    const { creator_user_id, title, body } = req.body;
+    const { creator_user_id, creator_username, title, body } = req.body;
 
-    const [data] = await dbQuery(DbTables.posts).insertRow({ creator_user_id, title, body });
+    const [post] = await dbQuery(DbTables.posts).insertRow({
+      creator_user_id,
+      creator_username,
+      title,
+      body,
+    });
 
-    res.status(200).send({ status: 'posted successfully', data });
+    const postWithCommentsPropertyAppended = { ...post, comments: [] };
+
+    res.status(200).send({ status: 'posted successfully', post: postWithCommentsPropertyAppended });
   } catch (err) {
     console.error(err);
   }

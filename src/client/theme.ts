@@ -88,14 +88,14 @@ export const theme = extendTheme({
         },
         secondary: {
           bg: 'sec.900',
-          border: '2px solid transparent',
+          border: '1px solid transparent',
           color: 'white',
 
           _hover: {
             bg: 'sec.100',
             _disabled: { bg: 'sec.900' },
             color: 'sec.900',
-            border: '2px solid',
+            border: '1px dotted',
             borderColor: 'sec.900',
           },
         },
@@ -122,12 +122,12 @@ export const theme = extendTheme({
           },
         },
         basicHoverInv: {
-          border: `2px solid transparent`,
+          border: `1px solid transparent`,
           bg: 'white',
           color: 'prim.800',
           _hover: {
-            bg: 'prim.100',
-            border: `2px solid ${primaryColors[600]}`,
+            bg: 'prim.50',
+            border: `1px dotted ${primaryColors[600]}`,
           },
         },
       },

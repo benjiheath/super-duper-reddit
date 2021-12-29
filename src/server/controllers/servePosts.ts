@@ -22,7 +22,7 @@ export const servePosts: RequestHandler = async (req, res, _): Promise<void> => 
       };
     });
 
-    res.status(200).send({ data: postsIncludingComments });
+    res.status(200).send({ posts: postsIncludingComments });
   } catch (err) {
     console.log(err);
   }

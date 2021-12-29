@@ -59,10 +59,9 @@ const Posts = () => {
   useEffect(() => {
     const getPosts = async () => {
       try {
-        const { data: posts } = await axiosRequest('GET', 'posts');
+        const { posts } = await axiosRequest('GET', 'posts');
 
         setPosts(posts!);
-        console.log('posts:', posts);
       } catch (err) {
         setResponseError(err);
       }
@@ -70,12 +69,6 @@ const Posts = () => {
 
     getPosts();
   }, []);
-
-  // getPosts();
-
-  // if (!authorized) {
-  //   location.push({ pathname: '/login' });
-  // }
 
   return (
     <Switch>

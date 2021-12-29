@@ -11,3 +11,7 @@ export interface PostsState {
 
 export type PostsCtx = PostsDispatchers & PostsState;
 export type usePostsCtx = () => PostsCtx;
+
+export interface PostProps {
+  post: PostWithComments;
+}

@@ -25,5 +25,6 @@ export interface ServerResponse extends StatusAndMessage {
   sentTo?: string;
   username?: string;
   userID?: string | null;
-  data?: PostWithComments[];
+  post?: PostWithComments;
+  posts?: PostWithComments[];
 }
