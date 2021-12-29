@@ -21,14 +21,19 @@ type updateFieldOverload<T> = {
 };
 
 interface DbQueryMethods<T, U> {
-  selectAll: (options?: { whereConditions?: string | string[]; limit?: number; orderBy?: U }) => Promise<T[]>;
+  selectAll: (options?: {
+    whereConditions?: string | string[];
+    limit?: number;
+    orderBy?: U;
+    direction?: 'ASC' | 'DESC';
+  }) => Promise<T[]>;
   findValue: (columnOfInterest: U) => {
     where: (column: U) => { equals: (value: string) => Promise<string> };
   };
   findValues: (columnsOfInterest: U[]) => {
     where: (column: U) => { equals: (value: string) => Promise<T> };
   };
-  insertRow: (options: T) => Promise<void>;
+  insertRow: (options: T) => Promise<T[]>;
   updateField: updateFieldOverload<U>;
 }
 
@@ -44,9 +49,10 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
       const whereConditions = options?.whereConditions ? `WHERE ${options.whereConditions}` : '';
       const limitClause = options?.limit ? `LIMIT ${options.limit}` : '';
       const orderByClause = options?.orderBy ? `ORDER BY ${options.orderBy}` : '';
+      const sortDirection = options?.direction ? `${options.direction}` : 'DESC';
 
       const { rows } = await pool.query(
-        `SELECT * FROM ${table} ${whereConditions} ${limitClause} ${orderByClause}`
+        `SELECT * FROM ${table} ${whereConditions} ${limitClause} ${orderByClause} ${sortDirection}`
       );
       return rows;
     },
@@ -112,10 +118,11 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
         const values = Object.values(columns);
         const valueIDs = Object.values(columns).map((_, i) => `$${i + 1}`);
 
-        return await pool.query(
+        const { rows } = await pool.query(
           `INSERT INTO ${table} (${parsedColumns}) VALUES (${valueIDs}) RETURNING *`,
           values
         );
+        return rows;
       } catch (err: any) {
         const field = err.detail.substring(5, err.detail.indexOf(')'));
         const message = `Sorry, that ${field} is already taken`;
