@@ -1,46 +1,53 @@
-import { Box, Flex, VStack, Text, HStack } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
-import { PostWithComments } from '../../common/types/dbTypes';
-import { postsRouter } from '../../server/routes';
+import { Box, Flex, HStack, Text, VStack } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
+import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import { NavBar } from '../components/homepage';
 import { NewPost } from '../components/posts';
+import Post from '../components/posts/Post';
 import { usePostsContext } from '../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../contexts/user/GlobalUserContext';
+import { PostProps } from '../types/posts';
 import { axiosRequest } from '../utils/axiosMethods';
+import { createPostSlugs } from '../utils/misc';
 
-interface PostProps {
-  post: PostWithComments;
-}
-
-const PostDetails = (props: PostProps) => {
+const PostCardDetails = (props: PostProps) => {
   const { post } = props;
   const date = new Date(Date.parse(post.created_at)).toISOString();
 
   return (
     <Flex flexDir='column'>
       <Text>{post.title}</Text>
-      <Text>submitted {date}</Text>
+      <Text>
+        submitted {date} * by {post.creator_username}
+      </Text>
       <Text>{post.comments.length} comments</Text>
     </Flex>
   );
 };
 
-const Post = (props: PostProps) => {
+const PostCard = (props: PostProps) => {
   const { post } = props;
+
+  const slugs = createPostSlugs(post.id, post.title);
+
   return (
-    <HStack
-      spacing={6}
-      width='800px'
-      boxShadow='0px 0px 10px 1px #8a8a8a28'
-      p={4}
-      borderRadius={8}
-      cursor='pointer'
-    >
-      <span>votes</span>
-      <Box>img</Box>
-      <PostDetails post={post} />
-    </HStack>
+    <Link to={`/posts/${slugs}`}>
+      <HStack
+        spacing={6}
+        width='800px'
+        boxShadow='0px 0px 5px 1px #a0a0a028'
+        p={4}
+        borderRadius={8}
+        cursor='pointer'
+        _hover={{
+          boxShadow: '0px 0px 1px 1px #c4c4c428',
+        }}
+      >
+        <span>votes</span>
+        <Box>img</Box>
+        <PostCardDetails post={post} />
+      </HStack>
+    </Link>
   );
 };
 
@@ -74,10 +81,15 @@ const Posts = () => {
     <Switch>
       <Flex flexDir='column'>
         <NavBar />
+        <Route exact path={`${match.path}/`}>
+          <VStack spacing={6}>{posts ? posts.map((post) => <PostCard post={post} />) : null}</VStack>
+        </Route>
+        <Route path='/posts/:id/:title'>
+          <Post />
+        </Route>
         <Route path={`${match.path}/create`}>
           <NewPost />
         </Route>
-        <VStack spacing={6}>{posts ? posts.map((post) => <Post post={post} />) : null}</VStack>
       </Flex>
     </Switch>
   );
