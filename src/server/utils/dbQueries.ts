@@ -1,3 +1,4 @@
+import { QueryResult } from 'pg';
 import {
   CommentsColumn,
   DbComment,
@@ -111,7 +112,10 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
         const values = Object.values(columns);
         const valueIDs = Object.values(columns).map((_, i) => `$${i + 1}`);
 
-        await pool.query(`INSERT INTO ${table} (${parsedColumns}) VALUES (${valueIDs})`, values);
+        return await pool.query(
+          `INSERT INTO ${table} (${parsedColumns}) VALUES (${valueIDs}) RETURNING *`,
+          values
+        );
       } catch (err: any) {
         const field = err.detail.substring(5, err.detail.indexOf(')'));
         const message = `Sorry, that ${field} is already taken`;
