@@ -27,19 +27,19 @@ interface DbQueryMethods<T, U> {
     direction?: 'ASC' | 'DESC';
   }) => Promise<T[]>;
   findValue: (columnOfInterest: U) => {
-    where: (column: U) => { equals: (value: string) => Promise<string> };
+    where: (column: U) => { equals: (value: string) => Promise<Partial<T>> };
   };
   findValues: (columnsOfInterest: U[]) => {
-    where: (column: U) => { equals: (value: string) => Promise<T> };
+    where: (column: U) => { equals: (value: string) => Promise<Partial<T>> };
   };
-  insertRow: (options: T) => Promise<T[]>;
+  insertRow: (options: Partial<T>) => Promise<T[]>;
   updateField: updateFieldOverload<U>;
 }
 
 type DbQueryOverload = {
-  (table: DbTables.users): DbQueryMethods<Partial<DbUser>, UserColumn>;
-  (table: DbTables.posts): DbQueryMethods<Partial<DbPost>, PostsColumn>;
-  (table: DbTables.comments): DbQueryMethods<Partial<DbComment>, CommentsColumn>;
+  (table: DbTables.users): DbQueryMethods<DbUser, UserColumn>;
+  (table: DbTables.posts): DbQueryMethods<DbPost, PostsColumn>;
+  (table: DbTables.comments): DbQueryMethods<DbComment, CommentsColumn>;
 };
 
 export const dbQuery: DbQueryOverload = (table: DbTables) => {
