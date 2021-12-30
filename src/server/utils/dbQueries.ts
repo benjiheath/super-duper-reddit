@@ -1,3 +1,4 @@
+import { handlePostRemovedStatus } from './misc';
 import {
   CommentsColumn,
   DbComment,
@@ -53,7 +54,16 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
       const { rows } = await pool.query(
         `SELECT * FROM ${table} ${whereConditions} ${limitClause} ${orderByClause} ${sortDirection}`
       );
-      return rows;
+
+      // if current_status = removed, overwrite obj 'body' value
+      const removedStatusHandled = handlePostRemovedStatus(rows);
+
+      // if no items has current_status = removed, simply return rows
+      if (!removedStatusHandled) {
+        return rows;
+      }
+
+      return removedStatusHandled;
     },
     findValue: (columnOfInterest) => {
       return {

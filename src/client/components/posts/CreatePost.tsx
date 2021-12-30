@@ -2,11 +2,11 @@ import { FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/reac
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
+import { createPostSlugs } from '../../../common/utils';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { Posts } from '../../pages';
 import { axiosRequest } from '../../utils/axiosMethods';
-import { createPostSlugs } from '../../utils/misc';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
 import FormTextArea from '../generic/FormTextArea';

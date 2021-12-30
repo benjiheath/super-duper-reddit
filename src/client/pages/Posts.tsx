@@ -72,7 +72,13 @@ const Posts = () => {
       <Flex flexDir='column'>
         <NavBar />
         <Route exact path={`${match.path}/`}>
-          <VStack spacing={6}>{posts ? posts.map((post) => <PostCard post={post} />) : null}</VStack>
+          <VStack spacing={6}>
+            {posts
+              ? posts
+                  .filter((post) => post.current_status !== 'removed')
+                  .map((post) => <PostCard post={post} />)
+              : null}
+          </VStack>
         </Route>
         <Route path='/posts/:id/:title'>
           <Post />
