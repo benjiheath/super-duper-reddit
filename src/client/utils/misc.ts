@@ -14,10 +14,3 @@ export const obscureEmail = (email: string): string => {
 export const getIdType = (id: string): 'email' | 'username' => {
   return id.includes('@') ? 'email' : 'username';
 };
-
-export const createPostSlugs = (id: string, title: string) => {
-  const shortenedPostId = id.slice(0, 8);
-  const underscoredTitle = title.replace(/ /g, '_').toLowerCase();
-
-  return `${shortenedPostId}/${[underscoredTitle]}`;
-};

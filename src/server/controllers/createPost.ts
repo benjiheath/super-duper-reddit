@@ -1,6 +1,7 @@
 import { dbQuery } from './../utils/dbQueries';
 import { RequestHandler } from 'express';
 import { DbTables } from '../../common/types/dbTypes';
+import { createPostSlugs } from '../../common/utils';
 
 declare module 'express-session' {
   interface SessionData {
@@ -19,7 +20,9 @@ export const createPost: RequestHandler = async (req, res, next) => {
       body,
     });
 
-    const postWithCommentsPropertyAppended = { ...post, comments: [] };
+    const urlSlugs = createPostSlugs(post.id, post.title);
+
+    const postWithCommentsPropertyAppended = { ...post, comments: [], urlSlugs };
 
     res.status(200).send({ status: 'posted successfully', post: postWithCommentsPropertyAppended });
   } catch (err) {

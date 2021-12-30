@@ -32,6 +32,7 @@ export interface DbPost {
   creator_user_id: string;
   creator_username: string;
   current_status: 'normal' | 'removed';
+  urlSlugs: string;
 }
 
 export interface PostWithComments extends DbPost {

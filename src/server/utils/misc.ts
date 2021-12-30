@@ -1,5 +1,5 @@
 import { PostsColumn, CommentsColumn, UserColumn, DbPost } from './../../common/types/dbTypes';
-export const createWhereConditionsFromList = <T>(
+export const createSQLWhereConditionsFromList = <T>(
   list: T[],
   valueA: PostsColumn | CommentsColumn | UserColumn,
   valueB: keyof T,
@@ -13,5 +13,3 @@ export const createWhereConditionsFromList = <T>(
 
   return conditions;
 };
-
-const appendCommentsToPosts = (posts: DbPost[]) => {};

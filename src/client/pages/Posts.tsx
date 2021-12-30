@@ -8,7 +8,6 @@ import { usePostsContext } from '../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../contexts/user/GlobalUserContext';
 import { PostProps } from '../types/posts';
 import { axiosRequest } from '../utils/axiosMethods';
-import { createPostSlugs } from '../utils/misc';
 
 const PostCardDetails = (props: PostProps) => {
   const { post } = props;
@@ -28,10 +27,8 @@ const PostCardDetails = (props: PostProps) => {
 const PostCard = (props: PostProps) => {
   const { post } = props;
 
-  const slugs = createPostSlugs(post.id, post.title);
-
   return (
-    <Link to={`/posts/${slugs}`}>
+    <Link to={`/posts/${post.urlSlugs}`}>
       <HStack
         spacing={6}
         width='800px'
