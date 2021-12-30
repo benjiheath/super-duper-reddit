@@ -1,5 +1,6 @@
 import { ChakraProvider, Flex } from '@chakra-ui/react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import ScrollToTop from './components/generic/ScrollToTop';
 import PostsProvider from './contexts/posts/PostsContext';
 import GlobalUserProvider from './contexts/user/GlobalUserContext';
 import { Home, Posts, Register, AccountRecovery } from './pages';
@@ -8,6 +9,7 @@ import { theme } from './theme';
 
 export const App = () => (
   <Router>
+    <ScrollToTop />
     <Switch>
       <GlobalUserProvider>
         <PostsProvider>
