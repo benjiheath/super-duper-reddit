@@ -1,3 +1,4 @@
+import { addCommentToPost } from './addCommentToPost';
 import { resetPasswordTokenChecker } from './resetPasswordTokenChecker';
 import { login } from './login';
 import { logout } from './logout';
@@ -20,4 +21,5 @@ export {
   forgotPasswordHandler,
   resetPasswordHandler,
   resetPasswordTokenChecker,
+  addCommentToPost,
 };

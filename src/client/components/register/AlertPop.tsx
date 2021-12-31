@@ -1,4 +1,5 @@
 import { Alert, AlertIcon, AlertTitle } from '@chakra-ui/react';
+import { primaryColors } from '../../theme';
 
 interface Props {
   title: string;

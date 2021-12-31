@@ -1,14 +1,13 @@
-import { Textarea } from '@chakra-ui/react';
-import React from 'react';
+import { Textarea, TextareaProps } from '@chakra-ui/react';
 import { FieldValues, UseFormRegister } from 'react-hook-form/dist/types';
 
-interface Props {
+interface Props extends TextareaProps {
   register: UseFormRegister<FieldValues>;
   minH?: number;
 }
 
 const FormTextArea = (props: Props) => {
-  const { register, minH } = props;
+  const { register, minH, ...rest } = props;
 
   return (
     <Textarea
@@ -21,6 +20,7 @@ const FormTextArea = (props: Props) => {
         required: 'Body required',
       })}
       _focus={{ boxShadow: '1px 1px 10px 3px #bcffe1b2', borderColor: 'sec.400' }}
+      {...rest}
     />
   );
 };

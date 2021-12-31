@@ -1,1 +1,1 @@
-export type Endpoint = 'session' | 'user' | 'posts' | 'account' | 'account/:token';
+export type Endpoint = 'session' | 'user' | 'posts' | 'account' | 'account/:token' | 'posts/comments';

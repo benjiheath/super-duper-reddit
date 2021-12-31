@@ -6,6 +6,7 @@ import { createPostSlugs } from '../../../common/utils';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { Posts } from '../../pages';
+import { CreatePostFields } from '../../types/posts';
 import { axiosRequest } from '../../utils/axiosMethods';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
@@ -25,12 +26,7 @@ const CreatePost = () => {
   } = useForm();
   const [loading, setLoading] = useState(false);
 
-  interface Post {
-    title: string;
-    body: string;
-  }
-
-  const onSubmit = async (data: Post): Promise<void> => {
+  const onSubmit = async (data: CreatePostFields): Promise<void> => {
     const newPostData = { creator_user_id: userID, creator_username: username, ...data };
 
     setLoading(true);

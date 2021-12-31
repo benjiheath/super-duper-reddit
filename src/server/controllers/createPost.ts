@@ -1,4 +1,4 @@
-import { dbQuery } from './../utils/dbQueries';
+import { dbQuery, dbUsers } from './../utils/dbQueries';
 import { RequestHandler } from 'express';
 import { DbTables } from '../../common/types/dbTypes';
 import { createPostSlugs } from '../../common/utils';
