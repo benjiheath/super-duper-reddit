@@ -76,7 +76,7 @@ const CommentBox = (props: PostProps) => {
   const { post } = props;
   const { id: postID, comments } = post;
   const { username, userID, setResponseError } = useGlobalUserContext();
-  const { posts, setPosts } = usePostsContext();
+  const { posts, updatePost } = usePostsContext();
   const {
     register,
     reset,
@@ -120,7 +120,7 @@ const CommentBox = (props: PostProps) => {
     <Box w='100%'>
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing={2}>
-          <FormTextArea register={register} />
+          <FormTextArea register={register} minH={20} placeholder='Enter a comment ...' />
           {errors.body && <AlertPop title={errors.body.message} />}
           <ButtonSubmit text='Save' isDisabled={!isValid} isLoading={isSubmitting} />
           {isSubmitting && <span>xxxxxxx</span>}
@@ -143,7 +143,7 @@ const Comments = (props: CommentProps) => {
 
   return (
     <>
-      {comments.map((comment) => (
+      {comments.map(comment => (
         <span>{comment.body}</span>
       ))}
     </>
@@ -158,7 +158,7 @@ const Post = () => {
     return <Text>Error retrieving posts</Text>;
   }
 
-  const [post] = posts?.filter((post) => post.id.includes(id));
+  const [post] = posts?.filter(post => post.id.includes(id));
 
   return (
     <PageBox>

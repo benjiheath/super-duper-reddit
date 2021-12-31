@@ -27,6 +27,7 @@ export interface Post {
   creatorUsername: string;
   currentStatus: 'normal' | 'removed';
   urlSlugs: string;
+  comments: Comment[];
 }
 
 export interface Comment {

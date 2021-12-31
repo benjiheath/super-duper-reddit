@@ -26,6 +26,8 @@ export interface ServerResponse extends StatusAndMessage {
   username?: string;
   userID?: string | null;
   post?: PostWithComments;
-  posts?: PostWithComments[];
-  comment?: DbComment;
+}
+
+export interface GetPostsResponse {
+  posts: PostWithComments[];
 }

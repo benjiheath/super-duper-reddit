@@ -4,17 +4,18 @@ import { FieldValues, UseFormRegister } from 'react-hook-form/dist/types';
 interface Props extends TextareaProps {
   register: UseFormRegister<FieldValues>;
   minH?: number;
+  placeholder?: string;
 }
 
 const FormTextArea = (props: Props) => {
-  const { register, minH, ...rest } = props;
+  const { register, minH, placeholder, ...rest } = props;
 
   return (
     <Textarea
       minH={minH ?? 150}
       borderColor='prim.100'
       _hover={{ borderColor: 'sec.400' }}
-      placeholder='Enter your text here...'
+      placeholder={placeholder ?? 'Enter your text here...'}
       focusBorderColor='sec.300'
       {...register('body', {
         required: 'Body required',

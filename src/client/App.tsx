@@ -12,27 +12,27 @@ export const App = () => (
     <ScrollToTop />
     <Switch>
       <GlobalUserProvider>
-        <PostsProvider>
-          <ChakraProvider theme={theme}>
+        <ChakraProvider theme={theme}>
+          <PostsProvider>
             <Route exact path='/'>
               <Redirect to='/posts' />
             </Route>
             <Route path='/posts'>
               <Posts />
             </Route>
-            <Flex minH='100vh' alignItems='center'>
-              <Route exact path={['/register', '/login']}>
-                <Register />
-              </Route>
-              <Route path='/reset-password'>
-                <AccountRecovery />
-              </Route>
-            </Flex>
-            <Route exact path='/test'>
-              <Test />
+          </PostsProvider>
+          <Flex minH='100vh' alignItems='center'>
+            <Route exact path={['/register', '/login']}>
+              <Register />
             </Route>
-          </ChakraProvider>
-        </PostsProvider>
+            <Route path='/reset-password'>
+              <AccountRecovery />
+            </Route>
+          </Flex>
+          <Route exact path='/test'>
+            <Test />
+          </Route>
+        </ChakraProvider>
       </GlobalUserProvider>
     </Switch>
   </Router>

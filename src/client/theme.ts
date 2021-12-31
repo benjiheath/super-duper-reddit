@@ -74,13 +74,18 @@ export const theme = extendTheme({
       },
     },
     Button: {
+      baseStyle: {
+        _disabled: {
+          bg: 'grey',
+        },
+      },
       variants: {
         primary: {
           bg: 'prim.800',
           border: '2px solid transparent',
           _hover: {
             bg: 'prim.100',
-            _disabled: { bg: 'prim.800' },
+            _disabled: { bg: 'prim.800', color: 'white' },
             color: 'prim.900',
             border: '2px solid',
             borderColor: 'prim.900',

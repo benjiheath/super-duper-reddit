@@ -88,20 +88,6 @@ const Posts = () => {
   const { setResponseError } = useGlobalUserContext();
   const { posts, setPosts } = usePostsContext();
 
-  useEffect(() => {
-    const getPosts = async () => {
-      try {
-        const { posts } = await axiosRequest('GET', 'posts');
-
-        setPosts(posts!);
-      } catch (err) {
-        setResponseError(err);
-      }
-    };
-
-    getPosts();
-  }, []);
-
   return (
     <Switch>
       <Flex flexDir='column'>
