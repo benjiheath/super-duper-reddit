@@ -95,21 +95,14 @@ const CommentBox = (props: PostProps) => {
         creator_username: username,
       };
 
-      const { comment: addedComment } = await axiosRequest('POST', 'posts/comments', newCommentData);
+      const { post } = await axiosRequest('POST', 'posts/comments', newCommentData);
 
-      if (!addedComment) {
+      if (!post) {
         return;
-        // TODO handle later
+        // TODO - handle later
       }
 
-      const updatedPost = { ...post, comments: [addedComment, ...comments] };
-
-      if (!posts) {
-        return;
-        // TODO handle later. Do this guard check elswhere? mb higher up
-      }
-
-      setPosts([updatedPost, ...posts]);
+      updatePost(post);
       reset();
     } catch (err) {
       setResponseError(err);

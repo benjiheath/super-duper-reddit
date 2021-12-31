@@ -3,6 +3,7 @@ import { Dispatch } from './general';
 
 export interface PostsDispatchers {
   setPosts: Dispatch<PostWithComments[] | null>;
+  updatePost: Dispatch<PostWithComments>;
 }
 
 export interface PostsState {
