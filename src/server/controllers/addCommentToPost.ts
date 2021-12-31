@@ -1,7 +1,8 @@
 import { RequestHandler } from 'express';
 import { DbTables } from '../../common/types/dbTypes';
 import { createPostSlugs } from '../../common/utils';
-import { dbQuery, dbComments } from './../utils/dbQueries';
+import { appendCommentsAndSlugsToPost } from '../utils/misc';
+import { dbQuery, dbComments, dbPosts } from './../utils/dbQueries';
 
 declare module 'express-session' {
   interface SessionData {
@@ -13,13 +14,14 @@ export const addCommentToPost: RequestHandler = async (req, res, next) => {
   try {
     const { creator_user_id, post_id, body, creator_username } = req.body;
 
-    const [comment] = await dbComments.insertRow({ creator_user_id, creator_username, post_id, body });
+    await dbComments.insertRow({ creator_user_id, creator_username, post_id, body });
 
-    console.log(comment);
+    const [updatedPost] = await dbPosts.selectAll({ whereConditions: `id = '${post_id}'` });
+    const comments = await dbComments.selectAll({ whereConditions: `post_id = '${post_id}'` });
 
-    // const postWithCommentsPropertyAppended = { ...post, comments: [], urlSlugs };
+    const updatedPostWithComments = appendCommentsAndSlugsToPost(updatedPost, comments);
 
-    res.status(200).send({ status: 'posted successfully', comment });
+    res.status(200).send({ status: 'posted successfully', post: updatedPostWithComments });
   } catch (err) {
     console.error(err);
   }
