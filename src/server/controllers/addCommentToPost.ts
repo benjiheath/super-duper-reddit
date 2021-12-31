@@ -17,7 +17,10 @@ export const addCommentToPost: RequestHandler = async (req, res, next) => {
     await dbComments.insertRow({ creator_user_id, creator_username, post_id, body });
 
     const [updatedPost] = await dbPosts.selectAll({ whereConditions: `id = '${post_id}'` });
-    const comments = await dbComments.selectAll({ whereConditions: `post_id = '${post_id}'` });
+    const comments = await dbComments.selectAll({
+      whereConditions: `post_id = '${post_id}'`,
+      orderBy: 'updated_at',
+    });
 
     const updatedPostWithComments = appendCommentsAndSlugsToPost(updatedPost, comments);
 
