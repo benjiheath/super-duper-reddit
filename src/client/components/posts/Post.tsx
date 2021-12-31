@@ -1,12 +1,45 @@
-import { Divider, Heading, Text, Textarea, VStack } from '@chakra-ui/react';
+import { Box, Divider, Heading, HeadingProps, Text, Textarea, VStack } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { DbComment } from '../../../common/types/dbTypes';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
+import { PostedBy } from '../../pages/Posts';
+import { primaryColors } from '../../theme';
 import { PostProps } from '../../types/posts';
 import FormTextArea from '../generic/FormTextArea';
 import PageBox from '../generic/PageBox';
+
+interface PostTitleProps {
+  title: string;
+  contentUrl: string;
+}
+
+const PostTitle = (props: PostTitleProps) => {
+  const { title, contentUrl } = props;
+
+  const linkUrl = contentUrl ? `//${contentUrl}` : window.location.href;
+  const headingStyles: HeadingProps = contentUrl
+    ? { as: 'h3', mb: 2, _hover: { color: 'prim.800' }, transition: '0.2s' }
+    : { as: 'h3' };
+
+  return (
+    <a href={linkUrl} target='_blank' role='group'>
+      <Heading {...headingStyles}>{title}</Heading>
+      {contentUrl ? (
+        <Box
+          h={1.5}
+          bg='prim.100'
+          w='20%'
+          mb={2}
+          borderRadius={2}
+          _groupHover={{ width: '25%', bg: 'prim.800' }}
+          transition='0.2s'
+        />
+      ) : null}
+    </a>
+  );
+};
 
 const PostMain = (props: PostProps) => {
   const { post } = props;
@@ -20,17 +53,13 @@ const PostMain = (props: PostProps) => {
     updated_at,
     current_status,
     creator_username,
+    content_url,
   } = post;
 
   return (
     <VStack alignItems='start' width='100%'>
-      <Heading as='h3'>{title}</Heading>
-      <span>
-        {created_at} * by{' '}
-        <Text color='prim.800' display='inline-block' fontWeight='700'>
-          {creator_username}
-        </Text>
-      </span>
+      <PostTitle title={title} contentUrl={content_url} />
+      <PostedBy date={post.created_at} creatorUsername={post.creator_username} />
       <Text outline='1px solid' outlineColor='prim.200' p='10px 16px' w='100%' borderRadius={6}>
         {body}
       </Text>

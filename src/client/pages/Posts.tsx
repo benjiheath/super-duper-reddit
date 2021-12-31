@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Flex, HStack, Text, VStack, Link as ChakraLink } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import { NavBar } from '../components/homepage';
@@ -9,16 +9,51 @@ import { useGlobalUserContext } from '../contexts/user/GlobalUserContext';
 import { PostProps } from '../types/posts';
 import { axiosRequest } from '../utils/axiosMethods';
 
+interface PostedByProps {
+  date: string;
+  creatorUsername: string;
+}
+
+export const PostedBy = (props: PostedByProps) => {
+  const { date, creatorUsername } = props;
+
+  const parsedDate = new Date(Date.parse(date)).toISOString();
+
+  return (
+    <Flex>
+      <Text mr={2}>submitted {parsedDate} by * </Text>
+      <Text color='prim.800' display='inline-block' fontWeight='700'>
+        {creatorUsername}
+      </Text>
+    </Flex>
+  );
+};
+
 const PostCardDetails = (props: PostProps) => {
   const { post } = props;
   const date = new Date(Date.parse(post.created_at)).toISOString();
 
+  console.log(post.content_url);
+
+  const contentUrl = post.content_url ? (
+    <ChakraLink
+      href={`//${post.content_url}`}
+      target='_blank'
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+      style={{}}
+    >
+      {post.title}
+    </ChakraLink>
+  ) : (
+    post.title
+  );
+
   return (
     <Flex flexDir='column'>
-      <Text>{post.title}</Text>
-      <Text>
-        submitted {date} * by {post.creator_username}
-      </Text>
+      <Text>{contentUrl}</Text>
+      <PostedBy date={post.created_at} creatorUsername={post.creator_username} />
       <Text>{post.comments.length} comments</Text>
     </Flex>
   );
