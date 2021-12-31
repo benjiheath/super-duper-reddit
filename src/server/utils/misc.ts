@@ -1,4 +1,13 @@
-import { PostsColumn, CommentsColumn, UserColumn, DbPost, DbComment } from './../../common/types/dbTypes';
+import { createPostSlugs } from '../../common/utils';
+import {
+  PostsColumn,
+  CommentsColumn,
+  UserColumn,
+  DbPost,
+  DbComment,
+  PostWithComments,
+} from './../../common/types/dbTypes';
+
 export const createSQLWhereConditionsFromList = <T>(
   list: T[],
   valueA: PostsColumn | CommentsColumn | UserColumn,
@@ -30,4 +39,14 @@ export const handlePostRemovedStatus = <T extends DbComment | DbPost>(postsOrCom
   });
 
   return cleanedPostsOrComments;
+};
+
+export const appendCommentsAndSlugsToPost = (post: DbPost, comments: DbComment[]) => {
+  const urlSlugs = createPostSlugs(post.id, post.title);
+  const postComments = comments.filter((comment) => comment.post_id === post.id);
+  return {
+    ...post,
+    comments: postComments,
+    urlSlugs,
+  };
 };

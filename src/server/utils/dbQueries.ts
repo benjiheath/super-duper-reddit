@@ -26,6 +26,7 @@ interface DbQueryMethods<T, U> {
     limit?: number;
     orderBy?: U;
     direction?: 'ASC' | 'DESC';
+    sanitize?: boolean;
   }) => Promise<T[]>;
   findValue: (columnOfInterest: U) => {
     where: (column: U) => { equals: (value: string) => Promise<Partial<T>> };
@@ -46,24 +47,28 @@ type DbQueryOverload = {
 export const dbQuery: DbQueryOverload = (table: DbTables) => {
   return {
     selectAll: async (options) => {
-      const whereConditions = options?.whereConditions ? `WHERE ${options.whereConditions}` : '';
-      const limitClause = options?.limit ? `LIMIT ${options.limit}` : '';
-      const orderByClause = options?.orderBy ? `ORDER BY ${options.orderBy}` : '';
-      const sortDirection = options?.direction ? `${options.direction}` : 'DESC';
+      try {
+        const whereConditions = options?.whereConditions ? `WHERE ${options.whereConditions}` : '';
+        const limitClause = options?.limit ? `LIMIT ${options.limit}` : '';
+        const sortDirection = options?.direction ? `${options.direction}` : 'DESC';
+        const orderByClause = options?.orderBy ? `ORDER BY ${options.orderBy} ${sortDirection}` : '';
 
-      const { rows } = await pool.query(
-        `SELECT * FROM ${table} ${whereConditions} ${limitClause} ${orderByClause} ${sortDirection}`
-      );
+        const { rows } = await pool.query(
+          `SELECT * FROM ${table} ${whereConditions} ${limitClause} ${orderByClause}`
+        );
 
-      // if current_status = removed, overwrite obj 'body' value
-      const removedStatusHandled = handlePostRemovedStatus(rows);
+        // if current_status = removed, overwrite obj 'body' value
+        const removedStatusHandled = handlePostRemovedStatus(rows);
 
-      // if no items has current_status = removed, simply return rows
-      if (!removedStatusHandled) {
-        return rows;
+        // if no items has current_status = removed, simply return rows
+        if (!removedStatusHandled) {
+          return rows;
+        }
+
+        return removedStatusHandled;
+      } catch (err) {
+        throw err;
       }
-
-      return removedStatusHandled;
     },
     findValue: (columnOfInterest) => {
       return {
