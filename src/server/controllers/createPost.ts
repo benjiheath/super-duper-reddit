@@ -2,6 +2,7 @@ import { dbQuery, dbUsers } from './../utils/dbQueries';
 import { RequestHandler } from 'express';
 import { DbTables } from '../../common/types/dbTypes';
 import { createPostSlugs } from '../../common/utils';
+import { FieldError } from '../utils/errors';
 
 declare module 'express-session' {
   interface SessionData {
@@ -26,6 +27,8 @@ export const createPost: RequestHandler = async (req, res, next) => {
 
     res.status(200).send({ status: 'posted successfully', post: postWithCommentsPropertyAppended });
   } catch (err) {
-    console.error(err);
+    if (err instanceof FieldError) {
+      res.status(200).send(err.info);
+    }
   }
 };
