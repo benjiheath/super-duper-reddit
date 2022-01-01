@@ -1,13 +1,12 @@
-import { Box, Flex, HStack, Text, VStack, Link as ChakraLink } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
-import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Box, Flex, HStack, Link as ChakraLink, Text, VStack } from '@chakra-ui/react';
+import React from 'react';
+import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { NavBar } from '../components/homepage';
 import { NewPost } from '../components/posts';
 import Post from '../components/posts/Post';
 import { usePostsContext } from '../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../contexts/user/GlobalUserContext';
 import { PostProps } from '../types/posts';
-import { axiosRequest } from '../utils/axiosMethods';
 
 interface PostedByProps {
   date: string;

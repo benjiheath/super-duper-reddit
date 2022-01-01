@@ -6,10 +6,10 @@ const usePostsReducer = (): [PostsState, PostsDispatchers] => {
   const [state, dispatch] = useReducer(postsReducer, initState);
 
   const dispatchers: PostsDispatchers = {
-    setPosts: value => {
+    setPosts: (value) => {
       dispatch({ type: PostsActions.SET_POSTS, payload: value });
     },
-    updatePost: value => {
+    updatePost: (value) => {
       dispatch({ type: PostsActions.UPDATE_POST, payload: value });
     },
   };

@@ -1,5 +1,5 @@
 import { PostsState } from '../../types/posts';
-import { PostWithComments, DbComment } from '../../../server/types/dbTypes';
+import { PostType } from './../../../common/types/entities';
 
 export enum PostsActions {
   SET_POSTS = 'SET_POSTS',
@@ -7,8 +7,8 @@ export enum PostsActions {
 }
 
 type ACTIONTYPE =
-  | { type: PostsActions.SET_POSTS; payload: PostWithComments[] | null }
-  | { type: PostsActions.UPDATE_POST; payload: PostWithComments };
+  | { type: PostsActions.SET_POSTS; payload: PostType[] | null }
+  | { type: PostsActions.UPDATE_POST; payload: PostType };
 
 export const initState: PostsState = {
   posts: null,
