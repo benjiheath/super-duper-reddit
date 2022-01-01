@@ -1,11 +1,10 @@
-import { FormControl, FormLabel, Input, Textarea, VStack } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, useToast, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { createPostSlugs } from '../../../common/utils';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
-import { Posts } from '../../pages';
 import { CreatePostFields } from '../../types/posts';
 import { axiosRequest } from '../../utils/axiosMethods';
 import ButtonSubmit from '../generic/ButtonSubmit';
@@ -22,14 +21,16 @@ const CreatePost = () => {
     reset,
     handleSubmit,
     setError,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm();
-  const [loading, setLoading] = useState(false);
+  const toast = useToast({
+    containerStyle: {
+      border: '20px solid red !important',
+    },
+  });
 
   const onSubmit = async (data: CreatePostFields): Promise<void> => {
     const newPostData = { creator_user_id: userID, creator_username: username, ...data };
-
-    setLoading(true);
 
     try {
       const { post } = await axiosRequest('post', 'posts', newPostData);
@@ -45,9 +46,15 @@ const CreatePost = () => {
         setPosts([post, ...posts]);
       }
 
-      history.push({ pathname: `${postSlugs}` });
+      toast({
+        position: 'top',
+        title: 'Posted successfully',
+        duration: 1200,
+        status: 'success',
+        variant: 'subtle',
+      });
 
-      setLoading(false);
+      history.push({ pathname: `${postSlugs}` });
     } catch (err) {
       setResponseError(err);
     }
@@ -80,7 +87,7 @@ const CreatePost = () => {
             <FormTextArea register={register} />
           </FormControl>
           {errors.body && <AlertPop title={errors.body.message} />}
-          <ButtonSubmit text='Submit' />
+          <ButtonSubmit text='Submit' isLoading={isSubmitting} />
         </VStack>
       </form>
     </FormBox>

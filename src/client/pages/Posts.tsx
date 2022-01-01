@@ -31,13 +31,11 @@ export const PostedBy = (props: PostedByProps) => {
 
 const PostCardDetails = (props: PostProps) => {
   const { post } = props;
-  const date = new Date(Date.parse(post.created_at)).toISOString();
+  const date = new Date(Date.parse(post.createdAt)).toISOString();
 
-  console.log(post.content_url);
-
-  const contentUrl = post.content_url ? (
+  const contentUrl = post.contentUrl ? (
     <ChakraLink
-      href={`//${post.content_url}`}
+      href={`//${post.contentUrl}`}
       target='_blank'
       onClick={(e) => {
         e.stopPropagation();
@@ -85,8 +83,7 @@ const PostCard = (props: PostProps) => {
 
 const Posts = () => {
   const match = useRouteMatch();
-  const { setResponseError } = useGlobalUserContext();
-  const { posts, setPosts } = usePostsContext();
+  const { posts } = usePostsContext();
 
   return (
     <Switch>
