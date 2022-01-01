@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { DbTables, UserColumn } from '../../common/types/dbTypes';
+import { DbTables, UserColumn } from '../types/dbTypes';
 import { config } from '../config';
 import { dbQuery, dbUsers } from '../utils/dbQueries';
 import { FieldError } from '../utils/errors';
@@ -23,8 +23,9 @@ export const forgotPasswordHandler: RequestHandler = async (req, res, _): Promis
             .findValue('email')
             .where(`${idType as UserColumn}`)
             .equals(id);
+
     const link = `<a href='${config.urls.client.dev}/reset-password/${token}' target="_blank">Reset password</a>`;
-    await sendRecEmail_test(targetEmail, link);
+    await sendRecEmail_test(targetEmail as string, link);
 
     res.status(200).send({ status: 'ok', message: 'Email sent!', sentTo: targetEmail });
   } catch (error) {

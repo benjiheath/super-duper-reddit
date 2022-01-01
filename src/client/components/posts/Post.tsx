@@ -52,18 +52,19 @@ const PostMain = (props: PostProps) => {
     body,
     title,
     comments,
-    creator_user_id,
-    created_at,
-    updated_at,
-    current_status,
-    creator_username,
-    content_url,
+    creatorUserId,
+    creatorUsername,
+    currentStatus,
+    updatedAt,
+    createdAt,
+    contentUrl,
+    urlSlugs,
   } = post;
 
   return (
     <VStack alignItems='start' width='100%'>
-      <PostTitle title={title} contentUrl={content_url} />
-      <PostedBy date={post.created_at} creatorUsername={post.creator_username} />
+      <PostTitle title={title} contentUrl={contentUrl} />
+      <PostedBy date={post.createdAt} creatorUsername={post.creatorUsername} />
       <Text outline='1px dotted' outlineColor='prim.200' p='10px 16px' w='100%' borderRadius={6}>
         {body}
       </Text>
@@ -124,7 +125,7 @@ const CommentBox = (props: PostProps) => {
 };
 
 interface CommentProps {
-  comments: DbComment[];
+  comments: CommentType[];
 }
 
 const Comments = (props: CommentProps) => {
@@ -136,7 +137,7 @@ const Comments = (props: CommentProps) => {
 
   return (
     <>
-      {comments.map(comment => (
+      {comments.map((comment) => (
         <span>{comment.body}</span>
       ))}
     </>
@@ -151,7 +152,7 @@ const Post = () => {
     return <Text>Error retrieving posts</Text>;
   }
 
-  const [post] = posts?.filter(post => post.id.includes(id));
+  const [post] = posts?.filter((post) => post.id.includes(id));
 
   return (
     <PageBox>

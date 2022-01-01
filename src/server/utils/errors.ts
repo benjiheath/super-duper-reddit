@@ -1,4 +1,4 @@
-import { PostsColumn, CommentsColumn, UserColumn } from '../../common/types/dbTypes';
+import { PostsColumn, CommentsColumn, UserColumn } from '../types/dbTypes';
 import { FieldErrorData } from '../../common/types/forms';
 
 export enum ErrorTypes {

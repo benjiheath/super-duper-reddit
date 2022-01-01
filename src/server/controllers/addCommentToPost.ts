@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { DbTables } from '../../common/types/dbTypes';
+import { DbTables } from '../types/dbTypes';
 import { createPostSlugs } from '../../common/utils';
 import { appendCommentsAndSlugsToPost } from '../utils/misc';
 import { dbQuery, dbComments, dbPosts } from './../utils/dbQueries';

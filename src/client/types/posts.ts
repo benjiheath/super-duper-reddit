@@ -1,47 +1,22 @@
-import { PostWithComments } from './../../common/types/dbTypes';
+import { PostType, CommentType } from '../../common/types/entities';
+import { PostWithComments } from '../../server/types/dbTypes';
 import { Dispatch } from './general';
 
 export interface PostsDispatchers {
-  setPosts: Dispatch<PostWithComments[] | null>;
-  updatePost: Dispatch<PostWithComments>;
+  setPosts: Dispatch<PostType[] | null>;
+  updatePost: Dispatch<PostType>;
 }
 
 export interface PostsState {
-  posts: PostWithComments[] | null;
+  posts: PostType[] | null;
 }
 
 export type PostsCtx = PostsDispatchers & PostsState;
 export type usePostsCtx = () => PostsCtx;
 
 export interface PostProps {
-  post: PostWithComments;
+  post: PostType;
 }
 
-export interface Post {
-  id: string;
-  title: string;
-  body: string;
-  contentUrl: string;
-  createdAt: string;
-  updatedAt: string;
-  creatorUserID: string;
-  creatorUsername: string;
-  currentStatus: 'normal' | 'removed';
-  urlSlugs: string;
-  comments: Comment[];
-}
-
-export interface Comment {
-  id: string;
-  postID: string;
-  parentPostID: string;
-  body: string;
-  createdAt: string;
-  updatedAt: string;
-  creatorUserID: string;
-  creatorUsername: string;
-  currentStatus: 'normal' | 'removed';
-}
-
-export type CreatePostFields = Pick<Post, 'title' | 'body'>;
-export type CreateCommentFields = Pick<Comment, 'body'>;
+export type CreatePostFields = Pick<PostType, 'title' | 'body'>;
+export type CreateCommentFields = Pick<CommentType, 'body'>;

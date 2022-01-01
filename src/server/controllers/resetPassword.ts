@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { RequestHandler } from 'express';
-import { DbTables } from '../../common/types/dbTypes';
+import { DbTables } from '../types/dbTypes';
 import { dbQuery, dbUsers } from './../utils/dbQueries';
 
 declare module 'express-session' {

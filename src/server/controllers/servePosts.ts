@@ -14,7 +14,7 @@ export const servePosts: RequestHandler = async (req, res, _): Promise<void> => 
     const comments = await dbComments.selectAll({ whereConditions, orderBy: 'updated_at' });
 
     // combining data into list where each post has its comments included
-    const postsIncludingComments = posts.map(post => appendCommentsAndSlugsToPost(post, comments));
+    const postsIncludingComments = posts.map((post) => appendCommentsAndSlugsToPost(post, comments));
 
     res.status(200).send({ posts: postsIncludingComments });
   } catch (err) {

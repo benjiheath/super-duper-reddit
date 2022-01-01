@@ -1,5 +1,5 @@
 import { PostsState } from '../../types/posts';
-import { PostWithComments, DbComment } from './../../../common/types/dbTypes';
+import { PostWithComments, DbComment } from '../../../server/types/dbTypes';
 
 export enum PostsActions {
   SET_POSTS = 'SET_POSTS',
@@ -20,7 +20,9 @@ export const postsReducer = (state: PostsState, action: ACTIONTYPE) => {
       return { ...state, posts: action.payload };
 
     case PostsActions.UPDATE_POST:
-      const updatedPosts = state.posts!.map(post => (post.id === action.payload.id ? action.payload : post));
+      const updatedPosts = state.posts!.map((post) =>
+        post.id === action.payload.id ? action.payload : post
+      );
       return { ...state, posts: updatedPosts };
 
     default:

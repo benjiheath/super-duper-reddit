@@ -1,3 +1,5 @@
+import _ from 'lodash';
+import { CommentType, PostType } from '../../common/types/entities';
 import { createPostSlugs } from '../../common/utils';
 import {
   PostsColumn,
@@ -6,7 +8,7 @@ import {
   DbPost,
   DbComment,
   PostWithComments,
-} from './../../common/types/dbTypes';
+} from '../types/dbTypes';
 
 export const createSQLWhereConditionsFromList = <T>(
   list: T[],
@@ -23,7 +25,7 @@ export const createSQLWhereConditionsFromList = <T>(
   return conditions;
 };
 
-export const handlePostRemovedStatus = <T extends DbComment | DbPost>(postsOrComments: T[]): T[] => {
+export const handlePostRemovedStatus = <T extends CommentType | PostType>(postsOrComments: T[]): T[] => {
   if (postsOrComments.length === 0) {
     return postsOrComments;
   }
@@ -31,7 +33,7 @@ export const handlePostRemovedStatus = <T extends DbComment | DbPost>(postsOrCom
   const cleanedPostsOrComments = postsOrComments.map((postOrComment) => {
     const contentType = 'title' in postOrComment ? 'post' : 'comment';
 
-    if (postOrComment.current_status === 'removed') {
+    if (postOrComment.currentStatus === 'removed') {
       return { ...postOrComment, body: `User has removed this ${contentType}` };
     } else {
       return postOrComment;
@@ -41,12 +43,17 @@ export const handlePostRemovedStatus = <T extends DbComment | DbPost>(postsOrCom
   return cleanedPostsOrComments;
 };
 
-export const appendCommentsAndSlugsToPost = (post: DbPost, comments: DbComment[]) => {
+export const appendCommentsAndSlugsToPost = (post: PostType, comments: CommentType[]) => {
   const urlSlugs = createPostSlugs(post.id, post.title);
-  const postComments = comments.filter((comment) => comment.post_id === post.id);
+  const postComments = comments.filter((comment) => comment.postId === post.id);
   return {
     ...post,
     comments: postComments,
     urlSlugs,
   };
+};
+
+export const sanitizeKeys = <T extends DbPost | DbComment>(postOrComment: T): T => {
+  const camelCased = _.mapKeys(postOrComment, (value, key) => _.camelCase(key));
+  return camelCased as unknown as T;
 };

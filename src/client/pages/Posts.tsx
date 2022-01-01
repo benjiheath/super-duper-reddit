@@ -53,7 +53,7 @@ const PostCardDetails = (props: PostProps) => {
   return (
     <Flex flexDir='column'>
       <Text>{contentUrl}</Text>
-      <PostedBy date={post.created_at} creatorUsername={post.creator_username} />
+      <PostedBy date={post.createdAt} creatorUsername={post.creatorUsername} />
       <Text>{post.comments.length} comments</Text>
     </Flex>
   );
@@ -96,7 +96,7 @@ const Posts = () => {
           <VStack spacing={6}>
             {posts
               ? posts
-                  .filter((post) => post.current_status !== 'removed')
+                  .filter((post) => post.currentStatus !== 'removed')
                   .map((post) => <PostCard post={post} />)
               : null}
           </VStack>

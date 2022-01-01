@@ -1,4 +1,5 @@
-import { handlePostRemovedStatus } from './misc';
+import { UserType } from './../../common/types/entities';
+import { handlePostRemovedStatus, sanitizeKeys } from './misc';
 import {
   CommentsColumn,
   DbComment,
@@ -7,9 +8,10 @@ import {
   DbUser,
   PostsColumn,
   UserColumn,
-} from '../../common/types/dbTypes';
+} from '../types/dbTypes';
 import { pool } from '../db';
 import { ErrorTypes, FieldError, generateErrorType } from './errors';
+import { CommentType, PostType } from '../../common/types/entities';
 
 type updateFieldOverload<T> = {
   (field: T, conditionalValue: string): {
@@ -20,28 +22,28 @@ type updateFieldOverload<T> = {
   };
 };
 
-interface DbQueryMethods<T, U> {
+interface DbQueryMethods<T, U, V> {
   selectAll: (options?: {
     whereConditions?: string | string[];
     limit?: number;
     orderBy?: U;
     direction?: 'ASC' | 'DESC';
     sanitize?: boolean;
-  }) => Promise<T[]>;
+  }) => Promise<V[]>;
   findValue: (columnOfInterest: U) => {
     where: (column: U) => { equals: (value: string) => Promise<Partial<T>> };
   };
   findValues: (columnsOfInterest: U[]) => {
     where: (column: U) => { equals: (value: string) => Promise<Partial<T>> };
   };
-  insertRow: (options: Partial<T>) => Promise<T[]>;
+  insertRow: (options: Partial<T>) => Promise<V[]>;
   updateField: updateFieldOverload<U>;
 }
 
 type DbQueryOverload = {
-  (table: DbTables.users): DbQueryMethods<DbUser, UserColumn>;
-  (table: DbTables.posts): DbQueryMethods<DbPost, PostsColumn>;
-  (table: DbTables.comments): DbQueryMethods<DbComment, CommentsColumn>;
+  (table: DbTables.users): DbQueryMethods<DbUser, UserColumn, UserType>;
+  (table: DbTables.posts): DbQueryMethods<DbPost, PostsColumn, PostType>;
+  (table: DbTables.comments): DbQueryMethods<DbComment, CommentsColumn, CommentType>;
 };
 
 export const dbQuery: DbQueryOverload = (table: DbTables) => {
@@ -57,13 +59,11 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
           `SELECT * FROM ${table} ${whereConditions} ${limitClause} ${orderByClause}`
         );
 
-        // if current_status = removed, overwrite obj 'body' value
-        const removedStatusHandled = handlePostRemovedStatus(rows);
+        // camelCase keys for client
+        const sanitizedRows = rows.map((row) => sanitizeKeys(row));
 
-        // if no items has current_status = removed, simply return rows
-        if (!removedStatusHandled) {
-          return rows;
-        }
+        // if current_status = removed, overwrite obj 'body' value
+        const removedStatusHandled = handlePostRemovedStatus(sanitizedRows);
 
         return removedStatusHandled;
       } catch (err) {
@@ -136,7 +136,9 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
           `INSERT INTO ${table} (${parsedColumns}) VALUES (${valueIDs}) RETURNING *`,
           values
         );
-        return rows;
+        const sanitizedRows = rows.map((row) => sanitizeKeys(row));
+
+        return sanitizedRows;
       } catch (err: any) {
         const field = err.detail.substring(5, err.detail.indexOf(')'));
         const message = `Sorry, that ${field} is already taken`;

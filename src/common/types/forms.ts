@@ -1,4 +1,4 @@
-import { PostWithComments, DbComment } from './dbTypes';
+import { PostType } from './entities';
 type Auth = { auth: boolean };
 
 export type FieldErrorData = { field: string; message: string };
@@ -25,9 +25,9 @@ export interface ServerResponse extends StatusAndMessage {
   sentTo?: string;
   username?: string;
   userID?: string | null;
-  post?: PostWithComments;
+  post?: PostType;
 }
 
 export interface GetPostsResponse {
-  posts: PostWithComments[];
+  posts: PostType[];
 }
