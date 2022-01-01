@@ -1,12 +1,11 @@
-import { Box, Divider, Flex, Heading, HeadingProps, Text, Textarea, VStack } from '@chakra-ui/react';
+import { Box, Divider, Heading, HeadingProps, Text, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-import { DbComment } from '../../../common/types/dbTypes';
+import { CommentType, PostType } from '../../../common/types/entities';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { PostedBy } from '../../pages/Posts';
-import { primaryColors } from '../../theme';
 import { CreateCommentFields, PostProps } from '../../types/posts';
 import { axiosRequest } from '../../utils/axiosMethods';
 import ButtonSubmit from '../generic/ButtonSubmit';
@@ -14,31 +13,30 @@ import FormTextArea from '../generic/FormTextArea';
 import PageBox from '../generic/PageBox';
 import AlertPop from '../register/AlertPop';
 
-interface PostTitleProps {
-  title: string;
-  contentUrl: string;
-}
+type PostTitleProps = Pick<PostType, 'title' | 'contentUrl'>;
 
 const PostTitle = (props: PostTitleProps) => {
   const { title, contentUrl } = props;
 
   const linkUrl = contentUrl ? `//${contentUrl}` : window.location.href;
   const headingStyles: HeadingProps = contentUrl
-    ? { as: 'h3', mb: 2, _hover: { color: 'prim.800' }, transition: '0.1s' }
-    : { as: 'h3' };
+    ? { mb: 2, _groupHover: { color: 'prim.800' }, transition: '0.4s' }
+    : {};
 
   return (
     <a href={linkUrl} target='_blank' role='group'>
-      <Heading {...headingStyles}>{title}</Heading>
+      <Heading as='h3' fontSize={26} {...headingStyles}>
+        {title}
+      </Heading>
       {contentUrl ? (
         <Box
-          h={1.5}
+          h={1}
           bg='prim.100'
           w='20%'
           mb={2}
           borderRadius={2}
-          _groupHover={{ width: '25%', bg: 'prim.800' }}
-          transition='0.2s'
+          _groupHover={{ width: '25%', bg: 'prim.800', ml: 1 }}
+          transition='0.4s'
         />
       ) : null}
     </a>
