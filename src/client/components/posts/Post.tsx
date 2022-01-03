@@ -74,9 +74,9 @@ const PostMain = (props: PostProps) => {
 
 const CommentBox = (props: PostProps) => {
   const { post } = props;
-  const { id: postID, comments } = post;
+  const { id: postID } = post;
   const { username, userID, setResponseError } = useGlobalUserContext();
-  const { posts, updatePost } = usePostsContext();
+  const { setPost } = usePostsContext();
   const {
     register,
     reset,
@@ -84,7 +84,6 @@ const CommentBox = (props: PostProps) => {
     setError,
     formState: { errors, isValid, isSubmitting },
   } = useForm({ mode: 'onChange' });
-  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: CreateCommentFields): Promise<void> => {
     try {
@@ -144,14 +143,20 @@ const Comments = (props: CommentProps) => {
 };
 
 const Post = () => {
-  const { id } = useParams() as { id: string };
-  const { posts } = usePostsContext();
+  const { postSlugs } = useParams() as { postSlugs: string };
+  const { postsLoading, post, getPost, setPost } = usePostsContext();
 
-  if (!posts) {
-    return <Text>Error retrieving posts</Text>;
+  React.useEffect(() => {
+    if (!post) getPost(postSlugs);
+
+    return () => {
+      setPost(null);
+    };
+  }, []);
+
+  if (postsLoading || !post) {
+    return <SrSpinner />;
   }
-
-  const [post] = posts?.filter((post) => post.id.includes(id));
 
   return (
     <PageBox>

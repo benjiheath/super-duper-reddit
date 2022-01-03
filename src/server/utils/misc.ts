@@ -43,13 +43,11 @@ export const handlePostRemovedStatus = <T extends CommentType | PostType>(postsO
   return cleanedPostsOrComments;
 };
 
-export const appendCommentsAndSlugsToPost = (post: PostType, comments: CommentType[]) => {
-  const urlSlugs = createPostSlugs(post.id, post.title);
+export const appendCommentsToPost = (post: PostType, comments: CommentType[]) => {
   const postComments = comments.filter((comment) => comment.postId === post.id);
   return {
     ...post,
     comments: postComments,
-    urlSlugs,
   };
 };
 

@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import { DbTables } from '../types/dbTypes';
 import { createPostSlugs } from '../../common/utils';
-import { appendCommentsAndSlugsToPost } from '../utils/misc';
+import { appendCommentsToPost } from '../utils/misc';
 import { dbQuery, dbComments, dbPosts } from './../utils/dbQueries';
 
 declare module 'express-session' {
@@ -22,7 +22,7 @@ export const addCommentToPost: RequestHandler = async (req, res, next) => {
       orderBy: 'updated_at',
     });
 
-    const updatedPostWithComments = appendCommentsAndSlugsToPost(updatedPost, comments);
+    const updatedPostWithComments = appendCommentsToPost(updatedPost, comments);
 
     res.status(200).send({ status: 'posted successfully', post: updatedPostWithComments });
   } catch (err) {

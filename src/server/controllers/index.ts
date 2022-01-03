@@ -9,6 +9,7 @@ import { sendSessionStatus } from './sendSessionStatus';
 import { forgotPasswordHandler } from './forgotPassword';
 import { resetPasswordHandler } from './resetPassword';
 import { createPost } from './createPost';
+import { servePost } from './servePost';
 
 export {
   login,
@@ -22,4 +23,5 @@ export {
   resetPasswordHandler,
   resetPasswordTokenChecker,
   addCommentToPost,
+  servePost,
 };

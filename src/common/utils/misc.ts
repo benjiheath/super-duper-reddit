@@ -7,5 +7,5 @@ export const createPostSlugs = (id: string, title: string) => {
   const shortenedPostId = id.slice(0, 8);
   const underscoredTitle = title.replace(/ /g, '_').toLowerCase();
 
-  return `${shortenedPostId}/${[underscoredTitle]}`;
+  return `${shortenedPostId}-${[underscoredTitle]}`;
 };

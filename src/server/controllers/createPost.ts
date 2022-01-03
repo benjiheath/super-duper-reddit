@@ -22,9 +22,13 @@ export const createPost: RequestHandler = async (req, res, next) => {
 
     const urlSlugs = createPostSlugs(post.id, post.title);
 
-    const postWithCommentsPropertyAppended = { ...post, comments: [], urlSlugs };
+    const postWithUrlSlugs = await dbPosts
+      .updateField('url_slugs', urlSlugs)
+      .whereColumnMatchesValue('id', post.id);
 
-    res.status(200).send({ status: 'posted successfully', post: postWithCommentsPropertyAppended });
+    const postWithCommentsPropertyAppended = { ...postWithUrlSlugs, comments: [] };
+
+    res.status(200).send({ post: postWithCommentsPropertyAppended });
   } catch (err) {
     if (err instanceof FieldError) {
       res.status(200).send(err.info);

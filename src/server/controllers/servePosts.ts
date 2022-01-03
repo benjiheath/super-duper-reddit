@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import { FieldError } from '../utils/errors';
 import { dbComments, dbPosts } from './../utils/dbQueries';
-import { appendCommentsAndSlugsToPost, createSQLWhereConditionsFromList } from './../utils/misc';
+import { appendCommentsToPost, createSQLWhereConditionsFromList } from './../utils/misc';
 
 export const servePosts: RequestHandler = async (req, res, _): Promise<void> => {
   try {
@@ -14,12 +14,10 @@ export const servePosts: RequestHandler = async (req, res, _): Promise<void> => 
     const comments = await dbComments.selectAll({ whereConditions, orderBy: 'updated_at' });
 
     // combining data into list where each post has its comments included
-    const postsIncludingComments = posts.map((post) => appendCommentsAndSlugsToPost(post, comments));
+    const postsIncludingComments = posts.map((post) => appendCommentsToPost(post, comments));
 
-    res.status(200).send({ posts: postsIncludingComments });
+    res.status(200).send(postsIncludingComments);
   } catch (err) {
-    if (err instanceof FieldError) {
-      res.status(200).send(err.info);
-    }
+    res.status(200).send(err);
   }
 };

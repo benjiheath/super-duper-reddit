@@ -53,7 +53,7 @@ const CreatePost = () => {
         variant: 'subtle',
       });
 
-      history.push({ pathname: `${postSlugs}` });
+      history.push({ pathname: `${post.urlSlugs}` });
     } catch (err) {
       setResponseError(err);
     }

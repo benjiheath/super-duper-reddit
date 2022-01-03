@@ -1,11 +1,11 @@
 import { Box, Flex, HStack, Link as ChakraLink, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
+import SrSpinner from '../components/generic/SrSpinner';
 import { NavBar } from '../components/homepage';
 import { NewPost } from '../components/posts';
 import Post from '../components/posts/Post';
 import { usePostsContext } from '../contexts/posts/PostsContext';
-import { useGlobalUserContext } from '../contexts/user/GlobalUserContext';
 import { PostProps } from '../types/posts';
 
 interface PostedByProps {
@@ -84,14 +84,33 @@ const PostCard = (props: PostProps) => {
 
 const Posts = () => {
   const match = useRouteMatch();
-  const { posts } = usePostsContext();
+  const { posts, postsLoading, getAndSetPosts } = usePostsContext();
+
+  React.useEffect(() => {
+    getAndSetPosts();
+  }, []);
+
+  if (postsLoading) {
+    return (
+      <>
+        <NavBar />
+        <SrSpinner />;
+      </>
+    );
+  }
 
   return (
-    <Switch>
-      <Flex flexDir='column'>
-        <NavBar />
-        <Route exact path={`${match.path}/`}>
-          <VStack spacing={6}>
+    <Flex flexDir='column'>
+      <NavBar />
+      <Switch>
+        <Route exact path={`${match.path}/create`}>
+          <NewPost />
+        </Route>
+        <Route exact path='/posts/:postSlugs'>
+          <Post />
+        </Route>
+        <Route path={`${match.path}/`}>
+          <VStack spacing={2}>
             {posts
               ? posts
                   .filter((post) => post.currentStatus !== 'removed')
@@ -99,14 +118,8 @@ const Posts = () => {
               : null}
           </VStack>
         </Route>
-        <Route path='/posts/:id/:title'>
-          <Post />
-        </Route>
-        <Route path={`${match.path}/create`}>
-          <NewPost />
-        </Route>
-      </Flex>
-    </Switch>
+      </Switch>
+    </Flex>
   );
 };
 
