@@ -69,8 +69,10 @@ const PostCard = (props: PostProps) => {
         borderRadius={8}
         cursor='pointer'
         _hover={{
-          boxShadow: '0px 0px 1px 1px #c4c4c428',
+          boxShadow: '0px 0px 1px 1px #cfcfcf28',
         }}
+        bg='white'
+        transition='0.15s'
       >
         <span>votes</span>
         <Box>img</Box>
