@@ -1,5 +1,5 @@
 import { Box, Divider, Heading, HeadingProps, Text, VStack } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { CommentType, PostType } from '../../../common/types/entities';
