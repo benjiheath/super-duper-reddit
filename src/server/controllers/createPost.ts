@@ -1,8 +1,7 @@
 import { RequestHandler } from 'express';
 import { createPostSlugs } from '../../common/utils';
-import { DbTables } from '../types/dbTypes';
 import { FieldError } from '../utils/errors';
-import { dbQuery } from './../utils/dbQueries';
+import { dbPosts } from './../utils/dbQueries';
 
 declare module 'express-session' {
   interface SessionData {
@@ -14,7 +13,7 @@ export const createPost: RequestHandler = async (req, res, next) => {
   try {
     const { creator_user_id, creator_username, title, body } = req.body;
 
-    const [post] = await dbQuery(DbTables.posts).insertRow({
+    const [post] = await dbPosts.insertRow({
       creator_user_id,
       creator_username,
       title,

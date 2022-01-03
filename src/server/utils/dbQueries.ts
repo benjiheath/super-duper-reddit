@@ -13,12 +13,9 @@ import { pool } from '../db';
 import { ErrorTypes, FieldError, generateErrorType } from './errors';
 import { CommentType, PostType } from '../../common/types/entities';
 
-type updateFieldOverload<T> = {
+type updateFieldOverload<T, U> = {
   (field: T, conditionalValue: string): {
-    whereColumnMatchesValue: (column: T, conditionalValue: string) => Promise<void>;
-  };
-  (field: 'points', conditionalValue: number): {
-    whereColumnMatchesValue: (column: T, conditionalValue: number) => Promise<void>;
+    whereColumnMatchesValue: (column: T, conditionalValue: string) => Promise<U>;
   };
 };
 
@@ -37,7 +34,7 @@ interface DbQueryMethods<T, U, V> {
     where: (column: U) => { equals: (value: string) => Promise<Partial<T>> };
   };
   insertRow: (options: Partial<T>) => Promise<V[]>;
-  updateField: updateFieldOverload<U>;
+  updateField: updateFieldOverload<U, V>;
 }
 
 type DbQueryOverload = {
@@ -153,10 +150,14 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
     updateField: (field, value) => {
       return {
         whereColumnMatchesValue: async (column, conditionalValue) => {
-          await pool.query(`UPDATE ${table} SET ${field} = $1 WHERE ${column} = $2`, [
-            value,
-            conditionalValue,
-          ]);
+          const { rows } = await pool.query(
+            `UPDATE ${table} SET ${field} = $1 WHERE ${column} = $2 RETURNING *`,
+            [value, conditionalValue]
+          );
+
+          const [sanitizedRows] = rows.map((row) => sanitizeKeys(row));
+
+          return sanitizedRows;
         },
       };
     },
