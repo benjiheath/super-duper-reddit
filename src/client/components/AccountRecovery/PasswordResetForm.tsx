@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
-import { axiosRequest } from '../../utils/axiosMethods';
+import { axiosGET, axiosPATCH, axiosRequest } from '../../utils/axiosMethods';
 import AlertPop from '../register/AlertPop';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
+import { ServerResponse } from '../../../common/types/fetching';
 
 export default function PasswordResetForm() {
   const { logIn, setResponseError } = useGlobalUserContext();
@@ -18,8 +19,8 @@ export default function PasswordResetForm() {
 
   useEffect(() => {
     const checkToken = async () => {
-      const res = await axiosRequest('get', `user/account/${token}`);
-      if (res!.status === 'fail') {
+      const res = await axiosGET<ServerResponse>('user/account', undefined, token);
+      if (res.status === 'fail') {
         toast({
           title: 'Invalid request. Enter your username or email below to recieve a new reset-link',
           status: 'warning',
@@ -57,7 +58,7 @@ export default function PasswordResetForm() {
     setLoading(true);
 
     try {
-      const res = await axiosRequest('patch', `user/account/${token}`, data);
+      const res = await axiosPATCH<ServerResponse>('user/account', data, token);
 
       setLoggingIn(true);
 

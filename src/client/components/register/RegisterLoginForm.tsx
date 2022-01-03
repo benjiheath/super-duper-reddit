@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { FormProps } from '../../types/general';
 import { FormData } from '../../types/user';
-import { axiosRequest } from '../../utils/axiosMethods';
+import { axiosPOST, axiosRequest } from '../../utils/axiosMethods';
 import { generateFormToast } from '../../utils/generateToast';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import RoutingLink from '../generic/RoutingLink';
@@ -35,7 +35,7 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
     try {
       const endpoint = formMode === 'Register' ? 'user' : 'session';
 
-      const res = await axiosRequest('post', endpoint, data);
+      const res = await axiosPOST(endpoint, data);
 
       res.status === 'success' ? setLoggingIn(true) : setLoading(false);
       toast(generateFormToast(formMode, res));

@@ -3,13 +3,13 @@ import React from 'react';
 import { FaChevronDown, FaUser } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useGlobalUserContext } from '../../../contexts/user/GlobalUserContext';
-import { axiosRequest } from '../../../utils/axiosMethods';
+import { axiosDELETE, axiosRequest } from '../../../utils/axiosMethods';
 
 const UserMenu = () => {
-  const { logOut, username, setResponseError } = useGlobalUserContext();
+  const { logOut, username } = useGlobalUserContext();
 
   const logOutHandler = async () => {
-    await axiosRequest('DELETE', 'session', setResponseError);
+    await axiosDELETE('session');
     logOut();
   };
 

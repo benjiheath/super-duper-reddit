@@ -1,7 +1,8 @@
 import React, { createContext, useContext } from 'react';
+import { PostType } from '../../../common/types/entities';
 import { ProviderProps } from '../../types/general';
 import { PostsCtx } from '../../types/posts';
-import { axiosRequest } from '../../utils/axiosMethods';
+import { axiosGET } from '../../utils/axiosMethods';
 import { useGlobalUserContext } from '../user/GlobalUserContext';
 import usePostsReducer from './usePostsReducer';
 

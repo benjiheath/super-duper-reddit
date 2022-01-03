@@ -7,10 +7,11 @@ import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { PostedBy } from '../../pages/Posts';
 import { CreateCommentFields, PostProps } from '../../types/posts';
-import { axiosRequest } from '../../utils/axiosMethods';
+import { axiosPOST } from '../../utils/axiosMethods';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormTextArea from '../generic/FormTextArea';
 import PageBox from '../generic/PageBox';
+import SrSpinner from '../generic/SrSpinner';
 import AlertPop from '../register/AlertPop';
 
 type PostTitleProps = Pick<PostType, 'title' | 'contentUrl'>;
@@ -94,14 +95,14 @@ const CommentBox = (props: PostProps) => {
         creator_username: username,
       };
 
-      const { post } = await axiosRequest('POST', 'posts/comments', newCommentData);
+      const { post } = await axiosPOST('posts/comments', newCommentData);
 
       if (!post) {
         return;
         // TODO - handle later
       }
 
-      updatePost(post);
+      setPost(post);
       reset();
     } catch (err) {
       setResponseError(err);

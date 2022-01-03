@@ -2,11 +2,12 @@ import { FormControl, FormLabel, Input, useToast, VStack } from '@chakra-ui/reac
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
+import { CreatePostResponse, PostResponse } from '../../../common/types/fetching';
 import { createPostSlugs } from '../../../common/utils';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { CreatePostFields } from '../../types/posts';
-import { axiosRequest } from '../../utils/axiosMethods';
+import { axiosPOST, axiosRequest } from '../../utils/axiosMethods';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
 import FormTextArea from '../generic/FormTextArea';
@@ -33,14 +34,12 @@ const CreatePost = () => {
     const newPostData = { creator_user_id: userID, creator_username: username, ...data };
 
     try {
-      const { post } = await axiosRequest('post', 'posts', newPostData);
+      const { post } = await axiosPOST<PostResponse>('posts', newPostData);
 
       if (!post) {
         return;
         // TODO handle later - throw err?
       }
-
-      const postSlugs = createPostSlugs(post.id, post.title);
 
       if (posts) {
         setPosts([post, ...posts]);
