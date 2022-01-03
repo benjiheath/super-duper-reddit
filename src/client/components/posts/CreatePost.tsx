@@ -6,11 +6,13 @@ import { CreatePostResponse, PostResponse } from '../../../common/types/fetching
 import { createPostSlugs } from '../../../common/utils';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { InputFieldType } from '../../types/general';
 import { CreatePostFields } from '../../types/posts';
 import { axiosPOST, axiosRequest } from '../../utils/axiosMethods';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
 import FormTextArea from '../generic/FormTextArea';
+import InputField from '../generic/InputField';
 import AlertPop from '../register/AlertPop';
 
 const CreatePost = () => {
@@ -61,6 +63,15 @@ const CreatePost = () => {
 
   // const Spin = () => (loading ? <Spinner color='prim.800' /> : null);
 
+  const urlField = {
+    type: 'text',
+    placeholder: 'Add a link here',
+    stateName: 'contentUrl',
+    register: {
+      // pattern: anynull as
+    },
+  } as InputFieldType;
+
   return (
     <FormBox title='New Post' size='lg'>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -80,6 +91,11 @@ const CreatePost = () => {
             />
           </FormControl>
           {errors.title && <AlertPop title={errors.title.message} />}
+
+          <FormControl>
+            <FormLabel color='prim.800'>Url</FormLabel>
+            <InputField field={urlField} register={register} errors={errors} />
+          </FormControl>
 
           <FormControl mt='30px !important'>
             <FormLabel color='prim.800'>Body</FormLabel>

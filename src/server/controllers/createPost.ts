@@ -11,11 +11,12 @@ declare module 'express-session' {
 
 export const createPost: RequestHandler = async (req, res, next) => {
   try {
-    const { creator_user_id, creator_username, title, body } = req.body;
+    const { creator_user_id, creator_username, title, body, contentUrl: content_url } = req.body;
 
     const [post] = await dbPosts.insertRow({
       creator_user_id,
       creator_username,
+      content_url,
       title,
       body,
     });
