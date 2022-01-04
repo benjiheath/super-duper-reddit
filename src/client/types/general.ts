@@ -1,3 +1,4 @@
+import { InputProps } from '@chakra-ui/react';
 import { SetStateAction } from 'react';
 import { FieldValues, UseFormReset } from 'react-hook-form';
 
@@ -25,6 +26,8 @@ export interface InputFieldType {
   placeholder: string;
   stateName: string;
   register: Partial<RegisterProps>;
+  labelTitle?: string;
+  styleProps?: InputProps;
 }
 
 export type ComponentVariant = 'primary' | 'secondary';

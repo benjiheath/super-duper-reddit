@@ -1,16 +1,17 @@
-import { Input } from '@chakra-ui/react';
+import { Input, InputProps } from '@chakra-ui/react';
 import React from 'react';
 import { DeepMap, FieldError, FieldValues, UseFormRegister } from 'react-hook-form';
 import { InputFieldType } from '../../types/general';
 import AlertPop from '../register/AlertPop';
 
-interface Props {
+interface Props extends InputProps {
   field: InputFieldType;
   register: UseFormRegister<FieldValues>;
   errors: DeepMap<FieldValues, FieldError>;
 }
 
-const InputField = ({ field, errors, register }: Props) => {
+const InputField = (props: Props) => {
+  const { field, register, errors } = props;
   return (
     <>
       <Input
@@ -18,8 +19,9 @@ const InputField = ({ field, errors, register }: Props) => {
         placeholder={field.placeholder}
         {...register(field.stateName, field.register)}
         focusBorderColor='prim.200'
+        {...field.styleProps}
       />
-      {errors[field.stateName] && <AlertPop title={errors[field.stateName].message} />}
+      {errors[field.stateName] && <AlertPop title={errors[field.stateName].message} mt={2} />}
     </>
   );
 };

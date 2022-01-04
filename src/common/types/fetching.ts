@@ -1,7 +1,22 @@
 import { PostType } from './entities';
+
+export type Endpoint =
+  | 'session'
+  | 'user'
+  | 'posts'
+  | 'account'
+  | 'account/:token'
+  | 'posts/comments'
+  | 'user/account';
+
 type Auth = { auth: boolean };
 
 export type FieldErrorData = { field: string; message: string };
+
+export interface FieldErrorResponse {
+  message: string;
+  errors: FieldErrorData[];
+}
 
 export type RegisterResponse = StatusAndMessage & { errors?: FieldErrorData[] };
 
@@ -26,8 +41,17 @@ export interface ServerResponse extends StatusAndMessage {
   username?: string;
   userID?: string | null;
   post?: PostType;
+  posts?: PostType[];
 }
+
+export type PostResponse = { post: PostType };
+export type PostsResponse = { posts: PostType[] };
 
 export interface GetPostsResponse {
   posts: PostType[];
+}
+
+export interface CreatePostResponse {
+  status: string;
+  post: PostType;
 }

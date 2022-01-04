@@ -1,7 +1,8 @@
 import React, { createContext, useContext } from 'react';
+import { PostType } from '../../../common/types/entities';
 import { ProviderProps } from '../../types/general';
 import { PostsCtx } from '../../types/posts';
-import { axiosRequest } from '../../utils/axiosMethods';
+import { axiosGET } from '../../utils/axiosMethods';
 import { useGlobalUserContext } from '../user/GlobalUserContext';
 import usePostsReducer from './usePostsReducer';
 
@@ -10,22 +11,40 @@ export const PostsContext = createContext<PostsCtx | null>(null);
 const PostsProvider = (props: ProviderProps) => {
   const [state, dispatchers] = usePostsReducer();
   const { setResponseError } = useGlobalUserContext();
-  const { setPosts } = dispatchers;
+  const { setPosts, setPostsLoading, setPost } = dispatchers;
 
-  const getAndSetPosts = async () => {
+  const getPostsOrPost = async (postSlugs?: string) => {
     try {
-      const { posts } = await axiosRequest('GET', 'posts');
-      setPosts(posts);
+      setPostsLoading(true);
+      const res = postSlugs
+        ? await axiosGET<PostType>('posts', undefined, postSlugs)
+        : await axiosGET<PostType[]>('posts');
+      setPostsLoading(false);
+
+      if (!res) {
+        setResponseError('error fetching resource');
+        return;
+      }
+
+      postSlugs ? setPost(res as PostType) : setPosts(res as PostType[]);
     } catch (err) {
       setResponseError(err);
     }
   };
 
-  React.useEffect(() => {
-    getAndSetPosts();
-  }, []);
+  const getAndSetPosts = async () => {
+    await getPostsOrPost();
+  };
 
-  return <PostsContext.Provider value={{ ...state, ...dispatchers }}>{props.children}</PostsContext.Provider>;
+  const getPost = async (postSlugs: string) => {
+    await getPostsOrPost(postSlugs);
+  };
+
+  return (
+    <PostsContext.Provider value={{ ...state, ...dispatchers, getAndSetPosts, getPost }}>
+      {props.children}
+    </PostsContext.Provider>
+  );
 };
 
 export const usePostsContext = () => useContext(PostsContext) as PostsCtx;

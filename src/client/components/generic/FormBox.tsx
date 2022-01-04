@@ -1,17 +1,17 @@
-import { Flex, Heading, HeadingProps, Text } from '@chakra-ui/react';
+import { Flex, FlexProps, Heading, HeadingProps, Text } from '@chakra-ui/react';
 import React from 'react';
 
-interface Props {
+interface Props extends FlexProps {
   children: React.ReactNode;
   secondary?: any;
   title: string;
   subTitle?: string;
   minH?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  headingSize?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 }
 
 const FormBox = (props: Props) => {
-  const { children, secondary, title, subTitle, size, minH } = props;
+  const { children, secondary, title, subTitle, headingSize, minH, ...rest } = props;
 
   const heaadingStyles: HeadingProps = secondary
     ? { as: 'h1', color: 'sec.900' }
@@ -28,8 +28,9 @@ const FormBox = (props: Props) => {
       flexDir='column'
       alignItems='center'
       minH={minH}
+      {...rest}
     >
-      <Heading {...heaadingStyles} mb={3} size={size || 'xl'}>
+      <Heading {...heaadingStyles} mb={3} size={headingSize || 'xl'}>
         {title}
       </Heading>
       <Text>{subTitle}</Text>

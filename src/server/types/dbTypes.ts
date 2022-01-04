@@ -20,6 +20,7 @@ export interface DbUser {
   password: string;
   created_at: string;
   reset_pw_token: string;
+  '*': any;
 }
 
 export interface DbPost {
@@ -32,7 +33,8 @@ export interface DbPost {
   creator_user_id: string;
   creator_username: string;
   current_status: 'normal' | 'removed';
-  urlSlugs: string;
+  url_slugs: string;
+  '*': any;
 }
 
 export interface PostWithComments extends DbPost {
@@ -49,6 +51,7 @@ export interface DbComment {
   creator_user_id: string;
   creator_username: string;
   current_status: 'normal' | 'removed';
+  '*': any;
 }
 
 export interface DbPostVote {

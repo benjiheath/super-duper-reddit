@@ -32,6 +32,7 @@ CREATE TABLE posts(
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     current_status normal_or_removed  NOT NULL DEFAULT 'normal',
+    url_slugs VARCHAR(100) UNIQUE,
     CONSTRAINT creator_user_id FOREIGN KEY(creator_user_id) REFERENCES users(id),
     CONSTRAINT creator_username FOREIGN KEY(creator_username) REFERENCES users(username)
 );

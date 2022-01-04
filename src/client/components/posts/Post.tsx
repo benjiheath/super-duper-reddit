@@ -1,44 +1,43 @@
-import { Box, Divider, Flex, Heading, HeadingProps, Text, Textarea, VStack } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import { Box, Divider, Heading, HeadingProps, Text, VStack } from '@chakra-ui/react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-import { DbComment } from '../../../common/types/dbTypes';
+import { CommentType, PostType } from '../../../common/types/entities';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { PostedBy } from '../../pages/Posts';
-import { primaryColors } from '../../theme';
 import { CreateCommentFields, PostProps } from '../../types/posts';
-import { axiosRequest } from '../../utils/axiosMethods';
+import { axiosPOST } from '../../utils/axiosMethods';
+import { getTimeAgo } from '../../utils/misc';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormTextArea from '../generic/FormTextArea';
 import PageBox from '../generic/PageBox';
-import AlertPop from '../register/AlertPop';
+import SrSpinner from '../generic/SrSpinner';
 
-interface PostTitleProps {
-  title: string;
-  contentUrl: string;
-}
+type PostTitleProps = Pick<PostType, 'title' | 'contentUrl'>;
 
 const PostTitle = (props: PostTitleProps) => {
   const { title, contentUrl } = props;
 
   const linkUrl = contentUrl ? `//${contentUrl}` : window.location.href;
   const headingStyles: HeadingProps = contentUrl
-    ? { as: 'h3', mb: 2, _hover: { color: 'prim.800' }, transition: '0.1s' }
-    : { as: 'h3' };
+    ? { mb: 2, _groupHover: { color: 'prim.800' }, transition: '0.4s' }
+    : {};
 
   return (
     <a href={linkUrl} target='_blank' role='group'>
-      <Heading {...headingStyles}>{title}</Heading>
+      <Heading as='h3' fontSize={26} {...headingStyles}>
+        {title}
+      </Heading>
       {contentUrl ? (
         <Box
-          h={1.5}
+          h={1}
           bg='prim.100'
           w='20%'
           mb={2}
           borderRadius={2}
-          _groupHover={{ width: '25%', bg: 'prim.800' }}
-          transition='0.2s'
+          _groupHover={{ width: '25%', bg: 'prim.800', ml: 1 }}
+          transition='0.4s'
         />
       ) : null}
     </a>
@@ -61,10 +60,12 @@ const PostMain = (props: PostProps) => {
     urlSlugs,
   } = post;
 
+  const timeAgo = getTimeAgo(createdAt)!;
+
   return (
     <VStack alignItems='start' width='100%'>
       <PostTitle title={title} contentUrl={contentUrl} />
-      <PostedBy date={post.createdAt} creatorUsername={post.creatorUsername} />
+      <PostedBy date={timeAgo} creatorUsername={post.creatorUsername} />
       <Text outline='1px dotted' outlineColor='prim.200' p='10px 16px' w='100%' borderRadius={6}>
         {body}
       </Text>
@@ -75,9 +76,9 @@ const PostMain = (props: PostProps) => {
 
 const CommentBox = (props: PostProps) => {
   const { post } = props;
-  const { id: postID, comments } = post;
+  const { id: postID } = post;
   const { username, userID, setResponseError } = useGlobalUserContext();
-  const { posts, updatePost } = usePostsContext();
+  const { setPost } = usePostsContext();
   const {
     register,
     reset,
@@ -85,7 +86,6 @@ const CommentBox = (props: PostProps) => {
     setError,
     formState: { errors, isValid, isSubmitting },
   } = useForm({ mode: 'onChange' });
-  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: CreateCommentFields): Promise<void> => {
     try {
@@ -96,14 +96,14 @@ const CommentBox = (props: PostProps) => {
         creator_username: username,
       };
 
-      const { post } = await axiosRequest('POST', 'posts/comments', newCommentData);
+      const { post } = await axiosPOST('posts/comments', newCommentData);
 
       if (!post) {
         return;
         // TODO - handle later
       }
 
-      updatePost(post);
+      setPost(post);
       reset();
     } catch (err) {
       setResponseError(err);
@@ -114,10 +114,14 @@ const CommentBox = (props: PostProps) => {
     <Box w='100%'>
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing={2}>
-          <FormTextArea register={register} minH={20} placeholder='Enter a comment ...' />
-          {errors.body && <AlertPop title={errors.body.message} />}
+          <FormTextArea
+            register={register}
+            minH={20}
+            placeholder='Enter a comment...'
+            errors={errors}
+            required
+          />
           <ButtonSubmit text='Save' isDisabled={!isValid} isLoading={isSubmitting} />
-          {isSubmitting && <span>xxxxxxx</span>}
         </VStack>
       </form>
     </Box>
@@ -145,14 +149,20 @@ const Comments = (props: CommentProps) => {
 };
 
 const Post = () => {
-  const { id } = useParams() as { id: string };
-  const { posts } = usePostsContext();
+  const { postSlugs } = useParams() as { postSlugs: string };
+  const { postsLoading, post, getPost, setPost } = usePostsContext();
 
-  if (!posts) {
-    return <Text>Error retrieving posts</Text>;
+  React.useEffect(() => {
+    if (!post) getPost(postSlugs);
+
+    return () => {
+      setPost(null);
+    };
+  }, []);
+
+  if (postsLoading || !post) {
+    return <SrSpinner />;
   }
-
-  const [post] = posts?.filter((post) => post.id.includes(id));
 
   return (
     <PageBox>

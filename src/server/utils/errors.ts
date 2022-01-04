@@ -1,5 +1,5 @@
-import { PostsColumn, CommentsColumn, UserColumn } from '../types/dbTypes';
-import { FieldErrorData } from '../../common/types/forms';
+import { CommentsColumn, PostsColumn, UserColumn } from '../types/dbTypes';
+import { FieldErrorResponse } from './../types/misc';
 
 export enum ErrorTypes {
   UserDataAlreadyExists = 'User data already exists',
@@ -7,15 +7,10 @@ export enum ErrorTypes {
   UnknownError = 'An unknown error occured',
 }
 
-interface FieldErrorInfo {
-  message: string;
-  errors: FieldErrorData[];
-}
-
 export class FieldError extends Error {
-  info: FieldErrorInfo & { status: string };
+  info: FieldErrorResponse & { status: string };
 
-  constructor(response: FieldErrorInfo) {
+  constructor(response: FieldErrorResponse) {
     super(response.message);
 
     this.info = { status: 'fail', ...response };

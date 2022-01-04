@@ -1,13 +1,14 @@
-import { Box, Flex, HStack, Text, VStack, Link as ChakraLink } from '@chakra-ui/react';
-import React, { useEffect } from 'react';
-import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Box, Flex, HStack, Link as ChakraLink, Text, VStack } from '@chakra-ui/react';
+import { DateTime } from 'luxon';
+import React from 'react';
+import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
+import SrSpinner from '../components/generic/SrSpinner';
 import { NavBar } from '../components/homepage';
 import { NewPost } from '../components/posts';
 import Post from '../components/posts/Post';
 import { usePostsContext } from '../contexts/posts/PostsContext';
-import { useGlobalUserContext } from '../contexts/user/GlobalUserContext';
 import { PostProps } from '../types/posts';
-import { axiosRequest } from '../utils/axiosMethods';
+import { getTimeAgo } from '../utils/misc';
 
 interface PostedByProps {
   date: string;
@@ -19,9 +20,11 @@ export const PostedBy = (props: PostedByProps) => {
 
   const parsedDate = new Date(Date.parse(date)).toISOString();
 
+  const timeAgo = getTimeAgo(parsedDate);
+
   return (
     <Flex>
-      <Text mr={2}>submitted {parsedDate} by * </Text>
+      <Text mr={2}>submitted {timeAgo} by * </Text>
       <Text color='prim.800' display='inline-block' fontWeight='700'>
         {creatorUsername}
       </Text>
@@ -31,13 +34,10 @@ export const PostedBy = (props: PostedByProps) => {
 
 const PostCardDetails = (props: PostProps) => {
   const { post } = props;
-  const date = new Date(Date.parse(post.created_at)).toISOString();
 
-  console.log(post.content_url);
-
-  const contentUrl = post.content_url ? (
+  const contentUrl = post.contentUrl ? (
     <ChakraLink
-      href={`//${post.content_url}`}
+      href={`//${post.contentUrl}`}
       target='_blank'
       onClick={(e) => {
         e.stopPropagation();
@@ -72,8 +72,10 @@ const PostCard = (props: PostProps) => {
         borderRadius={8}
         cursor='pointer'
         _hover={{
-          boxShadow: '0px 0px 1px 1px #c4c4c428',
+          boxShadow: '0px 0px 1px 1px #cfcfcf28',
         }}
+        bg='white'
+        transition='0.15s'
       >
         <span>votes</span>
         <Box>img</Box>
@@ -85,15 +87,33 @@ const PostCard = (props: PostProps) => {
 
 const Posts = () => {
   const match = useRouteMatch();
-  const { setResponseError } = useGlobalUserContext();
-  const { posts, setPosts } = usePostsContext();
+  const { posts, postsLoading, getAndSetPosts } = usePostsContext();
+
+  React.useEffect(() => {
+    getAndSetPosts();
+  }, []);
+
+  if (postsLoading) {
+    return (
+      <>
+        <NavBar />
+        <SrSpinner />;
+      </>
+    );
+  }
 
   return (
-    <Switch>
-      <Flex flexDir='column'>
-        <NavBar />
-        <Route exact path={`${match.path}/`}>
-          <VStack spacing={6}>
+    <Flex flexDir='column'>
+      <NavBar />
+      <Switch>
+        <Route exact path={`${match.path}/create`}>
+          <NewPost />
+        </Route>
+        <Route exact path='/posts/:postSlugs'>
+          <Post />
+        </Route>
+        <Route path={`${match.path}/`}>
+          <VStack spacing={2}>
             {posts
               ? posts
                   .filter((post) => post.currentStatus !== 'removed')
@@ -101,14 +121,8 @@ const Posts = () => {
               : null}
           </VStack>
         </Route>
-        <Route path='/posts/:id/:title'>
-          <Post />
-        </Route>
-        <Route path={`${match.path}/create`}>
-          <NewPost />
-        </Route>
-      </Flex>
-    </Switch>
+      </Switch>
+    </Flex>
   );
 };
 
