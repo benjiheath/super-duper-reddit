@@ -5,13 +5,14 @@ import AlertPop from '../register/AlertPop';
 interface Props extends TextareaProps {
   register: UseFormRegister<FieldValues>;
   errors: DeepMap<FieldValues, FieldError>;
+  required?: boolean;
   labelTitle?: string;
   minH?: number;
   placeholder?: string;
 }
 
 const FormTextArea = (props: Props) => {
-  const { register, minH, placeholder, errors, labelTitle, ...rest } = props;
+  const { register, minH, placeholder, errors, labelTitle, required, ...rest } = props;
 
   return (
     <FormControl>
@@ -19,10 +20,10 @@ const FormTextArea = (props: Props) => {
       <Textarea
         minH={minH ?? 150}
         _hover={{ borderColor: 'prim.300' }}
-        placeholder={placeholder ?? 'Enter your text here...'}
+        placeholder={`${placeholder ?? 'Enter your text here...'} ${required ? '' : '(optional)'}`}
         focusBorderColor='prim.300'
         {...register('body', {
-          required: 'Body required',
+          required: required && 'Body required',
         })}
         _focus={{ outline: '1px solid', outlineColor: 'prim.200', outlineOffset: 0 }}
         {...rest}

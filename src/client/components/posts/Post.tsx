@@ -112,7 +112,13 @@ const CommentBox = (props: PostProps) => {
     <Box w='100%'>
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing={2}>
-          <FormTextArea register={register} minH={20} placeholder='Enter a comment ...' errors={errors} />
+          <FormTextArea
+            register={register}
+            minH={20}
+            placeholder='Enter a comment...'
+            errors={errors}
+            required
+          />
           <ButtonSubmit text='Save' isDisabled={!isValid} isLoading={isSubmitting} />
         </VStack>
       </form>
