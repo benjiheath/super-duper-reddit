@@ -1,5 +1,4 @@
 import { Box, Flex, HStack, Link as ChakraLink, Text, VStack } from '@chakra-ui/react';
-import { DateTime } from 'luxon';
 import React from 'react';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 import SrSpinner from '../components/generic/SrSpinner';
@@ -18,9 +17,7 @@ interface PostedByProps {
 export const PostedBy = (props: PostedByProps) => {
   const { date, creatorUsername } = props;
 
-  const parsedDate = new Date(Date.parse(date)).toISOString();
-
-  const timeAgo = getTimeAgo(parsedDate);
+  const timeAgo = getTimeAgo(date);
 
   return (
     <Flex>

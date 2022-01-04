@@ -1,22 +1,17 @@
-import { FormControl, FormLabel, Input, useToast, VStack } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import { useToast, VStack } from '@chakra-ui/react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
-import { CreatePostResponse, PostResponse } from '../../../common/types/fetching';
-import { createPostSlugs } from '../../../common/utils';
+import { PostResponse } from '../../../common/types/fetching';
 import { inputFields } from '../../constants';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
-import { InputFieldType } from '../../types/general';
 import { CreatePostFields } from '../../types/posts';
-import { axiosPOST, axiosRequest } from '../../utils/axiosMethods';
+import { axiosPOST } from '../../utils/axiosMethods';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
 import FormTextArea from '../generic/FormTextArea';
-import InputField from '../generic/InputField';
-import AlertPop from '../register/AlertPop';
 import { InputFields } from '../register/InputFields';
-import { DateTime } from 'luxon';
 
 const CreatePost = () => {
   const { setResponseError, username, userID } = useGlobalUserContext();
