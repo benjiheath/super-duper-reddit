@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { CreatePostResponse, PostResponse } from '../../../common/types/fetching';
 import { createPostSlugs } from '../../../common/utils';
+import { inputFields } from '../../constants';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { InputFieldType } from '../../types/general';
@@ -14,6 +15,7 @@ import FormBox from '../generic/FormBox';
 import FormTextArea from '../generic/FormTextArea';
 import InputField from '../generic/InputField';
 import AlertPop from '../register/AlertPop';
+import { InputFields } from '../register/InputFields';
 
 const CreatePost = () => {
   const { setResponseError, username, userID } = useGlobalUserContext();
@@ -61,47 +63,12 @@ const CreatePost = () => {
     }
   };
 
-  // const Spin = () => (loading ? <Spinner color='prim.800' /> : null);
-
-  const urlField = {
-    type: 'text',
-    placeholder: 'Add a link here',
-    stateName: 'contentUrl',
-    register: {
-      // pattern: anynull as
-    },
-  } as InputFieldType;
-
   return (
-    <FormBox title='New Post' size='lg'>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <VStack width='80vw' maxW='800px' spacing='10px' m='0 auto'>
-          <FormControl>
-            <FormLabel color='prim.800'>Title</FormLabel>
-            <Input
-              type='text'
-              placeholder='title'
-              borderColor='prim.100'
-              focusBorderColor='sec.300'
-              _hover={{ borderColor: 'sec.400' }}
-              {...register('title', {
-                required: 'Title required',
-              })}
-              _focus={{ boxShadow: '1px 1px 10px 3px #bcffe1b2', borderColor: 'sec.400' }}
-            />
-          </FormControl>
-          {errors.title && <AlertPop title={errors.title.message} />}
-
-          <FormControl>
-            <FormLabel color='prim.800'>Url</FormLabel>
-            <InputField field={urlField} register={register} errors={errors} />
-          </FormControl>
-
-          <FormControl mt='30px !important'>
-            <FormLabel color='prim.800'>Body</FormLabel>
-            <FormTextArea register={register} />
-          </FormControl>
-          {errors.body && <AlertPop title={errors.body.message} />}
+    <FormBox title='New Post' headingSize='lg' w='800px'>
+      <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
+        <VStack spacing='10px' m='0 auto'>
+          <InputFields inputFields={inputFields.createPost} register={register} errors={errors} />
+          <FormTextArea labelTitle='Body' register={register} errors={errors} />
           <ButtonSubmit text='Submit' isLoading={isSubmitting} />
         </VStack>
       </form>

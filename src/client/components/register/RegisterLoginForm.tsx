@@ -2,6 +2,8 @@ import { Box, Heading, Spinner, useToast, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
+import { ServerResponse } from '../../../common/types/fetching';
+import { inputFields } from '../../constants';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { FormProps } from '../../types/general';
 import { FormData } from '../../types/user';
@@ -35,7 +37,7 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
     try {
       const endpoint = formMode === 'Register' ? 'user' : 'session';
 
-      const res = await axiosPOST(endpoint, data);
+      const res = await axiosPOST<ServerResponse>(endpoint, data);
 
       res.status === 'success' ? setLoggingIn(true) : setLoading(false);
       toast(generateFormToast(formMode, res));
@@ -98,7 +100,12 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
       <Box width={310}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <VStack>
-            <InputFields formMode={formMode} register={register} errors={errors} />
+            <InputFields
+              inputFields={inputFields.registerLoginForm}
+              formMode={formMode}
+              register={register}
+              errors={errors}
+            />
             <FormActions />
           </VStack>
         </form>

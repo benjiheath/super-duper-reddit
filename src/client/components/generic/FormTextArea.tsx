@@ -1,28 +1,34 @@
-import { Textarea, TextareaProps } from '@chakra-ui/react';
-import { FieldValues, UseFormRegister } from 'react-hook-form/dist/types';
+import { FormControl, FormLabel, Textarea, TextareaProps } from '@chakra-ui/react';
+import { DeepMap, FieldError, FieldValues, UseFormRegister } from 'react-hook-form/dist/types';
+import AlertPop from '../register/AlertPop';
 
 interface Props extends TextareaProps {
   register: UseFormRegister<FieldValues>;
+  errors: DeepMap<FieldValues, FieldError>;
+  labelTitle?: string;
   minH?: number;
   placeholder?: string;
 }
 
 const FormTextArea = (props: Props) => {
-  const { register, minH, placeholder, ...rest } = props;
+  const { register, minH, placeholder, errors, labelTitle, ...rest } = props;
 
   return (
-    <Textarea
-      minH={minH ?? 150}
-      borderColor='prim.100'
-      _hover={{ borderColor: 'sec.400' }}
-      placeholder={placeholder ?? 'Enter your text here...'}
-      focusBorderColor='sec.300'
-      {...register('body', {
-        required: 'Body required',
-      })}
-      _focus={{ boxShadow: '1px 1px 10px 3px #bcffe1b2', borderColor: 'sec.400' }}
-      {...rest}
-    />
+    <FormControl>
+      <FormLabel color='prim.800'>{labelTitle}</FormLabel>
+      <Textarea
+        minH={minH ?? 150}
+        _hover={{ borderColor: 'prim.300' }}
+        placeholder={placeholder ?? 'Enter your text here...'}
+        focusBorderColor='prim.300'
+        {...register('body', {
+          required: 'Body required',
+        })}
+        _focus={{ outline: '1px solid', outlineColor: 'prim.200', outlineOffset: 0 }}
+        {...rest}
+      />
+      {errors.body && <AlertPop title={errors.body.message} mt={2} />}
+    </FormControl>
   );
 };
 
