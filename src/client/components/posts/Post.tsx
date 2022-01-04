@@ -8,11 +8,11 @@ import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { PostedBy } from '../../pages/Posts';
 import { CreateCommentFields, PostProps } from '../../types/posts';
 import { axiosPOST } from '../../utils/axiosMethods';
+import { getTimeAgo } from '../../utils/misc';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormTextArea from '../generic/FormTextArea';
 import PageBox from '../generic/PageBox';
 import SrSpinner from '../generic/SrSpinner';
-import AlertPop from '../register/AlertPop';
 
 type PostTitleProps = Pick<PostType, 'title' | 'contentUrl'>;
 
@@ -60,10 +60,12 @@ const PostMain = (props: PostProps) => {
     urlSlugs,
   } = post;
 
+  const timeAgo = getTimeAgo(createdAt)!;
+
   return (
     <VStack alignItems='start' width='100%'>
       <PostTitle title={title} contentUrl={contentUrl} />
-      <PostedBy date={post.createdAt} creatorUsername={post.creatorUsername} />
+      <PostedBy date={timeAgo} creatorUsername={post.creatorUsername} />
       <Text outline='1px dotted' outlineColor='prim.200' p='10px 16px' w='100%' borderRadius={6}>
         {body}
       </Text>

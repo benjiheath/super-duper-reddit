@@ -1,4 +1,5 @@
 import { Box, Flex, HStack, Link as ChakraLink, Text, VStack } from '@chakra-ui/react';
+import { DateTime } from 'luxon';
 import React from 'react';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 import SrSpinner from '../components/generic/SrSpinner';
@@ -7,6 +8,7 @@ import { NewPost } from '../components/posts';
 import Post from '../components/posts/Post';
 import { usePostsContext } from '../contexts/posts/PostsContext';
 import { PostProps } from '../types/posts';
+import { getTimeAgo } from '../utils/misc';
 
 interface PostedByProps {
   date: string;
@@ -18,9 +20,11 @@ export const PostedBy = (props: PostedByProps) => {
 
   const parsedDate = new Date(Date.parse(date)).toISOString();
 
+  const timeAgo = getTimeAgo(parsedDate);
+
   return (
     <Flex>
-      <Text mr={2}>submitted {parsedDate} by * </Text>
+      <Text mr={2}>submitted {timeAgo} by * </Text>
       <Text color='prim.800' display='inline-block' fontWeight='700'>
         {creatorUsername}
       </Text>
@@ -30,7 +34,6 @@ export const PostedBy = (props: PostedByProps) => {
 
 const PostCardDetails = (props: PostProps) => {
   const { post } = props;
-  const date = new Date(Date.parse(post.createdAt)).toISOString();
 
   const contentUrl = post.contentUrl ? (
     <ChakraLink
