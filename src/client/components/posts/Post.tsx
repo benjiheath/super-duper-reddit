@@ -63,7 +63,7 @@ const PostMain = (props: PostProps) => {
     <VStack alignItems='start' width='100%'>
       <PostTitle title={title} contentUrl={contentUrl} />
       <PostedBy date={createdAt} creatorUsername={post.creatorUsername} />
-      <Text outline='1px dotted' outlineColor='prim.200' p='10px 16px' w='100%' borderRadius={6}>
+      <Text outline='1px solid' bg='prim.50' outlineColor='prim.200' p='10px 16px' w='100%' borderRadius={6}>
         {body}
       </Text>
       <span>{comments.length} comments</span>
