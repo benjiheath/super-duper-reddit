@@ -12,7 +12,7 @@ const NavBar = () => {
       : ['/posts/create', 'secondary', 'Create Post', FaPlus, 'white'];
 
   return (
-    <Box position='sticky' top={0} zIndex={1} bg='white' mb={8}>
+    <Box position='sticky' top={0} zIndex={1} bg='white' mb={8} boxShadow='0px 0px 12px 1px #e2e2e2'>
       <Flex p='20px 0' w='800px' m='0 auto'>
         <Link to='/'>
           <Heading color='prim.800'>Super Reddit</Heading>
