@@ -12,6 +12,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION trigger_set_post_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE posts SET updated_at = NOW() WHERE id = NEW.post_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE TABLE users(
     id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
     username VARCHAR(80) UNIQUE NOT NULL,
@@ -80,6 +88,11 @@ CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON comments
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_post_timestamp
+AFTER INSERT ON comments
+FOR EACH ROW 
+EXECUTE PROCEDURE trigger_set_post_timestamp();
 
 CREATE TABLE "session" (
     "sid" varchar NOT NULL COLLATE "default",
