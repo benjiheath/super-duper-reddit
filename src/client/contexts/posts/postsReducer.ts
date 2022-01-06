@@ -31,14 +31,11 @@ export const postsReducer = (state: PostsState, action: ACTIONTYPE) => {
     case PostsActions.SET_POST:
       return { ...state, post: action.payload };
 
-    // case PostsActions.UPDATE_POST:
-    //   const updatedPosts = state.posts!.map((post) =>
-    //     post.id === action.payload.id ? action.payload : post
-    //   );
-    //   return { ...state, posts: updatedPosts };
-
     case PostsActions.UPDATE_POST:
-      return { ...state, post: action.payload };
+      const updatedPosts = state.posts!.map((post) =>
+        post.id === action.payload.id ? action.payload : post
+      );
+      return { ...state, posts: updatedPosts };
 
     default:
       throw new Error(`Unable to execute action: ${action}`);
