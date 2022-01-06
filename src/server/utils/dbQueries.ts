@@ -132,14 +132,14 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
         },
       };
     },
-    insertRow: async (columns) => {
+    insertRow: async (columns, appendQuery) => {
       try {
         const parsedColumns = Object.keys(columns);
         const values = Object.values(columns);
         const valueIDs = Object.values(columns).map((_, i) => `$${i + 1}`);
 
         const { rows } = await pool.query(
-          `INSERT INTO ${table} (${parsedColumns}) VALUES (${valueIDs}) RETURNING *`,
+          `INSERT INTO ${table} (${parsedColumns}) VALUES (${valueIDs}) ${appendQuery ?? ''} RETURNING *`,
           values
         );
         const sanitizedRows = rows.map((row) => sanitizeKeys(row));
