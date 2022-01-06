@@ -65,18 +65,20 @@ CREATE TABLE posts_votes (
     id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
     post_id uuid,
     user_id uuid,
-    vote_status INT CHECK (vote_status = 1 OR vote_status = -1) NOT NULL,
+    vote_status INT CHECK (vote_status = 1 OR vote_status = -1 OR vote_status = 0),
     CONSTRAINT post_id FOREIGN KEY(post_id) REFERENCES posts(id),
-    CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES users(id)
+    CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES users(id),
+    CONSTRAINT unique_composite_pv UNIQUE (post_id, user_id)
 );
 
 CREATE TABLE comments_votes (
     id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
     comment_id uuid,
     user_id uuid,
-    vote_status INT CHECK (vote_status = 1 OR vote_status = -1) NOT NULL,
+    vote_status INT CHECK (vote_status = 1 OR vote_status = -1 OR vote_status = 0),
     CONSTRAINT comment_id FOREIGN KEY(comment_id) REFERENCES comments(id),
-    CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES users(id)
+    CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES users(id),
+    CONSTRAINT unique_composite_cv UNIQUE (comment_id, user_id)
 );
 
 CREATE TRIGGER set_timestamp
