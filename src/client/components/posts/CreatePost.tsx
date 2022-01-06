@@ -1,4 +1,5 @@
 import { useToast, VStack } from '@chakra-ui/react';
+import _ from 'lodash';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
@@ -29,10 +30,12 @@ const CreatePost = () => {
   });
 
   const onSubmit = async (data: CreatePostFields): Promise<void> => {
-    const newPostData = { creator_user_id: userID, creator_username: username, ...data };
+    const emptyFieldsNullified = _.mapValues(data, (value) => (value?.length === 0 ? null : value));
+
+    const newPostData = { creator_user_id: userId, creator_username: username, ...emptyFieldsNullified };
 
     try {
-      const { post } = await axiosPOST<PostResponse>('posts', newPostData);
+      const { post } = await axiosPOST<PostResponse>('posts', { data: newPostData });
 
       if (!post) {
         return;
