@@ -37,14 +37,19 @@ interface DbQueryMethods<T, U, V> {
   findValues: (columnsOfInterest: U[]) => {
     where: (column: U) => { equals: (value: string) => Promise<Partial<T>> };
   };
-  insertRow: (options: Partial<T>) => Promise<V[]>;
+  insertRow: (options: Partial<T>, appendQuery?: string) => Promise<V[]>;
   updateField: updateFieldOverload<U, V>;
+  getSum: (column: U) => {
+    where: (column: U) => { equals: (value: string) => Promise<number> };
+  };
 }
 
 type DbQueryOverload = {
   (table: DbTables.users): DbQueryMethods<DbUser, UserColumn, UserType>;
   (table: DbTables.posts): DbQueryMethods<DbPost, PostsColumn, PostType>;
   (table: DbTables.comments): DbQueryMethods<DbComment, CommentsColumn, CommentType>;
+  (table: DbTables.postsVotes): DbQueryMethods<DbPostVote, PostsVoteColumn, PostVoteType>;
+  (table: DbTables.commentsVotes): DbQueryMethods<DbCommentVote, CommentsVoteColumn, any>;
 };
 
 export const dbQuery: DbQueryOverload = (table: DbTables) => {
@@ -165,9 +170,31 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
         },
       };
     },
+    getSum: (columnToBeSummed) => {
+      return {
+        where: (column) => {
+          return {
+            equals: async (value) => {
+              try {
+                const { rows } = await pool.query(
+                  `SELECT SUM(${columnToBeSummed}) FROM ${table} WHERE ${column} = $1`,
+                  [value]
+                );
+                // TODO - add where conditions
+                return Number(rows[0].sum);
+              } catch (err) {
+                throw err;
+              }
+            },
+          };
+        },
+      };
+    },
   };
 };
 
 export const dbUsers = dbQuery(DbTables.users);
 export const dbPosts = dbQuery(DbTables.posts);
 export const dbComments = dbQuery(DbTables.comments);
+export const dbPostsVotes = dbQuery(DbTables.postsVotes);
+export const dbCommentsVotes = dbQuery(DbTables.commentsVotes);
