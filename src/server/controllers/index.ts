@@ -1,3 +1,4 @@
+import { updatePostVotes } from './updatePostVotes';
 import { addCommentToPost } from './addCommentToPost';
 import { resetPasswordTokenChecker } from './resetPasswordTokenChecker';
 import { login } from './login';
@@ -24,4 +25,5 @@ export {
   resetPasswordTokenChecker,
   addCommentToPost,
   servePost,
+  updatePostVotes,
 };

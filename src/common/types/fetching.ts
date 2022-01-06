@@ -4,9 +4,11 @@ export type Endpoint =
   | 'session'
   | 'user'
   | 'posts'
+  | 'posts/post'
   | 'account'
   | 'account/:token'
   | 'posts/comments'
+  | 'posts/votes'
   | 'user/account';
 
 type Auth = { auth: boolean };
