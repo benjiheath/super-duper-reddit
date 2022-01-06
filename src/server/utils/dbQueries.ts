@@ -1,17 +1,21 @@
-import { UserType } from './../../common/types/entities';
+import { CommentsVoteColumn } from './../types/dbTypes';
+import { UserType, PostVoteType } from './../../common/types/entities';
 import { handlePostRemovedStatus, sanitizeKeys } from './misc';
-import {
-  CommentsColumn,
-  DbComment,
-  DbPost,
-  DbTables,
-  DbUser,
-  PostsColumn,
-  UserColumn,
-} from '../types/dbTypes';
 import { pool } from '../db';
 import { ErrorTypes, FieldError, generateErrorType } from './errors';
 import { CommentType, PostType } from '../../common/types/entities';
+import {
+  CommentsColumn,
+  DbComment,
+  DbCommentVote,
+  DbPost,
+  DbPostVote,
+  DbTables,
+  DbUser,
+  PostsColumn,
+  PostsVoteColumn,
+  UserColumn,
+} from '../types/dbTypes';
 
 type updateFieldOverload<T, U> = {
   (field: T, conditionalValue: string): {

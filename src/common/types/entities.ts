@@ -20,6 +20,8 @@ export interface PostType {
   currentStatus: 'normal' | 'removed';
   urlSlugs: string;
   comments: CommentType[];
+  userVoteStatus: -1 | 1 | null;
+  points: number | null;
 }
 
 export interface CommentType {
@@ -32,4 +34,18 @@ export interface CommentType {
   creatorUserId: string;
   creatorUsername: string;
   currentStatus: 'normal' | 'removed';
+}
+
+export interface PostVoteType {
+  id: string;
+  postId: string;
+  userId: string;
+  voteStatus: 1 | -1;
+}
+
+export interface CommentVoteType {
+  id: string;
+  commentId: string;
+  userId: string;
+  voteStatus: 1 | -1;
 }

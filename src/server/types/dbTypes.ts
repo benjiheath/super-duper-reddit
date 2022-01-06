@@ -12,6 +12,8 @@ export enum DbTables {
 export type UserColumn = keyof DbUser;
 export type PostsColumn = keyof DbPost;
 export type CommentsColumn = keyof DbComment;
+export type PostsVoteColumn = keyof DbPostVote;
+export type CommentsVoteColumn = keyof DbCommentVote;
 
 export interface DbUser {
   id: string;
@@ -58,12 +60,12 @@ export interface DbPostVote {
   id: string;
   post_id: string;
   user_id: string;
-  vote_status: number;
+  vote_status: 1 | -1;
 }
 
 export interface DbCommentVote {
   id: string;
   comment_id: string;
   user_id: string;
-  vote_status: number;
+  vote_status: 1 | -1 | 0;
 }
