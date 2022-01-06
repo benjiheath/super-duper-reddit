@@ -14,7 +14,7 @@ const useGlobalUserReducer = (): [UserState, UserDispatchers] => {
     },
     setUserID: (value: string) => {
       dispatch({ type: UserContextActions.SET_USER_ID, payload: value });
-      localStorage.setItem('userID', value);
+      localStorage.setItem('userId', value);
     },
     logIn: (value: string) => {
       dispatch({ type: UserContextActions.LOG_IN, payload: value });

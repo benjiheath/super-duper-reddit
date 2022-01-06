@@ -3,12 +3,6 @@ import { createPostSlugs } from '../../common/utils';
 import { FieldError } from '../utils/errors';
 import { dbPosts } from './../utils/dbQueries';
 
-declare module 'express-session' {
-  interface SessionData {
-    userID?: string;
-  }
-}
-
 export const createPost: RequestHandler = async (req, res, next) => {
   try {
     const { creator_user_id, creator_username, title, body, contentUrl: content_url } = req.body;

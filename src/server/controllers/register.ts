@@ -21,12 +21,12 @@ export const register: RequestHandler = async (req, res, _): Promise<void> => {
       email,
     });
 
-    const userID = await dbUsers.findValue('id').where('username').equals(username);
+    const userId = await dbUsers.findValue('id').where('username').equals(username);
 
     // authenticate session
     req.session.userID = username;
 
-    res.status(201).send({ status: 'success', userID });
+    res.status(201).send({ status: 'success', userId });
   } catch (error) {
     if (error instanceof FieldError) {
       res.status(200).send(error.info);

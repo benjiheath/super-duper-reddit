@@ -14,14 +14,12 @@ import FormTextArea from '../generic/FormTextArea';
 import { InputFields } from '../register/InputFields';
 
 const CreatePost = () => {
-  const { setResponseError, username, userID } = useGlobalUserContext();
+  const { setResponseError, username, userId } = useGlobalUserContext();
   const { setPosts, posts } = usePostsContext();
   const history = useHistory();
   const {
     register,
-    reset,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm();
   const toast = useToast({

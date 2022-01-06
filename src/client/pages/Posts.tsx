@@ -20,7 +20,7 @@ export const PostedBy = (props: PostedByProps) => {
   const timeAgo = getTimeAgo(date);
 
   return (
-    <Flex>
+    <Flex color='gray.400'>
       <Text mr={2}>submitted {timeAgo} by * </Text>
       <Text color='prim.800' display='inline-block' fontWeight='700'>
         {creatorUsername}

@@ -12,7 +12,7 @@ export interface UserDispatchers {
 export interface UserState {
   authorized: boolean;
   username: string | null;
-  userID: string | null;
+  userId: string | null;
   err: any;
 }
 

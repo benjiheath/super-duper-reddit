@@ -74,7 +74,7 @@ const PostMain = (props: PostProps) => {
 const CommentBox = (props: PostProps) => {
   const { post } = props;
   const { id: postID } = post;
-  const { username, userID, setResponseError } = useGlobalUserContext();
+  const { username, userId, setResponseError } = useGlobalUserContext();
   const { setPost } = usePostsContext();
   const {
     register,
@@ -89,11 +89,11 @@ const CommentBox = (props: PostProps) => {
       const newCommentData = {
         ...data,
         post_id: postID,
-        creator_user_id: userID,
+        creator_user_id: userId,
         creator_username: username,
       };
 
-      const { post } = await axiosPOST('posts/comments', newCommentData);
+      const { post } = await axiosPOST('posts/comments', { data: newCommentData });
 
       if (!post) {
         return;
@@ -150,7 +150,9 @@ const Post = () => {
   const { postsLoading, post, getPost, setPost } = usePostsContext();
 
   React.useEffect(() => {
-    if (!post) getPost(postSlugs);
+    if (!post) {
+      getPost(postSlugs);
+    }
 
     return () => {
       setPost(null);

@@ -19,7 +19,7 @@ export default function PasswordResetForm() {
 
   useEffect(() => {
     const checkToken = async () => {
-      const res = await axiosGET<ServerResponse>('user/account', undefined, token);
+      const res = await axiosGET<ServerResponse>('user/account', { routeParams: token });
       if (res.status === 'fail') {
         toast({
           title: 'Invalid request. Enter your username or email below to recieve a new reset-link',
@@ -58,7 +58,7 @@ export default function PasswordResetForm() {
     setLoading(true);
 
     try {
-      const res = await axiosPATCH<ServerResponse>('user/account', data, token);
+      const res = await axiosPATCH<ServerResponse>('user/account', { data, routeParams: token });
 
       setLoggingIn(true);
 

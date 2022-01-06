@@ -10,22 +10,23 @@ enum AxiosMethods {
   PUT = 'PUT',
 }
 
+interface Options extends AxiosRequestConfig {
+  queries?: { [key: string]: any };
+  params?: string;
+}
+
 export const axiosRequest = (method: AxiosMethods) => {
-  const request = async <T>(
-    endpoint: Endpoint,
-    data?: any,
-    param?: string,
-    options?: AxiosRequestConfig
-  ): Promise<T> => {
-    const paramWithSlash = param ? `/${param}` : '';
+  const request = async <T>(endpoint: Endpoint, options?: Options): Promise<T> => {
+    const requestUrl = options?.params ? `${url}/${endpoint}/${options?.params}` : `${url}/${endpoint}`;
 
     try {
       const { data: res } = await axios({
         method,
-        url: `${url}/${endpoint}${paramWithSlash}`,
-        data,
-        ...axiosOptions,
+        url: requestUrl,
+        params: options?.queries,
+        data: options?.data,
         ...options,
+        ...axiosOptions,
       });
 
       return res;

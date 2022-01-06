@@ -1,5 +1,4 @@
 import { Input, InputProps } from '@chakra-ui/react';
-import React from 'react';
 import { DeepMap, FieldError, FieldValues, UseFormRegister } from 'react-hook-form';
 import { InputFieldType } from '../../types/general';
 import AlertPop from '../register/AlertPop';

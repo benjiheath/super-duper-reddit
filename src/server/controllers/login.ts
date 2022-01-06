@@ -14,7 +14,7 @@ export const login: RequestHandler = async (req, res, _): Promise<void> => {
   try {
     const { username, password } = req.body;
 
-    const { id: userID, password: hashedPassword } = await dbUsers
+    const { id: userId, password: hashedPassword } = await dbUsers
       .findValues(['id', 'password'])
       .where('username')
       .equals(username);
@@ -25,7 +25,7 @@ export const login: RequestHandler = async (req, res, _): Promise<void> => {
       res.status(200).send({
         status: 'success',
         auth: true,
-        userID,
+        userId,
       });
     } else {
       res.status(200).send({

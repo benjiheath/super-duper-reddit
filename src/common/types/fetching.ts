@@ -26,7 +26,7 @@ export type RecoveryResponse = StatusAndMessage & { sentTo: string } & { error?:
 
 export type PwResetResponse = StatusAndMessage & { username: string };
 
-export type SessionInfo = Auth & { userID: string | null };
+export type SessionInfo = Auth & { userId: string | null };
 
 export interface StatusAndMessage {
   status: 'fail' | 'success';
@@ -39,7 +39,7 @@ export interface ServerResponse extends StatusAndMessage {
   auth?: boolean;
   sentTo?: string;
   username?: string;
-  userID?: string | null;
+  userId?: string | null;
   post?: PostType;
   posts?: PostType[];
 }
