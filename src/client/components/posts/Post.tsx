@@ -1,4 +1,4 @@
-import { Box, Divider, Heading, HeadingProps, Text, VStack } from '@chakra-ui/react';
+import { Box, Divider, Heading, HeadingProps, HStack, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -12,6 +12,7 @@ import ButtonSubmit from '../generic/ButtonSubmit';
 import FormTextArea from '../generic/FormTextArea';
 import PageBox from '../generic/PageBox';
 import SrSpinner from '../generic/SrSpinner';
+import PostVotes from './PostVotes';
 
 type PostTitleProps = Pick<PostType, 'title' | 'contentUrl'>;
 
@@ -43,48 +44,11 @@ const PostTitle = (props: PostTitleProps) => {
   );
 };
 
-const PostMain = (props: PostProps) => {
-  const { post } = props;
-  const {
-    id,
-    body,
-    title,
-    comments,
-    creatorUserId,
-    creatorUsername,
-    currentStatus,
-    updatedAt,
-    createdAt,
-    contentUrl,
-    urlSlugs,
-  } = post;
-
-  return (
-    <VStack alignItems='start' width='100%'>
-      <PostTitle title={title} contentUrl={contentUrl} />
-      <PostedBy date={createdAt} creatorUsername={post.creatorUsername} />
-      {body ? (
-        <Text
-          outline='1px solid'
-          bg='prim.50'
-          outlineColor='prim.200'
-          p='10px 16px'
-          w='100%'
-          borderRadius={6}
-        >
-          {body}
-        </Text>
-      ) : null}
-      <span>{comments.length} comments</span>
-    </VStack>
-  );
-};
-
 const CommentBox = (props: PostProps) => {
   const { post } = props;
   const { id: postID } = post;
   const { username, userId, setResponseError } = useGlobalUserContext();
-  const { setPost } = usePostsContext();
+  const { setPostInView } = usePostsContext();
   const {
     register,
     reset,
@@ -109,7 +73,7 @@ const CommentBox = (props: PostProps) => {
         // TODO - handle later
       }
 
-      setPost(post);
+      setPostInView(post);
       reset();
     } catch (err) {
       setResponseError(err);
@@ -131,6 +95,46 @@ const CommentBox = (props: PostProps) => {
         </VStack>
       </form>
     </Box>
+  );
+};
+
+const PostMain = (props: PostProps) => {
+  const { post } = props;
+  const {
+    id,
+    body,
+    title,
+    comments,
+    creatorUserId,
+    creatorUsername,
+    currentStatus,
+    updatedAt,
+    createdAt,
+    contentUrl,
+    urlSlugs,
+  } = post;
+
+  return (
+    <HStack justifyContent='start' w='100%' spacing={6}>
+      <PostVotes post={post} />
+      <VStack alignItems='start' width='100%'>
+        <PostTitle title={title} contentUrl={contentUrl} />
+        <PostedBy date={createdAt} creatorUsername={post.creatorUsername} />
+        {body ? (
+          <Text
+            outline='1px solid'
+            bg='prim.50'
+            outlineColor='prim.200'
+            p='10px 16px'
+            w='100%'
+            borderRadius={6}
+          >
+            {body}
+          </Text>
+        ) : null}
+        <span>{comments.length} comments</span>
+      </VStack>
+    </HStack>
   );
 };
 
@@ -156,29 +160,29 @@ const Comments = (props: CommentProps) => {
 
 const Post = () => {
   const { postSlugs } = useParams() as { postSlugs: string };
-  const { postsLoading, post, getPost, setPost } = usePostsContext();
+  const { postsLoading, postInView, getPost, setPostInView } = usePostsContext();
 
   React.useEffect(() => {
-    if (!post) {
+    if (!postInView) {
       getPost(postSlugs);
     }
 
     return () => {
-      setPost(null);
+      setPostInView(null);
     };
   }, []);
 
-  if (postsLoading || !post) {
+  if (postsLoading || !postInView) {
     return <SrSpinner />;
   }
 
   return (
     <PageBox>
       <VStack width='100%' spacing={8}>
-        <PostMain post={post} />
+        <PostMain post={postInView} />
         <Divider />
-        <CommentBox post={post} />
-        <Comments comments={post.comments} />
+        <CommentBox post={postInView} />
+        <Comments comments={postInView.comments} />
       </VStack>
     </PageBox>
   );

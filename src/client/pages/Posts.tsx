@@ -1,101 +1,14 @@
-import { Flex, HStack, Icon, IconProps, Link as ChakraLink, Text, VStack } from '@chakra-ui/react';
+import { Flex, HStack, Link as ChakraLink, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
-import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
-import { IconType } from 'react-icons/lib';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
-import { PostType } from '../../common/types/entities';
 import SrSpinner from '../components/generic/SrSpinner';
 import { NavBar } from '../components/homepage';
 import { NewPost } from '../components/posts';
 import Post from '../components/posts/Post';
+import PostVotes from '../components/posts/PostVotes';
 import { usePostsContext } from '../contexts/posts/PostsContext';
-import { useGlobalUserContext } from '../contexts/user/GlobalUserContext';
 import { PostProps } from '../types/posts';
-import { axiosPATCH } from '../utils/axiosMethods';
 import { getTimeAgo } from '../utils/misc';
-
-interface VoteIconProps extends IconProps {
-  icon: IconType;
-  voteValue: -1 | 1;
-  postId: string;
-  currentVoteValue: -1 | 1 | null;
-}
-
-const VoteIcon = (props: VoteIconProps) => {
-  const { icon, voteValue, postId, currentVoteValue, ...rest } = props;
-  const { updatePost, posts } = usePostsContext();
-  const { userId } = useGlobalUserContext();
-
-  const payload = {
-    userId: userId,
-    postId,
-    voteValue: voteValue === currentVoteValue ? 0 : voteValue,
-  };
-
-  const handleClick = async () => {
-    try {
-      const updatedPost = await axiosPATCH<PostType>('posts/votes', { data: payload });
-      updatePost(updatedPost);
-    } catch (err) {
-      console.log('CAUGHT IN ONCLICK', err);
-    }
-  };
-
-  const hoverFill = voteValue === 1 ? 'sec.800' : 'prim.600';
-  const hoverBg = voteValue === 1 ? 'sec.100' : 'prim.50';
-
-  return (
-    <Icon
-      as={icon}
-      h={8}
-      w={8}
-      p={1}
-      transition='0.15s'
-      _hover={{ bg: hoverBg, fill: hoverFill }}
-      borderRadius={4}
-      onClick={(e) => {
-        e.preventDefault();
-        handleClick();
-      }}
-      {...rest}
-    />
-  );
-};
-
-interface PostVotesProps {
-  points: number | null;
-  postId: string;
-  post: PostType;
-}
-
-const PostVotes = (props: PostVotesProps) => {
-  const { points, postId, post } = props;
-
-  const pointsColor = points && points >= 1 ? 'sec.900' : 'prim.800';
-
-  const upFill = post.userVoteStatus === 1 ? 'sec.900' : 'gray.200';
-  const downFill = post.userVoteStatus === -1 ? 'prim.900' : 'gray.200';
-
-  return (
-    <VStack spacing={0}>
-      <VoteIcon
-        icon={FaAngleUp}
-        voteValue={1}
-        postId={postId}
-        fill={upFill}
-        currentVoteValue={post.userVoteStatus}
-      />
-      <Text color={!points ? 'gray.100' : pointsColor}>{points?.toString()}</Text>
-      <VoteIcon
-        icon={FaAngleDown}
-        voteValue={-1}
-        postId={postId}
-        fill={downFill}
-        currentVoteValue={post.userVoteStatus}
-      />
-    </VStack>
-  );
-};
 
 interface PostedByProps {
   date: string;
@@ -166,7 +79,7 @@ const PostCard = (props: PostProps) => {
         bg='white'
         transition='0.15s'
       >
-        <PostVotes postId={post.id} points={post.points} post={post} />
+        <PostVotes post={post} />
         {/* <Box>img</Box> */}
         <PostCardDetails post={post} />
       </HStack>

@@ -5,13 +5,13 @@ import { Dispatch } from './general';
 export interface PostsDispatchers {
   setPostsLoading: Dispatch<boolean>;
   setPosts: Dispatch<PostType[] | null>;
-  setPost: Dispatch<PostType | null>;
+  setPostInView: Dispatch<PostType | null>;
   updatePost: Dispatch<PostType>;
 }
 
 export interface PostsState {
   posts: PostType[] | null;
-  post: PostType | null;
+  postInView: PostType | null;
   postsLoading: boolean;
 }
 
