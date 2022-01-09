@@ -16,7 +16,7 @@ interface Options extends AxiosRequestConfig {
 }
 
 export const axiosRequest = (method: AxiosMethods) => {
-  const request = async <T>(endpoint: Endpoint, options?: Options): Promise<T> => {
+  const request = async <T = ServerResponse>(endpoint: Endpoint, options?: Options): Promise<T> => {
     const requestUrl = options?.params ? `${url}/${endpoint}/${options?.params}` : `${url}/${endpoint}`;
 
     try {
