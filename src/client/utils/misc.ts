@@ -25,3 +25,11 @@ export const getTimeAgo = (date: string) => {
   const rel = past.toRelative({ base: now });
   return rel;
 };
+
+export const checkIfUrlIsImg = (url: string | null) => {
+  if (url?.endsWith('.png') || url?.endsWith('.jpg') || url?.endsWith('.jpeg') || url?.endsWith('.gif')) {
+    return true;
+  } else {
+    return false;
+  }
+};

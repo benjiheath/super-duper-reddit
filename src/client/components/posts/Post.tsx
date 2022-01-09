@@ -1,4 +1,4 @@
-import { Box, Divider, Heading, HeadingProps, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Divider, Heading, HeadingProps, HStack, Text, VStack, Image } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { PostedBy } from '../../pages/Posts';
 import { CreateCommentFields, PostProps } from '../../types/posts';
 import { axiosPOST } from '../../utils/axiosMethods';
+import { checkIfUrlIsImg } from '../../utils/misc';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormTextArea from '../generic/FormTextArea';
 import PageBox from '../generic/PageBox';
@@ -114,12 +115,24 @@ const PostMain = (props: PostProps) => {
     urlSlugs,
   } = post;
 
+  const image = checkIfUrlIsImg(post.contentUrl);
+
   return (
     <HStack justifyContent='start' w='100%' spacing={6}>
       <PostVotes post={post} />
       <VStack alignItems='start' width='100%'>
         <PostTitle title={title} contentUrl={contentUrl} />
         <PostedBy date={createdAt} creatorUsername={post.creatorUsername} />
+        {image && post.contentUrl ? (
+          <Image
+            height='300px'
+            objectFit='cover'
+            src={post.contentUrl}
+            alt='post image'
+            borderRadius={8}
+            my='10px !important'
+          />
+        ) : null}
         {body ? (
           <Text
             outline='1px solid'
@@ -177,7 +190,7 @@ const Post = () => {
   }
 
   return (
-    <PageBox>
+    <PageBox boxShadow='0px 0px 3px 1px #ececec'>
       <VStack width='100%' spacing={8}>
         <PostMain post={postInView} />
         <Divider />

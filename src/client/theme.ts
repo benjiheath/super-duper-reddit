@@ -82,25 +82,25 @@ export const theme = extendTheme({
       variants: {
         primary: {
           bg: 'prim.800',
-          border: '2px solid transparent',
+          border: '1px solid transparent',
           _hover: {
             bg: 'prim.100',
             _disabled: { bg: 'prim.800', color: 'white' },
             color: 'prim.900',
-            border: '2px solid',
+            border: '1px solid',
             borderColor: 'prim.900',
           },
         },
         secondary: {
           bg: 'sec.800',
-          border: '2px solid transparent',
+          border: '1px solid transparent',
           color: 'white',
 
           _hover: {
             bg: 'sec.100',
             _disabled: { bg: 'sec.800' },
             color: 'sec.800',
-            border: '2px solid',
+            border: '1px solid',
             borderColor: 'sec.800',
           },
         },
@@ -119,7 +119,7 @@ export const theme = extendTheme({
           },
         },
         basicInv: {
-          border: `2px solid ${primaryColors[600]}`,
+          border: `1px solid ${primaryColors[600]}`,
           bg: 'white',
           color: 'prim.800',
           _hover: {

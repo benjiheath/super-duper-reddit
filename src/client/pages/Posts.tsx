@@ -1,4 +1,4 @@
-import { Flex, HStack, Link as ChakraLink, Text, VStack } from '@chakra-ui/react';
+import { Flex, HStack, Link as ChakraLink, Text, VStack, Image } from '@chakra-ui/react';
 import React from 'react';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 import SrSpinner from '../components/generic/SrSpinner';
@@ -8,7 +8,7 @@ import Post from '../components/posts/Post';
 import PostVotes from '../components/posts/PostVotes';
 import { usePostsContext } from '../contexts/posts/PostsContext';
 import { PostProps } from '../types/posts';
-import { getTimeAgo } from '../utils/misc';
+import { checkIfUrlIsImg, getTimeAgo } from '../utils/misc';
 
 interface PostedByProps {
   date: string;
@@ -49,11 +49,16 @@ const PostCardDetails = (props: PostProps) => {
     post.title
   );
 
+  const image = checkIfUrlIsImg(post.contentUrl);
+
   return (
     <VStack alignItems='start' spacing={1}>
       <Text fontWeight='bold' fontSize={20}>
         {contentUrl}
       </Text>
+      {image && post.contentUrl ? (
+        <Image height='100px' objectFit='cover' src={post.contentUrl} alt='post image' borderRadius={4} />
+      ) : null}
       <PostedBy date={post.createdAt} creatorUsername={post.creatorUsername} />
       <Text>{post.comments.length} comments</Text>
     </VStack>
