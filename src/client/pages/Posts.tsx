@@ -106,6 +106,7 @@ export const PostedBy = (props: PostedByProps) => {
   const { date, creatorUsername } = props;
 
   const timeAgo = getTimeAgo(date);
+  // TODO - do this on server so it doesnt update in UI whenever a user votes
 
   return (
     <Flex color='gray.400'>

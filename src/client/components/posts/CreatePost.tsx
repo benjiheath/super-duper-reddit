@@ -1,6 +1,5 @@
 import { useToast, VStack } from '@chakra-ui/react';
 import _ from 'lodash';
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { PostResponse } from '../../../common/types/fetching';

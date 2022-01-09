@@ -5,6 +5,7 @@ import { FieldErrorResponse } from './../types/misc';
 export enum ErrorTypes {
   UserDataAlreadyExists = 'User data already exists',
   AccountNotFound = 'Account not found',
+  ResourceDoesNotExist = `This resource doesn't exist`,
   UnknownError = 'An unknown error occured',
 }
 

@@ -8,6 +8,11 @@ export const servePost: RequestHandler = async (req, res, _): Promise<void> => {
 
     const [post] = await dbPosts.selectAll({ whereConditions: `url_slugs = '${postSlugs}'` });
 
+    if (!post) {
+      res.status(404).send();
+      return;
+    }
+
     const comments = await dbComments.selectAll({
       whereConditions: `post_id = '${post.id}'`,
       orderBy: 'updated_at',

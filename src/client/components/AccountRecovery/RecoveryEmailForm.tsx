@@ -1,10 +1,10 @@
-import { Heading, Input, Text, useToast, VStack } from '@chakra-ui/react';
+import { Input, useToast, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { RecoveryEmailFormData } from '../../types/user';
-import { axiosRequest } from '../../utils/axiosMethods';
+import { axiosPOST } from '../../utils/axiosMethods';
 import { obscureEmail } from '../../utils/misc';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
@@ -29,7 +29,7 @@ export default function RecoveryEmailForm() {
     const idType = id.includes('@') ? 'email' : 'username';
 
     try {
-      const res = await axiosRequest('post', 'user/account', { [idType]: id });
+      const res = await axiosPOST('user/account', { data: { [idType]: id } });
 
       // TODO need guard clause for atypical/unexpected errors. if so, setResponseError to something generic that CTX can handle, then return
 
