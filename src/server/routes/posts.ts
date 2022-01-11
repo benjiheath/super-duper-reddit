@@ -1,5 +1,14 @@
 import express from 'express';
-import { addCommentToPost, createPost, servePost, servePosts, updatePostVotes } from '../controllers';
+import {
+  servePosts,
+  servePost,
+  createPost,
+  addCommentToPost,
+  updatePostVotes,
+  removePost,
+  addFavorite,
+  removeFavorite,
+} from '../handlers/posts';
 
 const router = express.Router();
 

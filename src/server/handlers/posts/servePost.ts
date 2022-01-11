@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
-import { dbComments, dbPosts } from './../utils/dbQueries';
-import { insertPointsAndComments } from './../utils/misc';
+import { dbPosts, dbComments } from '../../utils/dbQueries';
+import { insertPointsAndComments } from '../../utils/misc';
 
 export const servePost: RequestHandler = async (req, res, _): Promise<void> => {
   try {

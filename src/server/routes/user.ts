@@ -1,5 +1,10 @@
 import express from 'express';
-import { register, forgotPasswordHandler, resetPasswordHandler, resetPasswordTokenChecker } from '../controllers';
+import {
+  register,
+  forgotPasswordHandler,
+  resetPasswordTokenChecker,
+  resetPasswordHandler,
+} from '../handlers/user';
 
 const router = express.Router();
 

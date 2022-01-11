@@ -1,11 +1,12 @@
 import bcrypt from 'bcrypt';
 import { RequestHandler } from 'express';
-import { FieldError } from '../utils/errors';
-import { dbUsers } from './../utils/dbQueries';
+import { dbUsers } from '../../utils/dbQueries';
+import { FieldError } from '../../utils/errors';
 
 declare module 'express-session' {
   interface SessionData {
     userID?: string;
+    username?: string;
   }
 }
 
@@ -24,7 +25,8 @@ export const register: RequestHandler = async (req, res, _): Promise<void> => {
     const userId = await dbUsers.findValue('id').where('username').equals(username);
 
     // authenticate session
-    req.session.userID = username;
+    req.session.userID = userId as string;
+    req.session.username = username;
 
     res.status(201).send({ status: 'success', userId });
   } catch (error) {

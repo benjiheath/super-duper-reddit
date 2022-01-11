@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
-import { dbComments, dbPosts } from './../utils/dbQueries';
-import { asyncMap, createSQLWhereConditionsFromList, insertPointsAndComments } from './../utils/misc';
+import { dbPosts, dbComments } from '../../utils/dbQueries';
+import { createSQLWhereConditionsFromList, asyncMap, insertPointsAndComments } from '../../utils/misc';
 
 export const servePosts: RequestHandler = async (req, res, _): Promise<void> => {
   try {

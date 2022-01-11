@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { pool } from '../db';
+import { pool } from '../../db';
 
 export const resetPasswordTokenChecker: RequestHandler = async (req, res, _): Promise<void> => {
   try {

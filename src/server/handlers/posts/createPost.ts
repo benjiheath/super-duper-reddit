@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
-import { createPostSlugs } from '../../common/utils';
-import { FieldError } from '../utils/errors';
-import { dbPosts } from './../utils/dbQueries';
+import { createPostSlugs } from '../../../common/utils';
+import { dbPosts } from '../../utils/dbQueries';
+import { FieldError } from '../../utils/errors';
 
 export const createPost: RequestHandler = async (req, res, next) => {
   try {

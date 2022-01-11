@@ -1,8 +1,6 @@
 import { RequestHandler } from 'express';
-import { DbTables } from '../types/dbTypes';
-import { createPostSlugs } from '../../common/utils';
-import { appendCommentsToPost } from '../utils/misc';
-import { dbQuery, dbComments, dbPosts } from './../utils/dbQueries';
+import { dbComments, dbPosts } from '../../utils/dbQueries';
+import { appendCommentsToPost } from '../../utils/misc';
 
 declare module 'express-session' {
   interface SessionData {
