@@ -1,26 +1,39 @@
-import { Box, Divider, Heading, HeadingProps, HStack, Text, VStack, Image } from '@chakra-ui/react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
+import { useHistory, useParams } from 'react-router-dom';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { PostedBy } from '../../pages/Posts';
 import { CreateCommentFields, PostProps } from '../../types/posts';
-import { axiosPOST } from '../../utils/axiosMethods';
+import { axiosDELETE, axiosPOST } from '../../utils/axiosMethods';
 import { checkIfUrlIsImg } from '../../utils/misc';
-import ButtonSubmit from '../generic/ButtonSubmit';
-import FormTextArea from '../generic/FormTextArea';
-import PageBox from '../generic/PageBox';
-import SrSpinner from '../generic/SrSpinner';
 import PostVotes from './PostVotes';
+import { AlertPopup, FormTextArea, SrSpinner, PageBox, ButtonSubmit } from '../generic';
+import {
+  Box,
+  Divider,
+  Heading,
+  HeadingProps,
+  HStack,
+  Icon,
+  IconProps,
+  Image,
+  Spacer,
+  Text,
+  Tooltip,
+  useToast,
+  VStack,
+} from '@chakra-ui/react';
+import { IconType } from 'react-icons/lib';
 
 type PostTitleProps = Pick<PostType, 'title' | 'contentUrl'>;
 
 const PostTitle = (props: PostTitleProps) => {
   const { title, contentUrl } = props;
 
-  const linkUrl = contentUrl ? `//${contentUrl}` : window.location.href;
+  const linkUrl = contentUrl ?? window.location.href;
   const headingStyles: HeadingProps = contentUrl
     ? { mb: 2, _groupHover: { color: 'prim.800' }, transition: '0.4s' }
     : {};
@@ -54,7 +67,6 @@ const CommentBox = (props: PostProps) => {
     register,
     reset,
     handleSubmit,
-    setError,
     formState: { errors, isValid, isSubmitting },
   } = useForm({ mode: 'onChange' });
 
@@ -191,7 +203,7 @@ const Post = () => {
 
   return (
     <PageBox boxShadow='0px 0px 3px 1px #ececec'>
-      <VStack width='100%' spacing={8}>
+      <VStack width='100%' spacing={4}>
         <PostMain post={postInView} />
         <Divider />
         <CommentBox post={postInView} />
