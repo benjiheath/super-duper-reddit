@@ -4,6 +4,7 @@ export enum DbTables {
   users = 'users',
   posts = 'posts',
   comments = 'comments',
+  postsFavorites = 'posts_favorites',
   postsVotes = 'posts_votes',
   commentsVotes = 'comments_votes',
   session = 'session',
@@ -12,6 +13,7 @@ export enum DbTables {
 export type UserColumn = keyof DbUser;
 export type PostsColumn = keyof DbPost;
 export type CommentsColumn = keyof DbComment;
+export type PostsFavoriteColumn = keyof DbPostFavorite;
 export type PostsVoteColumn = keyof DbPostVote;
 export type CommentsVoteColumn = keyof DbCommentVote;
 
@@ -54,6 +56,12 @@ export interface DbComment {
   creator_username: string;
   current_status: 'normal' | 'removed';
   '*': any;
+}
+
+export interface DbPostFavorite {
+  id: string;
+  post_id: string;
+  user_id: string;
 }
 
 export interface DbPostVote {

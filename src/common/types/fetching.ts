@@ -8,6 +8,7 @@ export type Endpoint =
   | 'account'
   | 'account/:token'
   | 'posts/comments'
+  | 'posts/favorites'
   | 'posts/votes'
   | 'user/account';
 
@@ -44,6 +45,7 @@ export interface ServerResponse extends StatusAndMessage {
   userId?: string | null;
   post?: PostType;
   posts?: PostType[];
+  updatedUserFavoriteStatus?: boolean;
 }
 
 export type PostResponse = { post: PostType };

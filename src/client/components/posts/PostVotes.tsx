@@ -80,7 +80,7 @@ const PostVotes = (props: PostVotesProps) => {
         fill={upFill}
         currentVoteValue={post.userVoteStatus}
       />
-      <Text color={!points ? 'gray.100' : pointsColor}>{points}</Text>
+      <Text color={!points ? 'gray.100' : pointsColor}>{points ?? 0}</Text>
       <VoteIcon
         icon={FaAngleDown}
         voteValue={-1}

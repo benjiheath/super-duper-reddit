@@ -58,6 +58,113 @@ const PostTitle = (props: PostTitleProps) => {
   );
 };
 
+interface PostActionsIconProps extends IconProps {
+  icon: IconType;
+}
+
+const PostActionsIcon = (props: PostActionsIconProps) => {
+  const { icon, ...rest } = props;
+  return <Icon as={icon} {...rest} cursor='pointer' />;
+};
+
+const PostActionsMenu = (props: PostProps) => {
+  const { post } = props;
+  const { comments } = post;
+  const { userId } = useGlobalUserContext();
+  const { setPostInView, postInView } = usePostsContext();
+  const [alertIsOpen, setAlertIsOpen] = React.useState(false);
+  const history = useHistory();
+  const toast = useToast();
+
+  const handleRemove = async () => {
+    await axiosDELETE('posts', { data: { postId: post.id } });
+    setAlertIsOpen(false);
+    history.push({ pathname: '/posts' });
+    toast({ title: 'Post successfully removed', status: 'success' });
+  };
+
+  const handleFavorite = async () => {
+    const { updatedUserFavoriteStatus } = await axiosPOST('posts/favorites', { data: { postId: post.id } });
+    setPostInView({ ...postInView!, userFavoriteStatus: updatedUserFavoriteStatus! });
+  };
+
+  const iconNotLiked = <Icon as={FaRegHeart} fill='prim.800' onClick={handleFavorite} cursor='pointer' />;
+  const iconLiked = <Icon as={FaHeart} fill='prim.800' onClick={handleFavorite} cursor='pointer' />;
+
+  const iconRemove =
+    post.creatorUserId === userId && post.currentStatus === 'normal' ? (
+      <Tooltip label='Remove post' bg='prim.50' color='red'>
+        <span>
+          <Icon
+            as={FaTrash}
+            fill='gray.500'
+            onClick={() => {
+              setAlertIsOpen(true);
+            }}
+            cursor='pointer'
+          />
+        </span>
+      </Tooltip>
+    ) : null;
+
+  return (
+    <>
+      <HStack spacing={4} mt='14px !important' w='100%'>
+        <span>{comments.length} comments</span>
+        {post.userFavoriteStatus ? iconLiked : iconNotLiked}
+        <Spacer />
+        {iconRemove}
+      </HStack>
+      <AlertPopup
+        title='Remove Post'
+        onClick={handleRemove}
+        isOpen={alertIsOpen}
+        setIsOpen={setAlertIsOpen}
+      />
+    </>
+  );
+};
+
+const PostMain = (props: PostProps) => {
+  const { post } = props;
+  const { body, title, createdAt, contentUrl } = post;
+
+  const image = checkIfUrlIsImg(post.contentUrl);
+
+  return (
+    <HStack justifyContent='start' w='100%' spacing={6}>
+      <PostVotes post={post} />
+      <VStack alignItems='start' width='100%' spacing={2}>
+        <PostTitle title={title} contentUrl={contentUrl} />
+        <PostedBy date={createdAt} creatorUsername={post.creatorUsername} />
+        {image && post.contentUrl && post.currentStatus === 'normal' ? (
+          <Image
+            height='300px'
+            objectFit='cover'
+            src={post.contentUrl}
+            alt='post image'
+            borderRadius={8}
+            my='10px !important'
+          />
+        ) : null}
+        {body ? (
+          <Text
+            outline='1px solid'
+            bg='prim.50'
+            outlineColor='prim.200'
+            p='10px 16px'
+            w='100%'
+            borderRadius={6}
+          >
+            {body}
+          </Text>
+        ) : null}
+        <PostActionsMenu post={post} />
+      </VStack>
+    </HStack>
+  );
+};
+
 const CommentBox = (props: PostProps) => {
   const { post } = props;
   const { id: postID } = post;
@@ -108,58 +215,6 @@ const CommentBox = (props: PostProps) => {
         </VStack>
       </form>
     </Box>
-  );
-};
-
-const PostMain = (props: PostProps) => {
-  const { post } = props;
-  const {
-    id,
-    body,
-    title,
-    comments,
-    creatorUserId,
-    creatorUsername,
-    currentStatus,
-    updatedAt,
-    createdAt,
-    contentUrl,
-    urlSlugs,
-  } = post;
-
-  const image = checkIfUrlIsImg(post.contentUrl);
-
-  return (
-    <HStack justifyContent='start' w='100%' spacing={6}>
-      <PostVotes post={post} />
-      <VStack alignItems='start' width='100%'>
-        <PostTitle title={title} contentUrl={contentUrl} />
-        <PostedBy date={createdAt} creatorUsername={post.creatorUsername} />
-        {image && post.contentUrl ? (
-          <Image
-            height='300px'
-            objectFit='cover'
-            src={post.contentUrl}
-            alt='post image'
-            borderRadius={8}
-            my='10px !important'
-          />
-        ) : null}
-        {body ? (
-          <Text
-            outline='1px solid'
-            bg='prim.50'
-            outlineColor='prim.200'
-            p='10px 16px'
-            w='100%'
-            borderRadius={6}
-          >
-            {body}
-          </Text>
-        ) : null}
-        <span>{comments.length} comments</span>
-      </VStack>
-    </HStack>
   );
 };
 

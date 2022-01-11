@@ -21,6 +21,7 @@ export interface PostType {
   urlSlugs: string;
   comments: CommentType[];
   userVoteStatus: -1 | 1 | null;
+  userFavoriteStatus: boolean;
   points: number | null;
 }
 
@@ -34,6 +35,12 @@ export interface CommentType {
   creatorUserId: string;
   creatorUsername: string;
   currentStatus: 'normal' | 'removed';
+}
+
+export interface PostFavoriteType {
+  id: string;
+  postId: string;
+  userId: string;
 }
 
 export interface PostVoteType {

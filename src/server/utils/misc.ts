@@ -1,15 +1,7 @@
 import _ from 'lodash';
 import { CommentType, PostType } from '../../common/types/entities';
-import { createPostSlugs } from '../../common/utils';
-import {
-  PostsColumn,
-  CommentsColumn,
-  UserColumn,
-  DbPost,
-  DbComment,
-  PostWithComments,
-} from '../types/dbTypes';
-import { dbPostsVotes } from './dbQueries';
+import { CommentsColumn, DbComment, DbPost, PostsColumn, UserColumn } from '../types/dbTypes';
+import { dbPostsFavorites, dbPostsVotes } from './dbQueries';
 
 export const createSQLWhereConditionsFromList = <T>(
   list: T[],
@@ -98,6 +90,9 @@ export const insertPointsAndComments: InsertPointsAndComments = async (post, com
     whereConditions: `user_id = '${userId}' AND post_id = '${post.id}'`,
   });
   const postComments = comments.filter((comment) => comment.postId === post.id);
+  const [userFavoriteStatus] = await dbPostsFavorites.selectAll({
+    whereConditions: `user_id = '${userId}' AND post_id = '${post.id}'`,
+  });
 
   if (postVote && postVote.postId === post.id) {
     return { ...post, comments: postComments, points: voteCount, userVoteStatus: postVote.voteStatus };
@@ -107,6 +102,7 @@ export const insertPointsAndComments: InsertPointsAndComments = async (post, com
       comments: postComments,
       points: voteCount,
       userVoteStatus: null,
+      userFavoriteStatus: userFavoriteStatus ? true : false,
     };
   }
 };

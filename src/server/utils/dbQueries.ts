@@ -1,5 +1,5 @@
-import { CommentsVoteColumn } from './../types/dbTypes';
-import { UserType, PostVoteType } from './../../common/types/entities';
+import { CommentsVoteColumn, DbPostFavorite, PostsFavoriteColumn } from './../types/dbTypes';
+import { UserType, PostVoteType, PostFavoriteType } from './../../common/types/entities';
 import { handlePostRemovedStatus, sanitizeKeys } from './misc';
 import { pool } from '../db';
 import { ErrorTypes, FieldError, generateErrorType } from './errors';
@@ -48,6 +48,7 @@ type DbQueryOverload = {
   (table: DbTables.users): DbQueryMethods<DbUser, UserColumn, UserType>;
   (table: DbTables.posts): DbQueryMethods<DbPost, PostsColumn, PostType>;
   (table: DbTables.comments): DbQueryMethods<DbComment, CommentsColumn, CommentType>;
+  (table: DbTables.postsFavorites): DbQueryMethods<DbPostFavorite, PostsFavoriteColumn, PostFavoriteType>;
   (table: DbTables.postsVotes): DbQueryMethods<DbPostVote, PostsVoteColumn, PostVoteType>;
   (table: DbTables.commentsVotes): DbQueryMethods<DbCommentVote, CommentsVoteColumn, any>;
 };
@@ -196,5 +197,6 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
 export const dbUsers = dbQuery(DbTables.users);
 export const dbPosts = dbQuery(DbTables.posts);
 export const dbComments = dbQuery(DbTables.comments);
+export const dbPostsFavorites = dbQuery(DbTables.postsFavorites);
 export const dbPostsVotes = dbQuery(DbTables.postsVotes);
 export const dbCommentsVotes = dbQuery(DbTables.commentsVotes);

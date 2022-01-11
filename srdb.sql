@@ -61,6 +61,15 @@ CREATE TABLE comments(
     CONSTRAINT parent_comment_id FOREIGN KEY(parent_comment_id) REFERENCES comments(id)
 );
 
+CREATE TABLE posts_favorites (
+    id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
+    post_id uuid,
+    user_id uuid,
+    CONSTRAINT post_id FOREIGN KEY(post_id) REFERENCES posts(id),
+    CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES users(id),
+    CONSTRAINT unique_composite_pf UNIQUE (post_id, user_id)
+);
+
 CREATE TABLE posts_votes (
     id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
     post_id uuid,
