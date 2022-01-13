@@ -9,7 +9,6 @@ import { PostedBy } from '../../pages/Posts';
 import { CreateCommentFields, PostProps } from '../../types/posts';
 import { axiosDELETE, axiosPOST } from '../../utils/axiosMethods';
 import { checkIfUrlIsImg } from '../../utils/misc';
-import PostVotes from './PostVotes';
 import { AlertPopup, FormTextArea, SrSpinner, PageBox, ButtonSubmit } from '../generic';
 import {
   Box,

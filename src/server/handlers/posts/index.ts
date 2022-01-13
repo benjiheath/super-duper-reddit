@@ -1,3 +1,4 @@
+import { updateCommentVotes } from './updateCommentVotes';
 import { editPost } from './editPost';
 import { addFavorite } from './addFavorite';
 import { addCommentToPost } from './addCommentToPost';
@@ -15,6 +16,7 @@ export {
   servePost,
   servePosts,
   updatePostVotes,
+  updateCommentVotes,
   addFavorite,
   removeFavorite,
   editPost,

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { CommentType, PostType } from '../../common/types/entities';
 import { CommentsColumn, DbComment, DbPost, PostsColumn, UserColumn } from '../types/dbTypes';
-import { dbPostsFavorites, dbPostsVotes } from './dbQueries';
+import { dbCommentsVotes, dbPostsFavorites, dbPostsVotes } from './dbQueries';
 
 export const createSQLWhereConditionsFromList = <T>(
   list: T[],
@@ -82,6 +82,22 @@ export const insertPointsAndVoteStatus = async (posts: PostType[], userId: strin
   return postsWithPointsAndVoteStatus;
 };
 
+export const insertVoteInfoIntoComment = async (
+  comment: CommentType,
+  userId: string
+): Promise<CommentType> => {
+  const voteCount = await dbCommentsVotes.getSum('vote_status').where('comment_id').equals(comment.id);
+  const [commentVote] = await dbCommentsVotes.selectAll({
+    whereConditions: `user_id = '${userId}' AND comment_id = '${comment.id}'`,
+  });
+
+  return {
+    ...comment,
+    points: voteCount,
+    userVoteStatus: commentVote ? commentVote.voteStatus : null,
+  };
+};
+
 type InsertPointsAndComments = (post: PostType, comments: CommentType[], userId: string) => Promise<PostType>;
 
 export const insertPointsAndComments: InsertPointsAndComments = async (post, comments, userId) => {
@@ -89,10 +105,14 @@ export const insertPointsAndComments: InsertPointsAndComments = async (post, com
   const [postVote] = await dbPostsVotes.selectAll({
     whereConditions: `user_id = '${userId}' AND post_id = '${post.id}'`,
   });
-  const postComments = comments.filter((comment) => comment.postId === post.id);
   const [userFavoriteStatus] = await dbPostsFavorites.selectAll({
     whereConditions: `user_id = '${userId}' AND post_id = '${post.id}'`,
   });
+
+  const postCommentsRaw = comments.filter((comment) => comment.postId === post.id);
+  const postComments = await asyncMap(postCommentsRaw, (postComment) =>
+    insertVoteInfoIntoComment(postComment, userId)
+  );
 
   if (postVote && postVote.postId === post.id) {
     return { ...post, comments: postComments, points: voteCount, userVoteStatus: postVote.voteStatus };

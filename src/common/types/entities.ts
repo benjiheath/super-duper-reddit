@@ -35,6 +35,8 @@ export interface CommentType {
   creatorUserId: string;
   creatorUsername: string;
   currentStatus: 'normal' | 'removed';
+  userVoteStatus: -1 | 1 | null;
+  points: number | null;
 }
 
 export interface PostFavoriteType {

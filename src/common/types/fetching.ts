@@ -8,6 +8,7 @@ export type Endpoint =
   | 'account'
   | 'account/:token'
   | 'posts/comments'
+  | 'posts/comments/votes'
   | 'posts/favorites'
   | 'posts/votes'
   | 'user/account';
