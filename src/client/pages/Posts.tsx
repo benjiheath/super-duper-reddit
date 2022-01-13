@@ -5,7 +5,7 @@ import SrSpinner from '../components/generic/SrSpinner';
 import { NavBar } from '../components/homepage';
 import { NewPost } from '../components/posts';
 import Post from '../components/posts/Post';
-import PostVotes from '../components/posts/PostVotes';
+import Votes from '../components/posts/Votes';
 import { usePostsContext } from '../contexts/posts/PostsContext';
 import { PostProps } from '../types/posts';
 import { checkIfUrlIsImg, getTimeAgo } from '../utils/misc';
@@ -84,8 +84,7 @@ const PostCard = (props: PostProps) => {
         bg='white'
         transition='0.15s'
       >
-        <PostVotes post={post} />
-        {/* <Box>img</Box> */}
+        <Votes item={post} mode='post' />
         <PostCardDetails post={post} />
       </HStack>
     </Link>

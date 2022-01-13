@@ -1,15 +1,3 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { FaEdit, FaEllipsisH, FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
-import { useHistory, useParams } from 'react-router-dom';
-import { CommentType, PostType } from '../../../common/types/entities';
-import { usePostsContext } from '../../contexts/posts/PostsContext';
-import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
-import { PostedBy } from '../../pages/Posts';
-import { CreateCommentFields, PostProps } from '../../types/posts';
-import { axiosDELETE, axiosPOST } from '../../utils/axiosMethods';
-import { checkIfUrlIsImg } from '../../utils/misc';
-import { AlertPopup, FormTextArea, SrSpinner, PageBox, ButtonSubmit } from '../generic';
 import {
   Box,
   Divider,
@@ -30,7 +18,21 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { FaEdit, FaEllipsisH, FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
 import { IconType } from 'react-icons/lib';
+import { useHistory, useParams } from 'react-router-dom';
+import { CommentType, PostType } from '../../../common/types/entities';
+import { usePostsContext } from '../../contexts/posts/PostsContext';
+import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { PostedBy } from '../../pages/Posts';
+import { CreateCommentFields, PostProps } from '../../types/posts';
+import { axiosDELETE, axiosPOST } from '../../utils/axiosMethods';
+import { checkIfUrlIsImg } from '../../utils/misc';
+import { AlertPopup, ButtonSubmit, FormTextArea, PageBox, SrSpinner } from '../generic';
+import Comment from './Comment';
+import Votes from './Votes';
 
 type PostTitleProps = Pick<PostType, 'title' | 'contentUrl'>;
 
@@ -159,7 +161,7 @@ const PostMain = (props: PostProps) => {
 
   return (
     <HStack justifyContent='start' w='100%' spacing={6}>
-      <PostVotes post={post} />
+      <Votes item={post} mode='post' />
       <VStack alignItems='start' width='100%' spacing={2}>
         <PostTitle title={title} contentUrl={contentUrl} />
         <PostedBy date={createdAt} creatorUsername={post.creatorUsername} />
@@ -244,11 +246,11 @@ const CommentBox = (props: PostProps) => {
   );
 };
 
-interface CommentProps {
+interface CommentsProps {
   comments: CommentType[];
 }
 
-const Comments = (props: CommentProps) => {
+const Comments = (props: CommentsProps) => {
   const { comments } = props;
 
   if (comments.length === 0) {
@@ -256,11 +258,11 @@ const Comments = (props: CommentProps) => {
   }
 
   return (
-    <>
+    <VStack alignItems='start' w='100%' spacing={10}>
       {comments.map((comment) => (
-        <span>{comment.body}</span>
+        <Comment comment={comment} />
       ))}
-    </>
+    </VStack>
   );
 };
 
