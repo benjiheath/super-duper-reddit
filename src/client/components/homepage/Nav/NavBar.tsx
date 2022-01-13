@@ -4,10 +4,10 @@ import { Link, useHistory } from 'react-router-dom';
 import UserMenu from './UserMenu';
 
 const NavBar = () => {
-  const { location } = useHistory();
+  const history = useHistory();
 
   const [linkTo, btnVariant, btnText, btnIcon, btnColor] =
-    location.pathname === '/posts/create'
+    history.location.pathname === '/posts/create' || history.location.pathname.includes('posts/edit')
       ? ['/', 'basicHoverInv', 'Back', FaArrowLeft, 'black']
       : ['/posts/create', 'secondary', 'Create Post', FaPlus, 'white'];
 
@@ -19,7 +19,14 @@ const NavBar = () => {
         </Link>
         <Spacer />
         <Link to={linkTo}>
-          <Button mr={4} variant={btnVariant}>
+          <Button
+            mr={4}
+            variant={btnVariant}
+            onClick={() => {
+              history.location.pathname === '/posts/create' ||
+                (history.location.pathname.includes('posts/edit') && history.goBack());
+            }}
+          >
             <Icon as={btnIcon} mr={2} />
             {btnText}
           </Button>

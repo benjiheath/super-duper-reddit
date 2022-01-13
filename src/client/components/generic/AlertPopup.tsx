@@ -36,7 +36,7 @@ const AlertPopup = (props: Props) => {
               Cancel
             </Button>
             <Button variant='primary' color='white' onClick={onClick} ml={3}>
-              Delete
+              Remove
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

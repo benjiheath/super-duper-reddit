@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaEllipsisH, FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
 import { useHistory, useParams } from 'react-router-dom';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
@@ -18,8 +18,13 @@ import {
   HeadingProps,
   HStack,
   Icon,
+  IconButton,
   IconProps,
   Image,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Spacer,
   Text,
   Tooltip,
@@ -113,7 +118,29 @@ const PostActionsMenu = (props: PostProps) => {
         <span>{comments.length} comments</span>
         {post.userFavoriteStatus ? iconLiked : iconNotLiked}
         <Spacer />
-        {iconRemove}
+        {post.creatorUserId === userId && post.currentStatus === 'normal' ? (
+          <Menu>
+            <MenuButton as={IconButton} aria-label='Options' icon={<FaEllipsisH />} variant='ghost' h={8} />
+            <MenuList minWidth='120px'>
+              <MenuItem
+                icon={<FaEdit />}
+                onClick={() => {
+                  history.push({ pathname: `/posts/edit/${post.urlSlugs}` });
+                }}
+              >
+                Edit
+              </MenuItem>
+              <MenuItem
+                icon={<FaTrash />}
+                onClick={() => {
+                  setAlertIsOpen(true);
+                }}
+              >
+                Remove
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        ) : null}
       </HStack>
       <AlertPopup
         title='Remove Post'

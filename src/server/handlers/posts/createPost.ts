@@ -23,7 +23,7 @@ export const createPost: RequestHandler = async (req, res, next) => {
 
     const postWithCommentsPropertyAppended = { ...postWithUrlSlugs, comments: [] };
 
-    res.status(200).send({ post: postWithCommentsPropertyAppended });
+    res.status(200).send(postWithCommentsPropertyAppended);
   } catch (err) {
     if (err instanceof FieldError) {
       res.status(200).send(err.info);

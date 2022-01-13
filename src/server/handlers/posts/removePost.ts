@@ -6,8 +6,10 @@ export const removePost: RequestHandler = async (req, res, next) => {
   try {
     const { postId } = req.body;
 
+    console.log('reqid', req.session.userID);
+
     const [postBelongsToUser] = await dbPosts.selectAll({
-      whereConditions: `id = '${postId}' AND creator_username = '${req.session.userID}'`,
+      whereConditions: `id = '${postId}' AND creator_user_id = '${req.session.userID}'`,
     });
 
     if (!postBelongsToUser) {

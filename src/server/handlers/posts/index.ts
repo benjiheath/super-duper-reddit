@@ -1,3 +1,4 @@
+import { editPost } from './editPost';
 import { addFavorite } from './addFavorite';
 import { addCommentToPost } from './addCommentToPost';
 import { createPost } from './createPost';
@@ -16,4 +17,5 @@ export {
   updatePostVotes,
   addFavorite,
   removeFavorite,
+  editPost,
 };

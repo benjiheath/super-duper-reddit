@@ -8,6 +8,7 @@ import {
   removePost,
   addFavorite,
   removeFavorite,
+  editPost,
 } from '../handlers/posts';
 
 const router = express.Router();
@@ -17,6 +18,7 @@ router.get('/post', servePost);
 router.post('/', createPost);
 router.post('/comments', addCommentToPost);
 router.post('/favorites', addFavorite);
+router.patch('/post', editPost);
 router.patch('/votes', updatePostVotes);
 router.delete('/', removePost);
 router.delete('/favorites', removeFavorite);

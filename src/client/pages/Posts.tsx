@@ -113,7 +113,7 @@ const Posts = () => {
     <Flex flexDir='column'>
       <NavBar />
       <Switch>
-        <Route exact path={`${match.path}/create`}>
+        <Route exact path={[`${match.path}/create`, `${match.path}/edit/:postSlugs`]}>
           <NewPost />
         </Route>
         <Route exact path='/posts/:postSlugs'>

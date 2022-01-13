@@ -21,8 +21,9 @@ const UserMenu = () => {
       <MenuButton
         as={Button}
         color='prim.800'
-        _hover={{ color: 'white', bg: 'prim.800' }}
-        _active={{ color: 'white', bg: 'prim.800' }}
+        bg='white'
+        _hover={{ bg: 'prim.100' }}
+        _active={{ bg: 'prim.100' }}
         leftIcon={<FaUser />}
         rightIcon={<FaChevronDown />}
       >
