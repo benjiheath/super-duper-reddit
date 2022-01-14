@@ -11,9 +11,10 @@ export const editPost: RequestHandler = async (req, res, next) => {
 
     const { rows } = await pool.query(
       `UPDATE posts 
-        SET title = '${title}', body = '${body}', content_url = '${content_url}' 
+        SET title = $1, body = $2, content_url = $3 
         WHERE url_slugs = '${postSlugs}' AND creator_user_id = '${req.session.userID}' 
-        RETURNING *`
+        RETURNING *`,
+      [title, body, content_url]
     );
 
     const [postWithSanitizedKeys] = rows.map((row) => sanitizeKeys(row));
