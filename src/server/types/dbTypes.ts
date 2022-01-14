@@ -48,7 +48,7 @@ export interface PostWithComments extends DbPost {
 export interface DbComment {
   id: string;
   post_id: string;
-  parent_post_id: string;
+  parent_comment_id: string;
   body: string;
   created_at: string;
   updated_at: string;

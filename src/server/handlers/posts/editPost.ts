@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express';
+import _ from 'lodash';
 import { pool } from '../../db';
 import { dbComments } from '../../utils/dbQueries';
 import { FieldError } from '../../utils/errors';

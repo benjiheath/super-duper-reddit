@@ -19,7 +19,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import React from 'react';
-import { useForm } from 'react-hook-form';
 import { FaEdit, FaEllipsisH, FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
 import { IconType } from 'react-icons/lib';
 import { useHistory, useParams } from 'react-router-dom';
@@ -27,11 +26,12 @@ import { CommentType, PostType } from '../../../common/types/entities';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { PostedBy } from '../../pages/Posts';
-import { CreateCommentFields, PostProps } from '../../types/posts';
+import { PostProps } from '../../types/posts';
 import { axiosDELETE, axiosPOST } from '../../utils/axiosMethods';
 import { checkIfUrlIsImg } from '../../utils/misc';
-import { AlertPopup, ButtonSubmit, FormTextArea, PageBox, SrSpinner } from '../generic';
-import Comment from './Comment';
+import { AlertPopup, PageBox, SrSpinner } from '../generic';
+import CommentCard, { NestedComment } from './Comment';
+import CommentBox from './CommentBox';
 import Votes from './Votes';
 
 type PostTitleProps = Pick<PostType, 'title' | 'contentUrl'>;
@@ -193,59 +193,6 @@ const PostMain = (props: PostProps) => {
   );
 };
 
-const CommentBox = (props: PostProps) => {
-  const { post } = props;
-  const { id: postID } = post;
-  const { username, userId, setResponseError } = useGlobalUserContext();
-  const { setPostInView } = usePostsContext();
-  const {
-    register,
-    reset,
-    handleSubmit,
-    formState: { errors, isValid, isSubmitting },
-  } = useForm({ mode: 'onChange' });
-
-  const onSubmit = async (data: CreateCommentFields): Promise<void> => {
-    try {
-      const newCommentData = {
-        ...data,
-        post_id: postID,
-        creator_user_id: userId,
-        creator_username: username,
-      };
-
-      const { post } = await axiosPOST('posts/comments', { data: newCommentData });
-
-      if (!post) {
-        return;
-        // TODO - handle later
-      }
-
-      setPostInView(post);
-      reset();
-    } catch (err) {
-      setResponseError(err);
-    }
-  };
-
-  return (
-    <Box w='100%'>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <VStack spacing={2}>
-          <FormTextArea
-            register={register}
-            minH={20}
-            placeholder='Enter a comment...'
-            errors={errors}
-            required
-          />
-          <ButtonSubmit text='Save' isDisabled={!isValid} isLoading={isSubmitting} />
-        </VStack>
-      </form>
-    </Box>
-  );
-};
-
 interface CommentsProps {
   comments: CommentType[];
 }
@@ -257,10 +204,30 @@ const Comments = (props: CommentsProps) => {
     return <Text>No comments to display.</Text>;
   }
 
+  const nestComments = (commentList: CommentType[], isRecursiveCall?: boolean): NestedComment[] => {
+    const nestedComments = commentList.map((comment) => {
+      if (comment.parentCommentId && !isRecursiveCall) {
+        return null;
+      }
+
+      const children = comments.filter((filteredComment) => filteredComment.parentCommentId === comment.id);
+      const childrenNested = nestComments(children, true);
+      const commentWithChildren = { ...comment, children: childrenNested };
+
+      return commentWithChildren;
+    });
+
+    const nullsRemoved = nestedComments.filter((c) => c !== null);
+
+    return nullsRemoved as NestedComment[];
+  };
+
+  const nestedComments = nestComments(comments);
+
   return (
     <VStack alignItems='start' w='100%' spacing={10}>
-      {comments.map((comment) => (
-        <Comment comment={comment} />
+      {nestedComments.map((nestedComment) => (
+        <CommentCard comment={nestedComment} />
       ))}
     </VStack>
   );
@@ -289,7 +256,7 @@ const Post = () => {
       <VStack width='100%' spacing={4}>
         <PostMain post={postInView} />
         <Divider />
-        <CommentBox post={postInView} />
+        <CommentBox postId={postInView.id} />
         <Comments comments={postInView.comments} />
       </VStack>
     </PageBox>

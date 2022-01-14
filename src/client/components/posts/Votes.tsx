@@ -111,7 +111,13 @@ const Votes = (props: VotesProps) => {
         currentVoteValue={userVoteStatus}
         mode={mode}
       />
-      <Text color={!points ? 'gray.100' : pointsColor}>{points ?? 0}</Text>
+      <Text
+        color={!points ? 'gray.100' : pointsColor}
+        minW={mode === 'comment' ? '20px' : 'unset'}
+        textAlign='center'
+      >
+        {points ?? 0}
+      </Text>
       <VoteIcon
         icon={FaAngleDown}
         voteValue={-1}

@@ -28,7 +28,7 @@ export interface PostType {
 export interface CommentType {
   id: string;
   postId: string;
-  parentPostId: string | null;
+  parentCommentId: string | null;
   body: string;
   createdAt: string;
   updatedAt: string;
