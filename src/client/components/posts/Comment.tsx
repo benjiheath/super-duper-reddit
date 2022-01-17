@@ -106,17 +106,18 @@ const Comment = (props: CommentProps) => {
 
 interface CommentCardProps {
   comment: NestedComment;
-  child?: boolean;
+  isNested?: boolean;
 }
 
 const CommentCard = (props: CommentCardProps) => {
-  const { comment, child } = props;
+  const { comment, isNested } = props;
 
   return (
-    <VStack pl={child ? 6 : 'unset'} w='100%'>
+    <VStack pl={isNested ? 6 : 0} w='100%'>
       <Comment comment={comment} />
-      {comment.children.length > 0 &&
-        comment.children.map((childComment) => <CommentCard comment={childComment} child />)}
+      {comment.children.map((childComment) => (
+        <CommentCard comment={childComment} isNested />
+      ))}
     </VStack>
   );
 };

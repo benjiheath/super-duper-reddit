@@ -1,7 +1,6 @@
 import { InputFieldType } from './types/general';
 
-// export const url = process.env.REACT_APP_ENV === 'dev' ? 'http://localhost:3001' : '??';
-export const url = 'http://localhost:3000';
+export const apiUrl = process.env.NODE_ENV === 'production' ? process.env.API_URL : 'http://localhost:3000';
 
 export const axiosOptions = {
   headers: {
@@ -61,15 +60,6 @@ export const inputFields: InputFieldsObject = {
       register: {
         required: 'Title required',
       },
-      // styleProps: {
-      //   _hover: {
-      //     borderColor: 'sec.400',
-      //   },
-      //   _focus: {
-      //     boxShadow: '0px 0px 8px 2px #bcffe1b2',
-      //     borderColor: 'sec.400',
-      //   },
-      // },
     },
     {
       type: 'text',

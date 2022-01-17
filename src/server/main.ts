@@ -13,7 +13,6 @@ import { authChecker } from './handlers/middleware/authChecker';
 const app = express();
 const PostgreSqlStore = require('connect-pg-simple')(session);
 
-// Middleware
 app.use(
   cors({
     origin: 'http://localhost:3001',
@@ -21,6 +20,7 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(
   session({
     store: new PostgreSqlStore({

@@ -12,8 +12,7 @@ export async function sendEmail(to: string, html: string): Promise<void> {
       html,
     });
     console.log('Email sent successfuly');
-  } catch (error) {
-    console.error('Error sending recovery email');
+  } catch (error: any) {
     console.error(error);
     if (error.response) {
       console.error(error.response.body);

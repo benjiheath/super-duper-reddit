@@ -1,6 +1,6 @@
 import { UseToastOptions } from '@chakra-ui/react';
+import { RegisterResponse, LoginResponse } from '../../common/types/fetching';
 import { FormMode } from '../types/general';
-import { RegisterResponse, LoginResponse } from '../types/user';
 
 export const generateFormToast = (
   formMode: FormMode,

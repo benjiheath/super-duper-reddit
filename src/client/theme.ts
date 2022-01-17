@@ -60,6 +60,11 @@ export const theme = extendTheme({
         transition: 'all 5s',
       },
     },
+    Text: {
+      baseStyle: {
+        fontSize: '14px',
+      },
+    },
     Menu: {
       baseStyle: {
         bg: 'red.400',

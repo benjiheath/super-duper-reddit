@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { axiosOptions, url } from '../constants';
+import { axiosOptions, apiUrl } from '../constants';
 import { Endpoint, ServerResponse } from './../../common/types/fetching';
 
 enum AxiosMethods {
@@ -17,7 +17,7 @@ interface Options extends AxiosRequestConfig {
 
 export const axiosRequest = (method: AxiosMethods) => {
   const request = async <T = ServerResponse>(endpoint: Endpoint, options?: Options): Promise<T> => {
-    const requestUrl = options?.params ? `${url}/${endpoint}/${options?.params}` : `${url}/${endpoint}`;
+    const requestUrl = options?.params ? `${apiUrl}/${endpoint}/${options?.params}` : `${apiUrl}/${endpoint}`;
 
     try {
       const { data: res } = await axios({

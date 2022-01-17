@@ -116,7 +116,7 @@ const PostActionsMenu = (props: PostProps) => {
   return (
     <>
       <HStack spacing={4} mt='14px !important' w='100%'>
-        <span>{comments.length} comments</span>
+        <Text>{comments.length} comments</Text>
         {post.userFavoriteStatus ? iconLiked : iconNotLiked}
         <Spacer />
         {post.creatorUserId === userId && post.currentStatus === 'normal' ? (
