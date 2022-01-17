@@ -15,7 +15,7 @@ const PostgreSqlStore = require('connect-pg-simple')(session);
 
 app.use(
   cors({
-    origin: 'http://localhost:3001',
+    origin: config.urls.client,
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'DELETE', 'PATCH'],
     credentials: true,
   })

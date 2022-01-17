@@ -8,6 +8,6 @@ export default defineConfig({
   plugins: [react()],
   clearScreen: false,
   server: {
-    port: 3001,
+    port: process.env.NODE_ENV === 'production' ? 3000 : 3001,
   },
 });

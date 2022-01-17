@@ -8,11 +8,7 @@ export const config = {
     conString: process.env.DATABASE_URL || 'postgres://postgres:pass@localhost:5433/srdb',
   },
   urls: {
-    client: {
-      dev: 'http://localhost:3001',
-      prod: 'http://localhost:3000',
-    },
-    server: 'http://localhost:3000',
+    client: process.env.NODE_ENV === 'production' ? 'http://localhost:3000' : 'http://localhost:3001',
   },
   esCookieSecret: (process.env.ES_COOKIE_SECRET as string) || 'blah',
   sgApiKey: process.env.SG_API_KEY,

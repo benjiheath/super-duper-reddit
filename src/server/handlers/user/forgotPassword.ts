@@ -24,7 +24,7 @@ export const forgotPasswordHandler: RequestHandler = async (req, res, _): Promis
             .where(`${idType as UserColumn}`)
             .equals(id);
 
-    const link = `<a href='${config.urls.client.dev}/reset-password/${token}' target="_blank">Reset password</a>`;
+    const link = `<a href='${config.urls.client}/reset-password/${token}' target="_blank">Reset password</a>`;
     await sendRecEmail_test(targetEmail as string, link);
 
     res.status(200).send({ status: 'ok', message: 'Email sent!', sentTo: targetEmail });
