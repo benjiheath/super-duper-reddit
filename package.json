@@ -10,7 +10,8 @@
     "server:build": "tsc",
     "dev": "docker-compose up -d && run-p server:dev client:dev",
     "build": "run-s clean server:build client:build",
-    "start": "node dist/src/server/main.js"
+    "start": "node dist/src/server/main.js",
+    "postinstall": "yarn build"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.7.3",
