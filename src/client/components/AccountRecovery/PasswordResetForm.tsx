@@ -2,12 +2,12 @@ import { FormControl, FormLabel, Heading, Input, useToast, VStack } from '@chakr
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
+import { ServerResponse } from '../../../common/types/fetching';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
-import { axiosGET, axiosPATCH, axiosRequest } from '../../utils/axiosMethods';
-import AlertPop from '../register/AlertPop';
+import { axiosGET, axiosPATCH } from '../../utils/axiosMethods';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
-import { ServerResponse } from '../../../common/types/fetching';
+import AlertPop from '../register/AlertPop';
 
 export default function PasswordResetForm() {
   const { logIn, setResponseError } = useGlobalUserContext();
@@ -19,7 +19,7 @@ export default function PasswordResetForm() {
 
   useEffect(() => {
     const checkToken = async () => {
-      const res = await axiosGET<ServerResponse>('user/account', undefined, token);
+      const res = await axiosGET<ServerResponse>('user/account', { params: token });
       if (res.status === 'fail') {
         toast({
           title: 'Invalid request. Enter your username or email below to recieve a new reset-link',
@@ -58,7 +58,7 @@ export default function PasswordResetForm() {
     setLoading(true);
 
     try {
-      const res = await axiosPATCH<ServerResponse>('user/account', data, token);
+      const res = await axiosPATCH<ServerResponse>('user/account', { data, params: token });
 
       setLoggingIn(true);
 
@@ -88,7 +88,7 @@ export default function PasswordResetForm() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack width={275} spacing='3px' m='20px auto 0'>
           <FormControl>
-            <FormLabel color='sec.900'>Password</FormLabel>
+            <FormLabel color='sec.800'>Password</FormLabel>
             <Input
               type='password'
               placeholder='Password'
@@ -101,7 +101,7 @@ export default function PasswordResetForm() {
           </FormControl>
           {errors.newPassword && <AlertPop title={errors.newPassword.message} />}
           <FormControl>
-            <FormLabel color='sec.900'>Verify password</FormLabel>
+            <FormLabel color='sec.800'>Verify password</FormLabel>
             <Input
               type='password'
               focusBorderColor='sec.800'

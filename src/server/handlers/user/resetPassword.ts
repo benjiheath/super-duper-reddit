@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt';
 import { RequestHandler } from 'express';
-import { DbTables } from '../types/dbTypes';
-import { dbQuery, dbUsers } from './../utils/dbQueries';
+import { dbUsers } from '../../utils/dbQueries';
 
 declare module 'express-session' {
   interface SessionData {
@@ -22,7 +21,7 @@ export const resetPasswordHandler: RequestHandler = async (req, res, _): Promise
 
     // get username so we can log user in / authenticate
     const username = await dbUsers.findValue('username').where('password').equals(hashedNewPassword);
-    req.session.userID = username;
+    req.session.userID = username as string;
 
     res.status(200).send({ status: 'success', username });
   } catch (error) {

@@ -37,7 +37,7 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
     try {
       const endpoint = formMode === 'Register' ? 'user' : 'session';
 
-      const res = await axiosPOST<ServerResponse>(endpoint, data);
+      const res = await axiosPOST<ServerResponse>(endpoint, { data });
 
       res.status === 'success' ? setLoggingIn(true) : setLoading(false);
       toast(generateFormToast(formMode, res));
@@ -48,7 +48,7 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
           setLoading(false);
           formMode === 'Register' ? setLoggingIn(false) : setLoggingIn(true);
           logIn(data.username);
-          setUserID(res.userID!);
+          setUserID(res.userId!);
           history.push({ pathname: '/' });
         } else {
           setLoading(false);

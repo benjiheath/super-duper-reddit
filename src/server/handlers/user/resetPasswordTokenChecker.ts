@@ -1,11 +1,5 @@
 import { RequestHandler } from 'express';
-import { pool } from '../db';
-
-declare module 'express-session' {
-  interface SessionData {
-    userID?: string;
-  }
-}
+import { pool } from '../../db';
 
 export const resetPasswordTokenChecker: RequestHandler = async (req, res, _): Promise<void> => {
   try {

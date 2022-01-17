@@ -18,12 +18,12 @@ type ACTIONTYPE =
   | { type: UserContextActions.SET_CTX_ERR; payload: any };
 
 const lsUsername = localStorage.getItem('username');
-const lsUserID = localStorage.getItem('userID');
+const lsUserID = localStorage.getItem('userId');
 
 export const initState: UserState = {
   authorized: lsUsername !== null,
   username: lsUsername ?? null,
-  userID: lsUserID ?? null,
+  userId: lsUserID ?? null,
   err: null,
 };
 
@@ -34,11 +34,11 @@ export const globalUserReducer = (state: UserState, action: ACTIONTYPE): UserSta
     case UserContextActions.SET_USERNAME:
       return { ...state, username: action.payload };
     case UserContextActions.SET_USER_ID:
-      return { ...state, userID: action.payload };
+      return { ...state, userId: action.payload };
     case UserContextActions.LOG_IN:
       return { ...state, username: action.payload, authorized: true };
     case UserContextActions.LOG_OUT:
-      return { username: null, userID: null, authorized: false, err: null };
+      return { username: null, userId: null, authorized: false, err: null };
     case UserContextActions.SET_CTX_ERR:
       return { ...state, err: action.payload };
     default:

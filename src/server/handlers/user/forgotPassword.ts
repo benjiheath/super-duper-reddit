@@ -1,10 +1,10 @@
 import { RequestHandler } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { DbTables, UserColumn } from '../types/dbTypes';
-import { config } from '../config';
-import { dbQuery, dbUsers } from '../utils/dbQueries';
-import { FieldError } from '../utils/errors';
-import { sendRecEmail_test } from '../utils/sendRecEmail_test';
+import { config } from '../../config';
+import { UserColumn } from '../../types/dbTypes';
+import { dbUsers } from '../../utils/dbQueries';
+import { FieldError } from '../../utils/errors';
+import { sendRecEmail_test } from '../../utils/sendRecEmail_test';
 
 export const forgotPasswordHandler: RequestHandler = async (req, res, _): Promise<void> => {
   try {

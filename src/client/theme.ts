@@ -30,16 +30,16 @@ export const theme = extendTheme({
     },
     prim: primaryColors,
     sec: {
-      100: '#E3FFF2',
-      200: '#C6FFE5',
-      300: '#B0FFDB',
-      400: '#99FFD1',
-      500: '#83FFC7',
-      600: '#6BFFBC',
-      700: '#50FFAF',
-      800: '#3DFFA7',
-      900: '#00EC81',
-      950: '#00CD70',
+      100: '#dbfff4',
+      200: '#9cffe1',
+      300: '#85ffda',
+      400: '#70ffd4',
+      500: '#4affc9',
+      600: '#2effc1',
+      700: '#17ffba',
+      800: '#00ffb3',
+      900: '#00e39f',
+      950: '#00d696',
     },
     // sec: {
     //   100: '#E6F7FF',
@@ -58,6 +58,11 @@ export const theme = extendTheme({
     Input: {
       baseStyle: {
         transition: 'all 5s',
+      },
+    },
+    Text: {
+      baseStyle: {
+        fontSize: '14px',
       },
     },
     Menu: {
@@ -82,26 +87,26 @@ export const theme = extendTheme({
       variants: {
         primary: {
           bg: 'prim.800',
-          border: '2px solid transparent',
+          border: '1px solid transparent',
           _hover: {
             bg: 'prim.100',
             _disabled: { bg: 'prim.800', color: 'white' },
             color: 'prim.900',
-            border: '2px solid',
+            border: '1px solid',
             borderColor: 'prim.900',
           },
         },
         secondary: {
-          bg: 'sec.900',
+          bg: 'sec.800',
           border: '1px solid transparent',
           color: 'white',
 
           _hover: {
             bg: 'sec.100',
-            _disabled: { bg: 'sec.900' },
-            color: 'sec.900',
-            border: '1px dotted',
-            borderColor: 'sec.900',
+            _disabled: { bg: 'sec.800' },
+            color: 'sec.800',
+            border: '1px solid',
+            borderColor: 'sec.800',
           },
         },
         primInv: {
@@ -119,7 +124,7 @@ export const theme = extendTheme({
           },
         },
         basicInv: {
-          border: `2px solid ${primaryColors[600]}`,
+          border: `1px solid ${primaryColors[600]}`,
           bg: 'white',
           color: 'prim.800',
           _hover: {

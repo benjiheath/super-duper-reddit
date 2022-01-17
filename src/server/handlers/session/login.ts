@@ -1,12 +1,12 @@
 import bcrypt from 'bcrypt';
 import { RequestHandler } from 'express';
-import { DbTables } from '../types/dbTypes';
-import { dbQuery, dbUsers } from '../utils/dbQueries';
-import { FieldError } from '../utils/errors';
+import { dbUsers } from '../../utils/dbQueries';
+import { FieldError } from '../../utils/errors';
 
 declare module 'express-session' {
   interface SessionData {
     userID?: string;
+    username?: string;
   }
 }
 
@@ -14,18 +14,19 @@ export const login: RequestHandler = async (req, res, _): Promise<void> => {
   try {
     const { username, password } = req.body;
 
-    const { id: userID, password: hashedPassword } = await dbUsers
+    const { id: userId, password: hashedPassword } = await dbUsers
       .findValues(['id', 'password'])
       .where('username')
       .equals(username);
 
     const match = await bcrypt.compare(password, hashedPassword!);
     if (match) {
-      req.session.userID = username;
+      req.session.userID = userId;
+      req.session.username = username;
       res.status(200).send({
         status: 'success',
         auth: true,
-        userID,
+        userId,
       });
     } else {
       res.status(200).send({

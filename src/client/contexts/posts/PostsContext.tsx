@@ -10,23 +10,18 @@ export const PostsContext = createContext<PostsCtx | null>(null);
 
 const PostsProvider = (props: ProviderProps) => {
   const [state, dispatchers] = usePostsReducer();
-  const { setResponseError } = useGlobalUserContext();
-  const { setPosts, setPostsLoading, setPost } = dispatchers;
+  const { setResponseError, userId } = useGlobalUserContext();
+  const { setPosts, setPostsLoading, setPostInView } = dispatchers;
 
   const getPostsOrPost = async (postSlugs?: string) => {
     try {
       setPostsLoading(true);
       const res = postSlugs
-        ? await axiosGET<PostType>('posts', undefined, postSlugs)
-        : await axiosGET<PostType[]>('posts');
+        ? await axiosGET<PostType>('posts/post', { queries: { userId, postSlugs } })
+        : await axiosGET<PostType[]>('posts', { queries: { userId } });
       setPostsLoading(false);
 
-      if (!res) {
-        setResponseError('error fetching resource');
-        return;
-      }
-
-      postSlugs ? setPost(res as PostType) : setPosts(res as PostType[]);
+      postSlugs ? setPostInView(res as PostType) : setPosts(res as PostType[]);
     } catch (err) {
       setResponseError(err);
     }

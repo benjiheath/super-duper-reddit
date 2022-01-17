@@ -1,12 +1,12 @@
-import { Flex, Heading, HeadingProps, Text } from '@chakra-ui/react';
+import { Flex, FlexProps } from '@chakra-ui/react';
 import React from 'react';
 
-interface Props {
+interface Props extends FlexProps {
   children: React.ReactNode;
 }
 
 const PageBox = (props: Props) => {
-  const { children } = props;
+  const { children, ...rest } = props;
 
   return (
     <Flex
@@ -18,6 +18,7 @@ const PageBox = (props: Props) => {
       w='800px'
       m='0 auto'
       p={8}
+      {...rest}
     >
       {children}
     </Flex>

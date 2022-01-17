@@ -14,7 +14,7 @@ const FormBox = (props: Props) => {
   const { children, secondary, title, subTitle, headingSize, minH, ...rest } = props;
 
   const heaadingStyles: HeadingProps = secondary
-    ? { as: 'h1', color: 'sec.900' }
+    ? { as: 'h1', color: 'sec.800' }
     : { as: 'h2', color: 'prim.800' };
 
   return (

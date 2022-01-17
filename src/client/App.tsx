@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-d
 import ScrollToTop from './components/generic/ScrollToTop';
 import PostsProvider from './contexts/posts/PostsContext';
 import GlobalUserProvider from './contexts/user/GlobalUserContext';
-import { Home, Posts, Register, AccountRecovery } from './pages';
-import Test from './pages/Test';
+import { AccountRecovery, Posts, Register } from './pages';
+import NotFound from './pages/NotFound';
 import { theme } from './theme';
 
 export const App = () => (
@@ -28,10 +28,10 @@ export const App = () => (
             <Route path='/reset-password'>
               <AccountRecovery />
             </Route>
+            <Route exact path='/404'>
+              <NotFound />
+            </Route>
           </Flex>
-          <Route exact path='/test'>
-            <Test />
-          </Route>
         </ChakraProvider>
       </GlobalUserProvider>
     </Switch>

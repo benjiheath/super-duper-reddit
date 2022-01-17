@@ -1,5 +1,5 @@
 import express from 'express';
-import { login, logout, sendSessionStatus } from '../controllers';
+import { sendSessionStatus, login, logout } from '../handlers/session';
 
 const router = express.Router();
 

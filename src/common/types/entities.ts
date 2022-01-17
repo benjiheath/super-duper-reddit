@@ -20,16 +20,41 @@ export interface PostType {
   currentStatus: 'normal' | 'removed';
   urlSlugs: string;
   comments: CommentType[];
+  userVoteStatus: -1 | 1 | null;
+  userFavoriteStatus: boolean;
+  points: number | null;
 }
 
 export interface CommentType {
   id: string;
   postId: string;
-  parentPostId: string | null;
+  parentCommentId: string | null;
   body: string;
   createdAt: string;
   updatedAt: string;
   creatorUserId: string;
   creatorUsername: string;
   currentStatus: 'normal' | 'removed';
+  userVoteStatus: -1 | 1 | null;
+  points: number | null;
+}
+
+export interface PostFavoriteType {
+  id: string;
+  postId: string;
+  userId: string;
+}
+
+export interface PostVoteType {
+  id: string;
+  postId: string;
+  userId: string;
+  voteStatus: 1 | -1;
+}
+
+export interface CommentVoteType {
+  id: string;
+  commentId: string;
+  userId: string;
+  voteStatus: 1 | -1;
 }

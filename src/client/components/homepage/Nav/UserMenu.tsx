@@ -2,15 +2,18 @@ import { Button, Menu, MenuButton, MenuDivider, MenuItem, MenuList } from '@chak
 import React from 'react';
 import { FaChevronDown, FaUser } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { usePostsContext } from '../../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../../contexts/user/GlobalUserContext';
-import { axiosDELETE, axiosRequest } from '../../../utils/axiosMethods';
+import { axiosDELETE } from '../../../utils/axiosMethods';
 
 const UserMenu = () => {
   const { logOut, username } = useGlobalUserContext();
+  const { setPosts } = usePostsContext();
 
   const logOutHandler = async () => {
     await axiosDELETE('session');
     logOut();
+    setPosts(null);
   };
 
   return (
@@ -18,8 +21,9 @@ const UserMenu = () => {
       <MenuButton
         as={Button}
         color='prim.800'
-        _hover={{ color: 'white', bg: 'prim.800' }}
-        _active={{ color: 'white', bg: 'prim.800' }}
+        bg='white'
+        _hover={{ bg: 'prim.100' }}
+        _active={{ bg: 'prim.100' }}
         leftIcon={<FaUser />}
         rightIcon={<FaChevronDown />}
       >

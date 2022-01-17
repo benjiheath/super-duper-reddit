@@ -12,8 +12,8 @@ const usePostsReducer = (): [PostsState, PostsDispatchers] => {
     setPosts: (value) => {
       dispatch({ type: PostsActions.SET_POSTS, payload: value });
     },
-    setPost: (value) => {
-      dispatch({ type: PostsActions.SET_POST, payload: value });
+    setPostInView: (value) => {
+      dispatch({ type: PostsActions.SET_POST_IN_VIEW, payload: value });
     },
     updatePost: (value) => {
       dispatch({ type: PostsActions.UPDATE_POST, payload: value });

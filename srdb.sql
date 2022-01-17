@@ -12,6 +12,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION trigger_set_post_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE posts SET updated_at = NOW() WHERE id = NEW.post_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE TABLE users(
     id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
     username VARCHAR(80) UNIQUE NOT NULL,
@@ -53,22 +61,33 @@ CREATE TABLE comments(
     CONSTRAINT parent_comment_id FOREIGN KEY(parent_comment_id) REFERENCES comments(id)
 );
 
+CREATE TABLE posts_favorites (
+    id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
+    post_id uuid,
+    user_id uuid,
+    CONSTRAINT post_id FOREIGN KEY(post_id) REFERENCES posts(id),
+    CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES users(id),
+    CONSTRAINT unique_composite_pf UNIQUE (post_id, user_id)
+);
+
 CREATE TABLE posts_votes (
     id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
     post_id uuid,
     user_id uuid,
-    vote_status INT CHECK (vote_status = 1 OR vote_status = -1) NOT NULL,
+    vote_status INT CHECK (vote_status = 1 OR vote_status = -1 OR vote_status = 0),
     CONSTRAINT post_id FOREIGN KEY(post_id) REFERENCES posts(id),
-    CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES users(id)
+    CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES users(id),
+    CONSTRAINT unique_composite_pv UNIQUE (post_id, user_id)
 );
 
 CREATE TABLE comments_votes (
     id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
     comment_id uuid,
     user_id uuid,
-    vote_status INT CHECK (vote_status = 1 OR vote_status = -1) NOT NULL,
+    vote_status INT CHECK (vote_status = 1 OR vote_status = -1 OR vote_status = 0),
     CONSTRAINT comment_id FOREIGN KEY(comment_id) REFERENCES comments(id),
-    CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES users(id)
+    CONSTRAINT user_id FOREIGN KEY(user_id) REFERENCES users(id),
+    CONSTRAINT unique_composite_cv UNIQUE (comment_id, user_id)
 );
 
 CREATE TRIGGER set_timestamp
@@ -80,6 +99,11 @@ CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON comments
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_post_timestamp
+AFTER INSERT ON comments
+FOR EACH ROW 
+EXECUTE PROCEDURE trigger_set_post_timestamp();
 
 CREATE TABLE "session" (
     "sid" varchar NOT NULL COLLATE "default",

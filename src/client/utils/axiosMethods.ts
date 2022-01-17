@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { axiosOptions, url } from '../constants';
+import { axiosOptions, apiUrl } from '../constants';
 import { Endpoint, ServerResponse } from './../../common/types/fetching';
 
 enum AxiosMethods {
@@ -10,22 +10,23 @@ enum AxiosMethods {
   PUT = 'PUT',
 }
 
+interface Options extends AxiosRequestConfig {
+  queries?: { [key: string]: any };
+  params?: string;
+}
+
 export const axiosRequest = (method: AxiosMethods) => {
-  const request = async <T>(
-    endpoint: Endpoint,
-    data?: any,
-    param?: string,
-    options?: AxiosRequestConfig
-  ): Promise<T> => {
-    const paramWithSlash = param ? `/${param}` : '';
+  const request = async <T = ServerResponse>(endpoint: Endpoint, options?: Options): Promise<T> => {
+    const requestUrl = options?.params ? `${apiUrl}/${endpoint}/${options?.params}` : `${apiUrl}/${endpoint}`;
 
     try {
       const { data: res } = await axios({
         method,
-        url: `${url}/${endpoint}${paramWithSlash}`,
-        data,
-        ...axiosOptions,
+        url: requestUrl,
+        params: options?.queries,
+        data: options?.data,
         ...options,
+        ...axiosOptions,
       });
 
       return res;

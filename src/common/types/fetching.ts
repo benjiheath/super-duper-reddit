@@ -4,9 +4,13 @@ export type Endpoint =
   | 'session'
   | 'user'
   | 'posts'
+  | 'posts/post'
   | 'account'
   | 'account/:token'
   | 'posts/comments'
+  | 'posts/comments/votes'
+  | 'posts/favorites'
+  | 'posts/votes'
   | 'user/account';
 
 type Auth = { auth: boolean };
@@ -26,7 +30,7 @@ export type RecoveryResponse = StatusAndMessage & { sentTo: string } & { error?:
 
 export type PwResetResponse = StatusAndMessage & { username: string };
 
-export type SessionInfo = Auth & { userID: string | null };
+export type SessionInfo = Auth & { userId: string | null };
 
 export interface StatusAndMessage {
   status: 'fail' | 'success';
@@ -39,9 +43,10 @@ export interface ServerResponse extends StatusAndMessage {
   auth?: boolean;
   sentTo?: string;
   username?: string;
-  userID?: string | null;
+  userId?: string | null;
   post?: PostType;
   posts?: PostType[];
+  updatedUserFavoriteStatus?: boolean;
 }
 
 export type PostResponse = { post: PostType };

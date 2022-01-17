@@ -1,13 +1,7 @@
 import { RequestHandler } from 'express';
-import { createPostSlugs } from '../../common/utils';
-import { FieldError } from '../utils/errors';
-import { dbPosts } from './../utils/dbQueries';
-
-declare module 'express-session' {
-  interface SessionData {
-    userID?: string;
-  }
-}
+import { createPostSlugs } from '../../../common/utils';
+import { dbPosts } from '../../utils/dbQueries';
+import { FieldError } from '../../utils/errors';
 
 export const createPost: RequestHandler = async (req, res, next) => {
   try {
@@ -29,7 +23,7 @@ export const createPost: RequestHandler = async (req, res, next) => {
 
     const postWithCommentsPropertyAppended = { ...postWithUrlSlugs, comments: [] };
 
-    res.status(200).send({ post: postWithCommentsPropertyAppended });
+    res.status(200).send(postWithCommentsPropertyAppended);
   } catch (err) {
     if (err instanceof FieldError) {
       res.status(200).send(err.info);

@@ -1,24 +1,45 @@
-import { Box, Divider, Heading, HeadingProps, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Divider,
+  Heading,
+  HeadingProps,
+  HStack,
+  Icon,
+  IconButton,
+  IconProps,
+  Image,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Spacer,
+  Text,
+  Tooltip,
+  useToast,
+  VStack,
+} from '@chakra-ui/react';
 import React from 'react';
-import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { FaEdit, FaEllipsisH, FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
+import { IconType } from 'react-icons/lib';
+import { useHistory, useParams } from 'react-router-dom';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { PostedBy } from '../../pages/Posts';
-import { CreateCommentFields, PostProps } from '../../types/posts';
-import { axiosPOST } from '../../utils/axiosMethods';
-import ButtonSubmit from '../generic/ButtonSubmit';
-import FormTextArea from '../generic/FormTextArea';
-import PageBox from '../generic/PageBox';
-import SrSpinner from '../generic/SrSpinner';
+import { PostProps } from '../../types/posts';
+import { axiosDELETE, axiosPOST } from '../../utils/axiosMethods';
+import { checkIfUrlIsImg } from '../../utils/misc';
+import { AlertPopup, PageBox, SrSpinner } from '../generic';
+import CommentCard, { NestedComment } from './Comment';
+import CommentBox from './CommentBox';
+import Votes from './Votes';
 
 type PostTitleProps = Pick<PostType, 'title' | 'contentUrl'>;
 
 const PostTitle = (props: PostTitleProps) => {
   const { title, contentUrl } = props;
 
-  const linkUrl = contentUrl ? `//${contentUrl}` : window.location.href;
+  const linkUrl = contentUrl ?? window.location.href;
   const headingStyles: HeadingProps = contentUrl
     ? { mb: 2, _groupHover: { color: 'prim.800' }, transition: '0.4s' }
     : {};
@@ -43,131 +64,200 @@ const PostTitle = (props: PostTitleProps) => {
   );
 };
 
-const PostMain = (props: PostProps) => {
-  const { post } = props;
-  const {
-    id,
-    body,
-    title,
-    comments,
-    creatorUserId,
-    creatorUsername,
-    currentStatus,
-    updatedAt,
-    createdAt,
-    contentUrl,
-    urlSlugs,
-  } = post;
+interface PostActionsIconProps extends IconProps {
+  icon: IconType;
+}
 
-  return (
-    <VStack alignItems='start' width='100%'>
-      <PostTitle title={title} contentUrl={contentUrl} />
-      <PostedBy date={createdAt} creatorUsername={post.creatorUsername} />
-      <Text outline='1px dotted' outlineColor='prim.200' p='10px 16px' w='100%' borderRadius={6}>
-        {body}
-      </Text>
-      <span>{comments.length} comments</span>
-    </VStack>
-  );
+const PostActionsIcon = (props: PostActionsIconProps) => {
+  const { icon, ...rest } = props;
+  return <Icon as={icon} {...rest} cursor='pointer' />;
 };
 
-const CommentBox = (props: PostProps) => {
+const PostActionsMenu = (props: PostProps) => {
   const { post } = props;
-  const { id: postID } = post;
-  const { username, userID, setResponseError } = useGlobalUserContext();
-  const { setPost } = usePostsContext();
-  const {
-    register,
-    reset,
-    handleSubmit,
-    setError,
-    formState: { errors, isValid, isSubmitting },
-  } = useForm({ mode: 'onChange' });
+  const { comments } = post;
+  const { userId } = useGlobalUserContext();
+  const { setPostInView, postInView } = usePostsContext();
+  const [alertIsOpen, setAlertIsOpen] = React.useState(false);
+  const history = useHistory();
+  const toast = useToast();
 
-  const onSubmit = async (data: CreateCommentFields): Promise<void> => {
-    try {
-      const newCommentData = {
-        ...data,
-        post_id: postID,
-        creator_user_id: userID,
-        creator_username: username,
-      };
-
-      const { post } = await axiosPOST('posts/comments', newCommentData);
-
-      if (!post) {
-        return;
-        // TODO - handle later
-      }
-
-      setPost(post);
-      reset();
-    } catch (err) {
-      setResponseError(err);
-    }
+  const handleRemove = async () => {
+    await axiosDELETE('posts', { data: { postId: post.id } });
+    setAlertIsOpen(false);
+    history.push({ pathname: '/posts' });
+    toast({ title: 'Post successfully removed', status: 'success' });
   };
 
-  return (
-    <Box w='100%'>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <VStack spacing={2}>
-          <FormTextArea
-            register={register}
-            minH={20}
-            placeholder='Enter a comment...'
-            errors={errors}
-            required
+  const handleFavorite = async () => {
+    const { updatedUserFavoriteStatus } = await axiosPOST('posts/favorites', { data: { postId: post.id } });
+    setPostInView({ ...postInView!, userFavoriteStatus: updatedUserFavoriteStatus! });
+  };
+
+  const iconNotLiked = <Icon as={FaRegHeart} fill='prim.800' onClick={handleFavorite} cursor='pointer' />;
+  const iconLiked = <Icon as={FaHeart} fill='prim.800' onClick={handleFavorite} cursor='pointer' />;
+
+  const iconRemove =
+    post.creatorUserId === userId && post.currentStatus === 'normal' ? (
+      <Tooltip label='Remove post' bg='prim.50' color='red'>
+        <span>
+          <Icon
+            as={FaTrash}
+            fill='gray.500'
+            onClick={() => {
+              setAlertIsOpen(true);
+            }}
+            cursor='pointer'
           />
-          <ButtonSubmit text='Save' isDisabled={!isValid} isLoading={isSubmitting} />
-        </VStack>
-      </form>
-    </Box>
+        </span>
+      </Tooltip>
+    ) : null;
+
+  return (
+    <>
+      <HStack spacing={4} mt='14px !important' w='100%'>
+        <Text>{comments.length} comments</Text>
+        {post.userFavoriteStatus ? iconLiked : iconNotLiked}
+        <Spacer />
+        {post.creatorUserId === userId && post.currentStatus === 'normal' ? (
+          <Menu>
+            <MenuButton as={IconButton} aria-label='Options' icon={<FaEllipsisH />} variant='ghost' h={8} />
+            <MenuList minWidth='120px'>
+              <MenuItem
+                icon={<FaEdit />}
+                onClick={() => {
+                  history.push({ pathname: `/posts/edit/${post.urlSlugs}` });
+                }}
+              >
+                Edit
+              </MenuItem>
+              <MenuItem
+                icon={<FaTrash />}
+                onClick={() => {
+                  setAlertIsOpen(true);
+                }}
+              >
+                Remove
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        ) : null}
+      </HStack>
+      <AlertPopup
+        title='Remove Post'
+        onClick={handleRemove}
+        isOpen={alertIsOpen}
+        setIsOpen={setAlertIsOpen}
+      />
+    </>
   );
 };
 
-interface CommentProps {
+const PostMain = (props: PostProps) => {
+  const { post } = props;
+  const { body, title, createdAt, contentUrl } = post;
+
+  const image = checkIfUrlIsImg(post.contentUrl);
+
+  return (
+    <HStack justifyContent='start' w='100%' spacing={6}>
+      <Votes item={post} mode='post' />
+      <VStack alignItems='start' width='100%' spacing={2}>
+        <PostTitle title={title} contentUrl={contentUrl} />
+        <PostedBy date={createdAt} creatorUsername={post.creatorUsername} />
+        {image && post.contentUrl && post.currentStatus === 'normal' ? (
+          <Image
+            height='300px'
+            objectFit='cover'
+            src={post.contentUrl}
+            alt='post image'
+            borderRadius={8}
+            my='10px !important'
+          />
+        ) : null}
+        {body ? (
+          <Text
+            outline='1px solid'
+            bg='prim.50'
+            outlineColor='prim.200'
+            p='10px 16px'
+            w='100%'
+            borderRadius={6}
+          >
+            {body}
+          </Text>
+        ) : null}
+        <PostActionsMenu post={post} />
+      </VStack>
+    </HStack>
+  );
+};
+
+interface CommentsProps {
   comments: CommentType[];
 }
 
-const Comments = (props: CommentProps) => {
+const Comments = (props: CommentsProps) => {
   const { comments } = props;
 
   if (comments.length === 0) {
     return <Text>No comments to display.</Text>;
   }
 
+  const nestComments = (commentList: CommentType[], isRecursiveCall?: boolean): NestedComment[] => {
+    const nestedComments = commentList.map((comment) => {
+      if (comment.parentCommentId && !isRecursiveCall) {
+        return null;
+      }
+
+      const children = comments.filter((filteredComment) => filteredComment.parentCommentId === comment.id);
+      const childrenNested = nestComments(children, true);
+      const commentWithChildren = { ...comment, children: childrenNested };
+
+      return commentWithChildren;
+    });
+
+    const nullsRemoved = nestedComments.filter((c) => c !== null);
+
+    return nullsRemoved as NestedComment[];
+  };
+
+  const nestedComments = nestComments(comments);
+
   return (
-    <>
-      {comments.map((comment) => (
-        <span>{comment.body}</span>
+    <VStack alignItems='start' w='100%' spacing={10}>
+      {nestedComments.map((nestedComment) => (
+        <CommentCard comment={nestedComment} />
       ))}
-    </>
+    </VStack>
   );
 };
 
 const Post = () => {
   const { postSlugs } = useParams() as { postSlugs: string };
-  const { postsLoading, post, getPost, setPost } = usePostsContext();
+  const { postsLoading, postInView, getPost, setPostInView } = usePostsContext();
 
   React.useEffect(() => {
-    if (!post) getPost(postSlugs);
+    if (!postInView) {
+      getPost(postSlugs);
+    }
 
     return () => {
-      setPost(null);
+      setPostInView(null);
     };
   }, []);
 
-  if (postsLoading || !post) {
+  if (postsLoading || !postInView) {
     return <SrSpinner />;
   }
 
   return (
-    <PageBox>
-      <VStack width='100%' spacing={8}>
-        <PostMain post={post} />
+    <PageBox boxShadow='0px 0px 3px 1px #ececec'>
+      <VStack width='100%' spacing={4}>
+        <PostMain post={postInView} />
         <Divider />
-        <CommentBox post={post} />
-        <Comments comments={post.comments} />
+        <CommentBox postId={postInView.id} />
+        <Comments comments={postInView.comments} />
       </VStack>
     </PageBox>
   );

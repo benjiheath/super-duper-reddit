@@ -1,17 +1,21 @@
-import { UserType } from './../../common/types/entities';
+import { CommentsVoteColumn, DbPostFavorite, PostsFavoriteColumn } from './../types/dbTypes';
+import { UserType, PostVoteType, PostFavoriteType, CommentVoteType } from './../../common/types/entities';
 import { handlePostRemovedStatus, sanitizeKeys } from './misc';
-import {
-  CommentsColumn,
-  DbComment,
-  DbPost,
-  DbTables,
-  DbUser,
-  PostsColumn,
-  UserColumn,
-} from '../types/dbTypes';
 import { pool } from '../db';
 import { ErrorTypes, FieldError, generateErrorType } from './errors';
 import { CommentType, PostType } from '../../common/types/entities';
+import {
+  CommentsColumn,
+  DbComment,
+  DbCommentVote,
+  DbPost,
+  DbPostVote,
+  DbTables,
+  DbUser,
+  PostsColumn,
+  PostsVoteColumn,
+  UserColumn,
+} from '../types/dbTypes';
 
 type updateFieldOverload<T, U> = {
   (field: T, conditionalValue: string): {
@@ -33,14 +37,20 @@ interface DbQueryMethods<T, U, V> {
   findValues: (columnsOfInterest: U[]) => {
     where: (column: U) => { equals: (value: string) => Promise<Partial<T>> };
   };
-  insertRow: (options: Partial<T>) => Promise<V[]>;
+  insertRow: (options: Partial<T>, appendQuery?: string) => Promise<V[]>;
   updateField: updateFieldOverload<U, V>;
+  getSum: (column: U) => {
+    where: (column: U) => { equals: (value: string) => Promise<number> };
+  };
 }
 
 type DbQueryOverload = {
   (table: DbTables.users): DbQueryMethods<DbUser, UserColumn, UserType>;
   (table: DbTables.posts): DbQueryMethods<DbPost, PostsColumn, PostType>;
   (table: DbTables.comments): DbQueryMethods<DbComment, CommentsColumn, CommentType>;
+  (table: DbTables.postsFavorites): DbQueryMethods<DbPostFavorite, PostsFavoriteColumn, PostFavoriteType>;
+  (table: DbTables.postsVotes): DbQueryMethods<DbPostVote, PostsVoteColumn, PostVoteType>;
+  (table: DbTables.commentsVotes): DbQueryMethods<DbCommentVote, CommentsVoteColumn, CommentVoteType>;
 };
 
 export const dbQuery: DbQueryOverload = (table: DbTables) => {
@@ -123,14 +133,14 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
         },
       };
     },
-    insertRow: async (columns) => {
+    insertRow: async (columns, appendQuery) => {
       try {
         const parsedColumns = Object.keys(columns);
         const values = Object.values(columns);
         const valueIDs = Object.values(columns).map((_, i) => `$${i + 1}`);
 
         const { rows } = await pool.query(
-          `INSERT INTO ${table} (${parsedColumns}) VALUES (${valueIDs}) RETURNING *`,
+          `INSERT INTO ${table} (${parsedColumns}) VALUES (${valueIDs}) ${appendQuery ?? ''} RETURNING *`,
           values
         );
         const sanitizedRows = rows.map((row) => sanitizeKeys(row));
@@ -161,9 +171,32 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
         },
       };
     },
+    getSum: (columnToBeSummed) => {
+      return {
+        where: (column) => {
+          return {
+            equals: async (value) => {
+              try {
+                const { rows } = await pool.query(
+                  `SELECT SUM(${columnToBeSummed}) FROM ${table} WHERE ${column} = $1`,
+                  [value]
+                );
+                // TODO - add where conditions
+                return Number(rows[0].sum);
+              } catch (err) {
+                throw err;
+              }
+            },
+          };
+        },
+      };
+    },
   };
 };
 
 export const dbUsers = dbQuery(DbTables.users);
 export const dbPosts = dbQuery(DbTables.posts);
 export const dbComments = dbQuery(DbTables.comments);
+export const dbPostsFavorites = dbQuery(DbTables.postsFavorites);
+export const dbPostsVotes = dbQuery(DbTables.postsVotes);
+export const dbCommentsVotes = dbQuery(DbTables.commentsVotes);
