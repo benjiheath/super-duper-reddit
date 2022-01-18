@@ -9,17 +9,23 @@ import path from 'path';
 import { postsRouter, sessionRouter, userRouter } from './routes';
 import { config } from './config';
 import { authChecker } from './handlers/middleware/authChecker';
+import history from 'connect-history-api-fallback';
 
 const app = express();
 const PostgreSqlStore = require('connect-pg-simple')(session);
 
-app.use(
-  cors({
-    origin: config.urls.client,
-    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'DELETE', 'PATCH'],
-    credentials: true,
-  })
-);
+const corsOptions =
+  process.env.NODE_ENV === 'production'
+    ? { credentials: true }
+    : {
+        origin: config.urls.client,
+        methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'DELETE', 'PATCH'],
+        credentials: true,
+      };
+
+app.use(cors(corsOptions));
+
+app.enable('trust proxy');
 
 app.use(
   session({
@@ -28,8 +34,14 @@ app.use(
     }),
     secret: config.esCookieSecret,
     resave: false,
-    cookie: { maxAge: 24 * 60 * 60 * 1000, path: '/', secure: __prod__, sameSite: 'lax' }, // 1 day
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000,
+      path: '/',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    }, // 1 day
     saveUninitialized: false,
+    proxy: process.env.NODE_ENV === 'production' ? true : undefined,
   })
 );
 
@@ -41,9 +53,11 @@ app.use(express.urlencoded());
 app.use(authChecker);
 
 // Routes
-app.use('/session', sessionRouter);
-app.use('/user', userRouter);
-app.use('/posts', postsRouter);
+app.use('/api/session', sessionRouter);
+app.use('/api/user', userRouter);
+app.use('/api/posts', postsRouter);
+
+app.use(history());
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client')));

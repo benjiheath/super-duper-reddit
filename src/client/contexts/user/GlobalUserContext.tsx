@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { SrSpinner } from '../../components/generic';
 import { ProviderProps } from '../../types/general';
 import { UserCtx, useUserCtx } from '../../types/user';
 import useGlobalUserReducer from './useGlobalUserReducer';
@@ -44,7 +45,7 @@ const GlobalUserProvider = (props: ProviderProps) => {
   }, [err]);
 
   if (loading) {
-    return <span>loadinggg</span>;
+    return <SrSpinner />;
   }
 
   return (

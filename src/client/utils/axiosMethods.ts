@@ -19,6 +19,10 @@ export const axiosRequest = (method: AxiosMethods) => {
   const request = async <T = ServerResponse>(endpoint: Endpoint, options?: Options): Promise<T> => {
     const requestUrl = options?.params ? `${apiUrl}/${endpoint}/${options?.params}` : `${apiUrl}/${endpoint}`;
 
+    console.log('AXR - apiURL:', apiUrl);
+    console.log('AXR - endpoint:', endpoint);
+    console.log('AXR - REQUEST URL:', requestUrl);
+
     try {
       const { data: res } = await axios({
         method,

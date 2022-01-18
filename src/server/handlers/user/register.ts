@@ -32,6 +32,8 @@ export const register: RequestHandler = async (req, res, _): Promise<void> => {
   } catch (error) {
     if (error instanceof FieldError) {
       res.status(200).send(error.info);
+    } else {
+      res.status(200).send({ msg: 'debugging', err: error });
     }
   }
 };

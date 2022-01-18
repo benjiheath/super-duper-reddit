@@ -1,10 +1,13 @@
 import { Heading, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import SrSpinner from '../components/generic/SrSpinner';
 
 const NotFound = () => {
   const history = useHistory();
+  const { pathname } = useLocation();
+
+  console.log('Pathname from NF:', pathname);
 
   React.useEffect(() => {
     setTimeout(() => {

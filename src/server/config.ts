@@ -5,10 +5,10 @@ export const config = {
     host: process.env.DB_HOST || 'localhost',
     port: Number(process.env.DB_PORT) || 5433,
     database: process.env.DB_DATABASE || 'srdb',
-    conString: process.env.DATABASE_URL || 'postgres://postgres:pass@localhost:5433/srdb',
+    conString: process.env.DB_CONSTRING || 'postgres://postgres:pass@localhost:5433/srdb',
   },
   urls: {
-    client: process.env.NODE_ENV === 'production' ? 'http://localhost:3000' : 'http://localhost:3001',
+    client: process.env.NODE_ENV === 'production' ? process.env.PROD_URL : 'http://localhost:3001',
   },
   esCookieSecret: (process.env.ES_COOKIE_SECRET as string) || 'blah',
   sgApiKey: process.env.SG_API_KEY,

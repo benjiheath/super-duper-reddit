@@ -1,6 +1,9 @@
 import { InputFieldType } from './types/general';
 
-export const apiUrl = process.env.NODE_ENV === 'production' ? process.env.API_URL : 'http://localhost:3000';
+export const apiUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://s-d-r-test.herokuapp.com/api'
+    : `http://localhost:3000/api`;
 
 export const axiosOptions = {
   headers: {

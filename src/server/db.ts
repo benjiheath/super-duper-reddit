@@ -9,4 +9,5 @@ export const pool = new Pool({
   host,
   port,
   database,
+  ssl: process.env.NODE_ENV === 'production' && { rejectUnauthorized: false },
 });
