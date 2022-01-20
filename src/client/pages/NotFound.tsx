@@ -7,8 +7,6 @@ const NotFound = () => {
   const history = useHistory();
   const { pathname } = useLocation();
 
-  console.log('Pathname from NF:', pathname);
-
   React.useEffect(() => {
     setTimeout(() => {
       history.push({ pathname: 'posts' });

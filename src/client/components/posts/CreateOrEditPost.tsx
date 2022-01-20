@@ -42,8 +42,6 @@ const CreateOrEditPost = () => {
           })
         : await axiosPOST<PostType>('posts', { data: newPostData });
 
-      console.log('recpost', post);
-
       if (!post) {
         return;
         // TODO handle later - throw err?

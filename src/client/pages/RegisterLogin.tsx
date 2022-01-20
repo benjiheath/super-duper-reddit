@@ -11,8 +11,6 @@ const Register = () => {
   const formattedPathname = capitalize(pathname) as FormMode;
   const [formMode, setFormMode] = useState<FormMode>(formattedPathname);
 
-  console.log('Pathname:', pathname);
-
   const minH = formMode === 'Login' ? '450px' : '490px';
 
   return (

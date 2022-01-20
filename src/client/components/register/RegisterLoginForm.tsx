@@ -39,8 +39,6 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
 
       const res = await axiosPOST<ServerResponse>(endpoint, { data });
 
-      console.log('register/login res:', res);
-
       res.status === 'success' ? setLoggingIn(true) : setLoading(false);
       toast(generateFormToast(formMode, res));
 
