@@ -25,6 +25,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { useGetPost } from '../../hooks/queries';
 import { PostedBy } from '../../pages/Posts';
 import { PostProps } from '../../types/posts';
 import { axiosDELETE, axiosPOST } from '../../utils/axiosMethods';
@@ -234,30 +235,32 @@ const Comments = (props: CommentsProps) => {
 };
 
 const Post = () => {
+  const { userId } = useGlobalUserContext();
   const { postSlugs } = useParams() as { postSlugs: string };
-  const { postsLoading, postInView, getPost, setPostInView } = usePostsContext();
+  const { data, isLoading, isError } = useGetPost(userId!, postSlugs);
+  // const { postsLoading, postInView, getPost, setPostInView } = usePostsContext();
 
-  React.useEffect(() => {
-    if (!postInView) {
-      getPost(postSlugs);
-    }
+  // React.useEffect(() => {
+  //   if (!postInView) {
+  //     getPost(postSlugs);
+  //   }
 
-    return () => {
-      setPostInView(null);
-    };
-  }, []);
+  //   return () => {
+  //     setPostInView(null);
+  //   };
+  // }, []);
 
-  if (postsLoading || !postInView) {
+  if (isLoading || !data) {
     return <SrSpinner />;
   }
 
   return (
     <PageBox boxShadow='0px 0px 3px 1px #ececec'>
       <VStack width='100%' spacing={4}>
-        <PostMain post={postInView} />
+        <PostMain post={data} />
         <Divider />
-        <CommentBox postId={postInView.id} />
-        <Comments comments={postInView.comments} />
+        <CommentBox postId={data.id} />
+        <Comments comments={data.comments} />
       </VStack>
     </PageBox>
   );

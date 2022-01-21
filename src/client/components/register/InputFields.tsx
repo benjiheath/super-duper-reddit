@@ -28,7 +28,7 @@ export const InputFields = (props: Props) => {
   return (
     <>
       {inputFields.map((field) => (
-        <FormControl>
+        <FormControl key={field.stateName}>
           <FormLabel color='prim.800'>{field.labelTitle}</FormLabel>
           <InputField field={field} register={register} errors={errors} key={field.stateName} />
         </FormControl>

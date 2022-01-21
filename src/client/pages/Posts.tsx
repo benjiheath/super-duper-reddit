@@ -7,6 +7,8 @@ import { NewPost } from '../components/posts';
 import Post from '../components/posts/Post';
 import Votes from '../components/posts/Votes';
 import { usePostsContext } from '../contexts/posts/PostsContext';
+import { useGlobalUserContext } from '../contexts/user/GlobalUserContext';
+import { useGetPosts } from '../hooks/queries';
 import { PostProps } from '../types/posts';
 import { checkIfUrlIsImg, getTimeAgo } from '../utils/misc';
 
@@ -93,17 +95,20 @@ const PostCard = (props: PostProps) => {
 
 const Posts = () => {
   const match = useRouteMatch();
-  const { posts, postsLoading, getAndSetPosts } = usePostsContext();
+  const { userId } = useGlobalUserContext();
+  const { data, isLoading, isError } = useGetPosts(userId!);
 
-  React.useEffect(() => {
-    getAndSetPosts();
-  }, []);
+  const posts = data
+    ? data
+        .filter((post) => post.currentStatus !== 'removed')
+        .map((post) => <PostCard post={post} key={post.id} />)
+    : null;
 
-  if (postsLoading) {
+  if (isLoading) {
     return (
       <>
         <NavBar />
-        <SrSpinner />;
+        <SrSpinner />
       </>
     );
   }
@@ -119,13 +124,7 @@ const Posts = () => {
           <Post />
         </Route>
         <Route path={`${match.path}/`}>
-          <VStack spacing={4}>
-            {posts
-              ? posts
-                  .filter((post) => post.currentStatus !== 'removed')
-                  .map((post) => <PostCard post={post} />)
-              : null}
-          </VStack>
+          <VStack spacing={4}>{posts}</VStack>
         </Route>
       </Switch>
     </Flex>
