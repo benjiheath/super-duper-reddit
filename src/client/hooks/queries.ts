@@ -1,6 +1,6 @@
 import { PostType } from '../../common/types';
 import { axiosGET } from '../utils/axiosMethods';
-import { useFetch } from './fetcher';
+import { useFetch } from './useFetch';
 
 export enum Queries {
   getPosts = 'getPosts',
@@ -8,22 +8,22 @@ export enum Queries {
 }
 
 export const queries = {
-  getPosts: async (userId: string) => {
-    const res = await axiosGET<PostType[]>('posts', { queries: { userId: userId } });
+  getPosts: async () => {
+    const res = await axiosGET<PostType[]>('posts');
     return res;
   },
-  getPost: async (userId: string, postSlugs: string) => {
-    const res = await axiosGET<PostType>('posts/post', { queries: { userId, postSlugs } });
+  getPost: async (postSlugs: string) => {
+    const res = await axiosGET<PostType>('posts/post', { queries: { postSlugs } });
     return res;
   },
 };
 
-export const useGetPosts = (userId: string) => {
-  const { data, isLoading, isError } = useFetch(Queries.getPosts, { userId });
+export const useGetPosts = () => {
+  const { data, isLoading, isError } = useFetch(Queries.getPosts);
   return { data, isLoading, isError };
 };
 
-export const useGetPost = (userId: string, postSlugs: string) => {
-  const { data, isLoading, isError } = useFetch(Queries.getPost, { userId, postSlugs });
+export const useGetPost = (postSlugs: string) => {
+  const { data, isLoading, isError } = useFetch(Queries.getPost, { postSlugs });
   return { data, isLoading, isError };
 };

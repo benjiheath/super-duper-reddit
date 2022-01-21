@@ -96,7 +96,7 @@ const PostCard = (props: PostProps) => {
 const Posts = () => {
   const match = useRouteMatch();
   const { userId } = useGlobalUserContext();
-  const { data, isLoading, isError } = useGetPosts(userId!);
+  const { data, isLoading, isError } = useGetPosts();
 
   const posts = data
     ? data

@@ -4,7 +4,7 @@ import { insertPointsAndComments } from '../../utils/misc';
 
 export const servePost: RequestHandler = async (req, res, _): Promise<void> => {
   try {
-    const { userId, postSlugs } = req.query;
+    const { postSlugs } = req.query;
 
     const [post] = await dbPosts.selectAll({ whereConditions: `url_slugs = '${postSlugs}'` });
 
@@ -18,7 +18,7 @@ export const servePost: RequestHandler = async (req, res, _): Promise<void> => {
       orderBy: 'updated_at',
     });
 
-    const clientReadyPost = await insertPointsAndComments(post, comments, userId as string);
+    const clientReadyPost = await insertPointsAndComments(post, comments, req.session.userID as string);
 
     res.status(200).send(clientReadyPost);
   } catch (err) {

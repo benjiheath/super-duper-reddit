@@ -237,21 +237,14 @@ const Comments = (props: CommentsProps) => {
 const Post = () => {
   const { userId } = useGlobalUserContext();
   const { postSlugs } = useParams() as { postSlugs: string };
-  const { data, isLoading, isError } = useGetPost(userId!, postSlugs);
-  // const { postsLoading, postInView, getPost, setPostInView } = usePostsContext();
-
-  // React.useEffect(() => {
-  //   if (!postInView) {
-  //     getPost(postSlugs);
-  //   }
-
-  //   return () => {
-  //     setPostInView(null);
-  //   };
-  // }, []);
+  const { data, isLoading, isError } = useGetPost(postSlugs);
 
   if (isLoading || !data) {
     return <SrSpinner />;
+  }
+
+  if (isError) {
+    return <span>Error retrieving this post</span>;
   }
 
   return (
