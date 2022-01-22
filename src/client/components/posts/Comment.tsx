@@ -116,7 +116,7 @@ const CommentCard = (props: CommentCardProps) => {
     <VStack pl={isNested ? 6 : 0} w='100%'>
       <Comment comment={comment} />
       {comment.children.map((childComment) => (
-        <CommentCard comment={childComment} isNested />
+        <CommentCard key={comment.id} comment={childComment} isNested />
       ))}
     </VStack>
   );

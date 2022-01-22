@@ -25,7 +25,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
-import { useGetPost } from '../../hooks/queries';
+import { useGetPostQuery } from '../../hooks/queries';
 import { PostedBy } from '../../pages/Posts';
 import { PostProps } from '../../types/posts';
 import { axiosDELETE, axiosPOST } from '../../utils/axiosMethods';
@@ -228,16 +228,15 @@ const Comments = (props: CommentsProps) => {
   return (
     <VStack alignItems='start' w='100%' spacing={10}>
       {nestedComments.map((nestedComment) => (
-        <CommentCard comment={nestedComment} />
+        <CommentCard comment={nestedComment} key={nestedComment.id} />
       ))}
     </VStack>
   );
 };
 
 const Post = () => {
-  const { userId } = useGlobalUserContext();
   const { postSlugs } = useParams() as { postSlugs: string };
-  const { data, isLoading, isError } = useGetPost(postSlugs);
+  const { data, isLoading, isError } = useGetPostQuery(postSlugs);
 
   if (isLoading || !data) {
     return <SrSpinner />;
