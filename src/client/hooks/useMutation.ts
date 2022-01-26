@@ -31,31 +31,29 @@ const fetchReducer = <A>(state: FetchState<A>, action: ACTIONTYPE<A>): FetchStat
 };
 
 interface Options<A> {
-  query: () => Promise<A>;
+  mutation: () => Promise<A>;
 }
 
-export const useFetch = <A>(options: Options<A>) => {
+export const useMutation = <A>(options: Options<A>) => {
   const initState: FetchState<A> = {
     isLoading: false,
     isError: false,
     data: null,
-  };
+  } as const;
 
   const [state, dispatch] = useReducer(fetchReducer, initState);
   const { isLoading, isError, data } = state as FetchState<A>;
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!state.isLoading) {
-        dispatch({ type: FetchActions.FETCH_INIT });
+      dispatch({ type: FetchActions.FETCH_INIT });
 
-        try {
-          const res = await options.query();
+      try {
+        const res = await options.mutation();
 
-          dispatch({ type: FetchActions.FETCH_SUCCESS, payload: res });
-        } catch (error) {
-          dispatch({ type: FetchActions.FETCH_FAILURE });
-        }
+        dispatch({ type: FetchActions.FETCH_SUCCESS, payload: res });
+      } catch (error) {
+        dispatch({ type: FetchActions.FETCH_FAILURE });
       }
     };
 

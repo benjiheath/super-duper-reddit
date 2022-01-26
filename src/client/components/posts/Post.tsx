@@ -25,7 +25,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
-import { useGetPostQuery } from '../../hooks/queries';
+import { usePostQuery } from '../../hooks/queries';
 import { PostedBy } from '../../pages/Posts';
 import { PostProps } from '../../types/posts';
 import { axiosDELETE, axiosPOST } from '../../utils/axiosMethods';
@@ -236,7 +236,7 @@ const Comments = (props: CommentsProps) => {
 
 const Post = () => {
   const { postSlugs } = useParams() as { postSlugs: string };
-  const { data, isLoading, isError } = useGetPostQuery(postSlugs);
+  const { data, isLoading, isError } = usePostQuery(postSlugs);
 
   if (isLoading || !data) {
     return <SrSpinner />;

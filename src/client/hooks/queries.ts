@@ -7,5 +7,5 @@ const getPosts = async () => await axiosGET<PostType[]>('posts');
 const getPost = async (postSlugs: string) =>
   await axiosGET<PostType>('posts/post', { queries: { postSlugs } });
 
-export const useGetPostsQuery = () => useFetch({ query: getPosts });
-export const useGetPostQuery = (postSlugs: string) => useFetch({ query: () => getPost(postSlugs) });
+export const usePostsQuery = () => useFetch({ query: getPosts });
+export const usePostQuery = (postSlugs: string) => useFetch({ query: () => getPost(postSlugs) });

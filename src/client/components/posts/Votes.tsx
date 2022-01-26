@@ -4,6 +4,7 @@ import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { useUpdatePostVotesMutation } from '../../hooks/mutations';
 import { axiosPATCH } from '../../utils/axiosMethods';
 
 interface VoteIconProps extends IconProps {
@@ -18,6 +19,7 @@ const VoteIcon = (props: VoteIconProps) => {
   const { icon, voteValue, itemId, currentVoteValue, mode, ...rest } = props;
   const { updatePost, postInView, setPostInView } = usePostsContext();
   const { userId } = useGlobalUserContext();
+  const updatePostVotesMutation = useUpdatePostVotesMutation();
 
   const itemIdKey = mode === 'post' ? 'postId' : 'commentId';
 
@@ -30,11 +32,12 @@ const VoteIcon = (props: VoteIconProps) => {
   const handleClick = async () => {
     try {
       if (mode === 'post') {
-        const updatedPost = await axiosPATCH<PostType>('posts/votes', { data: payload });
-        updatePost(updatedPost);
-        if (postInView?.id === updatedPost.id) {
-          setPostInView(updatedPost);
-        }
+        // const updatedPost = await axiosPATCH<PostType>('posts/votes', { data: payload });
+        // updatePost(updatedPost);
+        // if (postInView?.id === updatedPost.id) {
+        //   setPostInView(updatedPost);
+        // }
+        updatePostVotesMutation(itemId, voteValue);
       } else if (mode === 'comment') {
         const updatedComment = await axiosPATCH<CommentType>('posts/comments/votes', { data: payload });
         const updatedComments = postInView!.comments.map((comment) =>

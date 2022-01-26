@@ -8,7 +8,7 @@ import Post from '../components/posts/Post';
 import Votes from '../components/posts/Votes';
 import { usePostsContext } from '../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../contexts/user/GlobalUserContext';
-import { useGetPostsQuery } from '../hooks/queries';
+import { usePostsQuery } from '../hooks/queries';
 import { PostProps } from '../types/posts';
 import { checkIfUrlIsImg, getTimeAgo } from '../utils/misc';
 
@@ -95,7 +95,7 @@ const PostCard = (props: PostProps) => {
 
 const Posts = () => {
   const match = useRouteMatch();
-  const { data, isLoading, isError } = useGetPostsQuery();
+  const { data, isLoading, isError } = usePostsQuery();
 
   const posts = data
     ? data
