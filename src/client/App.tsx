@@ -1,5 +1,6 @@
 import { ChakraProvider, Flex } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import ScrollToTop from './components/generic/ScrollToTop';
 import PostsProvider from './contexts/posts/PostsContext';
@@ -43,6 +44,7 @@ export const App = () => {
                   <NotFound />
                 </Route>
               </Flex>
+              <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
           </ChakraProvider>
         </GlobalUserProvider>
