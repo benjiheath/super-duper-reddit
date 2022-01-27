@@ -2,10 +2,7 @@ import { HStack, Icon, IconProps, Text, VStack } from '@chakra-ui/react';
 import { IconType } from 'react-icons';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import { CommentType, PostType } from '../../../common/types/entities';
-import { usePostsContext } from '../../contexts/posts/PostsContext';
-import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { useUpdateCommentVotesMutation, useUpdatePostVotesMutation } from '../../hooks/fetching';
-import { axiosPATCH } from '../../utils/axiosMethods';
 
 interface VoteIconProps extends IconProps {
   icon: IconType;
@@ -17,9 +14,7 @@ interface VoteIconProps extends IconProps {
 
 const VoteIcon = (props: VoteIconProps) => {
   const { icon, voteValue, itemId, currentVoteValue, mode, ...rest } = props;
-
   const actualVoteValue = voteValue === currentVoteValue ? 0 : voteValue;
-
   const updatePostVotesMutation = useUpdatePostVotesMutation(itemId, actualVoteValue);
   const updateCommentVotesMutation = useUpdateCommentVotesMutation(itemId, actualVoteValue);
 
@@ -53,6 +48,18 @@ const VoteIcon = (props: VoteIconProps) => {
   );
 };
 
+interface ContainerProps {
+  children: React.ReactNode;
+  mode: 'post' | 'comment';
+}
+
+const Container = (props: ContainerProps) =>
+  props.mode === 'post' ? (
+    <VStack spacing={0}>{props.children}</VStack>
+  ) : (
+    <HStack spacing={1}>{props.children}</HStack>
+  );
+
 interface VotesProps {
   item: PostType | CommentType;
   mode: 'post' | 'comment';
@@ -67,22 +74,8 @@ const Votes = (props: VotesProps) => {
   const upFill = userVoteStatus === 1 ? 'sec.800' : 'gray.200';
   const downFill = userVoteStatus === -1 ? 'prim.900' : 'gray.200';
 
-  interface ContainerProps {
-    children: React.ReactNode;
-  }
-
-  const Container = (props: ContainerProps) => {
-    const { children } = props;
-
-    if (mode === 'post') {
-      return <VStack spacing={0}>{children}</VStack>;
-    }
-
-    return <HStack spacing={1}>{children}</HStack>;
-  };
-
   return (
-    <Container>
+    <Container mode={mode}>
       <VoteIcon
         icon={FaAngleUp}
         voteValue={1}
