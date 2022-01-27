@@ -17,19 +17,11 @@ interface VoteIconProps extends IconProps {
 
 const VoteIcon = (props: VoteIconProps) => {
   const { icon, voteValue, itemId, currentVoteValue, mode, ...rest } = props;
-  const { updatePost, postInView, setPostInView } = usePostsContext();
 
   const actualVoteValue = voteValue === currentVoteValue ? 0 : voteValue;
 
   const updatePostVotesMutation = useUpdatePostVotesMutation(itemId, actualVoteValue);
   const updateCommentVotesMutation = useUpdateCommentVotesMutation(itemId, actualVoteValue);
-
-  // const itemIdKey = mode === 'post' ? 'postId' : 'commentId';
-
-  // const payload = {
-  //   [itemIdKey]: itemId,
-  //   voteValue: voteValue === currentVoteValue ? 0 : voteValue,
-  // };
 
   const handleClick = async () => {
     try {
