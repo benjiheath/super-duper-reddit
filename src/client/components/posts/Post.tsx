@@ -25,6 +25,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { usePostQuery } from '../../hooks/fetching';
 import { PostedBy } from '../../pages/Posts';
 import { PostProps } from '../../types/posts';
 import { axiosDELETE, axiosPOST } from '../../utils/axiosMethods';
@@ -235,29 +236,19 @@ const Comments = (props: CommentsProps) => {
 
 const Post = () => {
   const { postSlugs } = useParams() as { postSlugs: string };
-  const { postsLoading, postInView, getPost, setPostInView } = usePostsContext();
+  const { data: post, isLoading, error } = usePostQuery(postSlugs);
 
-  React.useEffect(() => {
-    if (!postInView) {
-      getPost(postSlugs);
-    }
-
-    return () => {
-      setPostInView(null);
-    };
-  }, []);
-
-  if (postsLoading || !postInView) {
+  if (isLoading || !post) {
     return <SrSpinner />;
   }
 
   return (
     <PageBox boxShadow='0px 0px 3px 1px #ececec'>
       <VStack width='100%' spacing={4}>
-        <PostMain post={postInView} />
+        <PostMain post={post} />
         <Divider />
-        <CommentBox postId={postInView.id} />
-        <Comments comments={postInView.comments} />
+        <CommentBox postId={post.id} />
+        <Comments comments={post.comments} />
       </VStack>
     </PageBox>
   );
