@@ -120,10 +120,10 @@ const Posts = () => {
         </Route>
         <Route path={`${match.path}/`}>
           <VStack spacing={4}>
-            {posts
-              ? posts
+            {data
+              ? data
                   .filter((post) => post.currentStatus !== 'removed')
-                  .map((post) => <PostCard post={post} />)
+                  .map((post) => <PostCard post={post} key={post.id} />)
               : null}
           </VStack>
         </Route>
