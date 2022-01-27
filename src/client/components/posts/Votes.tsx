@@ -4,6 +4,7 @@ import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { useUpdateCommentVotesMutation, useUpdatePostVotesMutation } from '../../hooks/fetching';
 import { axiosPATCH } from '../../utils/axiosMethods';
 
 interface VoteIconProps extends IconProps {
@@ -17,37 +18,24 @@ interface VoteIconProps extends IconProps {
 const VoteIcon = (props: VoteIconProps) => {
   const { icon, voteValue, itemId, currentVoteValue, mode, ...rest } = props;
   const { updatePost, postInView, setPostInView } = usePostsContext();
-  const { userId } = useGlobalUserContext();
 
-  const itemIdKey = mode === 'post' ? 'postId' : 'commentId';
+  const actualVoteValue = voteValue === currentVoteValue ? 0 : voteValue;
 
-  const payload = {
-    userId,
-    [itemIdKey]: itemId,
-    voteValue: voteValue === currentVoteValue ? 0 : voteValue,
-  };
+  const updatePostVotesMutation = useUpdatePostVotesMutation(itemId, actualVoteValue);
+  const updateCommentVotesMutation = useUpdateCommentVotesMutation(itemId, actualVoteValue);
+
+  // const itemIdKey = mode === 'post' ? 'postId' : 'commentId';
+
+  // const payload = {
+  //   [itemIdKey]: itemId,
+  //   voteValue: voteValue === currentVoteValue ? 0 : voteValue,
+  // };
 
   const handleClick = async () => {
     try {
-      if (mode === 'post') {
-        const updatedPost = await axiosPATCH<PostType>('posts/votes', { data: payload });
-        updatePost(updatedPost);
-        if (postInView?.id === updatedPost.id) {
-          setPostInView(updatedPost);
-        }
-      } else if (mode === 'comment') {
-        const updatedComment = await axiosPATCH<CommentType>('posts/comments/votes', { data: payload });
-        const updatedComments = postInView!.comments.map((comment) =>
-          comment.id === updatedComment.id ? updatedComment : comment
-        );
-        const updatedPost: PostType = {
-          ...postInView!,
-          comments: updatedComments,
-        };
-        setPostInView(updatedPost);
-      }
+      mode === 'post' ? updatePostVotesMutation.mutate() : updateCommentVotesMutation.mutate();
     } catch (err) {
-      console.log('PostVotes fetch err:', err);
+      console.error('PostVotes update err:', err);
     }
   };
 
