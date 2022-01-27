@@ -7,6 +7,7 @@ import { NewPost } from '../components/posts';
 import Post from '../components/posts/Post';
 import Votes from '../components/posts/Votes';
 import { usePostsContext } from '../contexts/posts/PostsContext';
+import { usePostsQuery } from '../hooks/fetching';
 import { PostProps } from '../types/posts';
 import { checkIfUrlIsImg, getTimeAgo } from '../utils/misc';
 
@@ -93,13 +94,14 @@ const PostCard = (props: PostProps) => {
 
 const Posts = () => {
   const match = useRouteMatch();
-  const { posts, postsLoading, getAndSetPosts } = usePostsContext();
 
-  React.useEffect(() => {
-    getAndSetPosts();
-  }, []);
+  const { data, isLoading, error } = usePostsQuery();
 
-  if (postsLoading) {
+  if (error) {
+    return <span>Error fetching posts</span>;
+  }
+
+  if (isLoading) {
     return (
       <>
         <NavBar />

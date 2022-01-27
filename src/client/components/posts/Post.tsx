@@ -227,7 +227,7 @@ const Comments = (props: CommentsProps) => {
   return (
     <VStack alignItems='start' w='100%' spacing={10}>
       {nestedComments.map((nestedComment) => (
-        <CommentCard comment={nestedComment} />
+        <CommentCard comment={nestedComment} key={nestedComment.id} />
       ))}
     </VStack>
   );
