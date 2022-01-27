@@ -5,8 +5,8 @@ import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-d
 import ScrollToTop from './components/generic/ScrollToTop';
 import PostsProvider from './contexts/posts/PostsContext';
 import GlobalUserProvider from './contexts/user/GlobalUserContext';
-import { AccountRecovery, Posts, Register } from './pages';
-import NotFound from './pages/NotFound';
+import { AccountRecovery, PostsPage, Register } from './pages';
+import NotFound from './pages/NotFoundPage';
 import { theme } from './theme';
 
 export const App = () => {
@@ -30,7 +30,7 @@ export const App = () => {
                   <Redirect to='/posts' />
                 </Route>
                 <Route path='/posts'>
-                  <Posts />
+                  <PostsPage />
                 </Route>
               </PostsProvider>
               <Flex minH='100vh' alignItems='center'>

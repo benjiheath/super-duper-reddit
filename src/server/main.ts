@@ -8,8 +8,8 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import { postsRouter, sessionRouter, userRouter } from './routes';
 import { config } from './config';
-import { authChecker } from './handlers/middleware/authChecker';
 import history from 'connect-history-api-fallback';
+import { authChecker } from './handlers/middleware/authChecker';
 
 const app = express();
 const PostgreSqlStore = require('connect-pg-simple')(session);

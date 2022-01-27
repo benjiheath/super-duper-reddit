@@ -26,13 +26,13 @@ import { CommentType, PostType } from '../../../common/types/entities';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
 import { usePostQuery } from '../../hooks/fetching';
-import { PostedBy } from '../../pages/Posts';
 import { PostProps } from '../../types/posts';
 import { axiosDELETE, axiosPOST } from '../../utils/axiosMethods';
 import { checkIfUrlIsImg } from '../../utils/misc';
 import { AlertPopup, PageBox, SrSpinner } from '../generic';
 import CommentCard, { NestedComment } from './Comment';
 import CommentBox from './CommentBox';
+import { PostedBy } from './Posts';
 import Votes from './Votes';
 
 type PostTitleProps = Pick<PostType, 'title' | 'contentUrl'>;

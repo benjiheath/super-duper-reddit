@@ -1,15 +1,11 @@
-import { Flex, HStack, Link as ChakraLink, Text, VStack, Image } from '@chakra-ui/react';
-import React from 'react';
-import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
-import SrSpinner from '../components/generic/SrSpinner';
-import { NavBar } from '../components/homepage';
-import { NewPost } from '../components/posts';
-import Post from '../components/posts/Post';
-import Votes from '../components/posts/Votes';
-import { usePostsContext } from '../contexts/posts/PostsContext';
-import { usePostsQuery } from '../hooks/fetching';
-import { PostProps } from '../types/posts';
-import { checkIfUrlIsImg, getTimeAgo } from '../utils/misc';
+import { Flex, VStack, HStack, Image, Text, Link as ChakraLink } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
+import { Votes } from '.';
+import { usePostsQuery } from '../../hooks/fetching';
+import { PostProps } from '../../types/posts';
+import { getTimeAgo, checkIfUrlIsImg } from '../../utils/misc';
+import { SrSpinner } from '../generic';
+import { NavBar } from '../homepage';
 
 interface PostedByProps {
   date: string;
@@ -93,8 +89,6 @@ const PostCard = (props: PostProps) => {
 };
 
 const Posts = () => {
-  const match = useRouteMatch();
-
   const { data, isLoading, error } = usePostsQuery();
 
   if (error) {
@@ -111,26 +105,13 @@ const Posts = () => {
   }
 
   return (
-    <Flex flexDir='column'>
-      <NavBar />
-      <Switch>
-        <Route exact path={[`${match.path}/create`, `${match.path}/edit/:postSlugs`]}>
-          <NewPost />
-        </Route>
-        <Route exact path='/posts/:postSlugs'>
-          <Post />
-        </Route>
-        <Route path={`${match.path}/`}>
-          <VStack spacing={4}>
-            {data
-              ? data
-                  .filter((post) => post.currentStatus !== 'removed')
-                  .map((post) => <PostCard post={post} key={post.id} />)
-              : null}
-          </VStack>
-        </Route>
-      </Switch>
-    </Flex>
+    <VStack spacing={4}>
+      {data
+        ? data
+            .filter((post) => post.currentStatus !== 'removed')
+            .map((post) => <PostCard post={post} key={post.id} />)
+        : null}
+    </VStack>
   );
 };
 
