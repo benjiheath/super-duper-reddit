@@ -95,7 +95,12 @@ const Comment = (props: CommentProps) => {
       <CommentBody body={body} />
       <CommentActions comment={comment} handleReplyClick={handleReplyClick} postSlugs={postSlugs} />
       {replying ? (
-        <CommentBox postId={comment.postId} stopReplying={handleReplyFinish} parentCommentId={comment.id} />
+        <CommentBox
+          postId={comment.postId}
+          stopReplying={handleReplyFinish}
+          parentCommentId={comment.id}
+          postSlugs={postSlugs}
+        />
       ) : null}
     </VStack>
   );

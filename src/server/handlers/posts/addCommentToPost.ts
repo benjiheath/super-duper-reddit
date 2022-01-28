@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import { dbComments, dbPosts } from '../../utils/dbQueries';
-import { appendCommentsToPost } from '../../utils/misc';
+import { appendCommentsToPost, insertPointsAndComments } from '../../utils/misc';
 
 declare module 'express-session' {
   interface SessionData {
@@ -10,19 +10,33 @@ declare module 'express-session' {
 
 export const addCommentToPost: RequestHandler = async (req, res, next) => {
   try {
-    const { creator_user_id, post_id, body, creator_username, parent_comment_id } = req.body;
+    const { creatorUserId, postId, body, creatorUsername, parentCommentId } = req.body;
 
-    await dbComments.insertRow({ creator_user_id, creator_username, post_id, body, parent_comment_id });
+    const commentData = {
+      creator_user_id: creatorUserId,
+      creator_username: creatorUsername,
+      parent_comment_id: parentCommentId,
+      body,
+      post_id: postId,
+    };
 
-    const [updatedPost] = await dbPosts.selectAll({ whereConditions: `id = '${post_id}'` });
+    await dbComments.insertRow(commentData);
+
+    const [updatedPost] = await dbPosts.selectAll({ whereConditions: `id = '${postId}'` });
     const comments = await dbComments.selectAll({
-      whereConditions: `post_id = '${post_id}'`,
+      whereConditions: `post_id = '${postId}'`,
       orderBy: 'updated_at',
     });
 
-    const updatedPostWithComments = appendCommentsToPost(updatedPost, comments);
+    // const updatedPostWithComments = appendCommentsToPost(updatedPost, comments);
 
-    res.status(200).send({ status: 'posted successfully', post: updatedPostWithComments });
+    const clientReadyPost = await insertPointsAndComments(
+      updatedPost,
+      comments,
+      req.session.userID as string
+    );
+
+    res.status(200).send(clientReadyPost);
   } catch (err) {
     console.error(err);
   }

@@ -228,7 +228,7 @@ const Post = () => {
       <VStack width='100%' spacing={4}>
         <PostMain post={post} />
         <Divider />
-        <CommentBox postId={post.id} />
+        <CommentBox postId={post.id} postSlugs={postSlugs} />
         <Comments comments={post.comments} postSlugs={post.urlSlugs} />
       </VStack>
     </PageBox>

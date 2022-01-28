@@ -1,22 +1,20 @@
 import { Box, Button, VStack } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { CommentType, PostType } from '../../../common/types/entities';
-import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
-import { PostProps, CreateCommentFields } from '../../types/posts';
-import { axiosPOST } from '../../utils/axiosMethods';
-import { FormTextArea, ButtonSubmit } from '../generic';
+import { useAddCommentMutation } from '../../hooks/fetching';
+import { CreateCommentFields } from '../../types/posts';
+import { ButtonSubmit, FormTextArea } from '../generic';
 
 interface CommentBoxProps {
   postId: string;
+  postSlugs: string;
   parentCommentId?: string;
   stopReplying?: () => void;
 }
 
 const CommentBox = (props: CommentBoxProps) => {
-  const { postId, parentCommentId, stopReplying } = props;
+  const { postId, parentCommentId, stopReplying, postSlugs } = props;
   const { username, userId, setResponseError } = useGlobalUserContext();
-  const { setPostInView } = usePostsContext();
   const {
     register,
     reset,
@@ -24,29 +22,24 @@ const CommentBox = (props: CommentBoxProps) => {
     formState: { errors, isValid, isSubmitting },
   } = useForm({ mode: 'onChange' });
 
+  const addCommentMutation = useAddCommentMutation({ postSlugs });
+
   const onSubmit = async (data: CreateCommentFields): Promise<void> => {
-    try {
-      const newCommentData = {
-        ...data,
-        post_id: postId,
-        creator_user_id: userId,
-        creator_username: username,
-        parent_comment_id: parentCommentId ?? null,
-      };
+    const newCommentData = {
+      body: data.body,
+      postId,
+      creatorUserId: userId!,
+      creatorUsername: username!,
+      parentCommentId: parentCommentId ?? null,
+    };
 
-      const { post } = await axiosPOST('posts/comments', { data: newCommentData });
-
-      if (!post) {
-        return;
-        // TODO - handle later
-      }
-
-      setPostInView(post);
-      if (stopReplying) stopReplying();
-      reset();
-    } catch (err) {
-      setResponseError(err);
-    }
+    await addCommentMutation
+      .mutateAsync(newCommentData)
+      .then((_) => {
+        stopReplying?.();
+        reset();
+      })
+      .catch((err) => setResponseError(err));
   };
 
   return (

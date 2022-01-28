@@ -1,11 +1,18 @@
-export interface UpdatePostVotesVariables {
+import { AddCommentPayload } from '../fetching/mutations';
+
+export interface UpdatePostVotesMutationVariables {
+  postSlugs: string;
   postId: string;
   voteValue: number;
-  postSlugs: string;
 }
 
-export interface UpdateCommentVotesVariables {
+export interface UpdateCommentVotesMutationVariables {
   postSlugs: string;
   commentId: string;
   voteValue: number;
+}
+
+export interface AddCommentMutationVariables {
+  postSlugs: string;
+  //   payload: AddCommentPayload;
 }

@@ -2,6 +2,7 @@ import { Flex, VStack } from '@chakra-ui/react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { NavBar } from '../components/homepage';
 import { CreateOrEditPost, Post, Posts } from '../components/posts';
+import { useGlobalUserContext } from '../contexts/user/GlobalUserContext';
 
 const PostsPage = () => {
   const match = useRouteMatch();

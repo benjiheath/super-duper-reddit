@@ -48,6 +48,7 @@ const VoteIcon = (props: VoteIconProps) => {
       _hover={{ bg: hoverBg, fill: hoverFill }}
       cursor='pointer'
       borderRadius={4}
+      _active={{ transform: 'scale(0.8)' }}
       onClick={(e) => {
         e.preventDefault();
         handleClick();
