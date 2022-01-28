@@ -134,17 +134,15 @@ export const insertPointsAndComments: InsertPointsAndComments = async (post, com
 
   const nestedComments = nestComments(postComments);
 
-  if (postVote && postVote.postId === post.id) {
-    return { ...post, comments: nestedComments, points: voteCount, userVoteStatus: postVote.voteStatus };
-  } else {
-    return {
-      ...post,
-      comments: nestedComments,
-      points: voteCount,
-      userVoteStatus: null,
-      userFavoriteStatus: userFavoriteStatus ? true : false,
-    };
-  }
+  const userHasVoted = postVote && postVote.postId === post.id;
+
+  return {
+    ...post,
+    comments: nestedComments,
+    points: voteCount,
+    userVoteStatus: userHasVoted ? postVote.voteStatus : null,
+    userFavoriteStatus: userFavoriteStatus ? true : false,
+  };
 };
 
 export const asyncMap = async <T, U>(list: T[], callback: (item: T) => Promise<T>) => {
