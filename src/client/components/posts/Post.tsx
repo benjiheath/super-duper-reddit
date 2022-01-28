@@ -217,9 +217,9 @@ const Comments = (props: CommentsProps) => {
 
 const Post = () => {
   const { postSlugs } = useParams() as { postSlugs: string };
-  const { data: post, isLoading, error } = usePostQuery({ postSlugs });
+  const { data: post, isLoading, isFetching, isRefetching, error } = usePostQuery({ postSlugs });
 
-  if (isLoading || !post) {
+  if (isLoading || isFetching || isRefetching || !post) {
     return <SrSpinner />;
   }
 

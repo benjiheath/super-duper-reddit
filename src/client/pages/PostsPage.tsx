@@ -1,8 +1,7 @@
 import { Flex, VStack } from '@chakra-ui/react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { NavBar } from '../components/homepage';
-import { CreateOrEditPost, Post, Posts } from '../components/posts';
-import { useGlobalUserContext } from '../contexts/user/GlobalUserContext';
+import { CreatePost, EditPost, Post, Posts } from '../components/posts';
 
 const PostsPage = () => {
   const match = useRouteMatch();
@@ -11,8 +10,11 @@ const PostsPage = () => {
     <Flex flexDir='column'>
       <NavBar />
       <Switch>
-        <Route exact path={[`${match.path}/create`, `${match.path}/edit/:postSlugs`]}>
-          <CreateOrEditPost />
+        <Route exact path={`${match.path}/create`}>
+          <CreatePost />
+        </Route>
+        <Route exact path={`${match.path}/edit/:postSlugs`}>
+          <EditPost />
         </Route>
         <Route exact path='/posts/:postSlugs'>
           <Post />

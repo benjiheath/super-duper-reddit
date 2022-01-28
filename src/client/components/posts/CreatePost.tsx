@@ -1,0 +1,50 @@
+import { useToast } from '@chakra-ui/react';
+import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
+import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { createPost } from '../../fetching/mutations';
+import { CreatePostFields } from '../../types/posts';
+import CreateOrEditPostForm from './CreateOrEditPostForm';
+
+const CreatePost = () => {
+  const { setResponseError, username, userId } = useGlobalUserContext();
+  const history = useHistory();
+  const toast = useToast();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
+  const onSubmit = async (data: CreatePostFields): Promise<void> => {
+    const newPostData = { creatorUserId: userId!, creatorUsername: username!, ...data };
+
+    try {
+      const post = await createPost(newPostData);
+
+      toast({
+        position: 'top',
+        title: 'Posted successfully',
+        duration: 1600,
+        status: 'success',
+        variant: 'subtle',
+      });
+
+      history.push({ pathname: `${post.urlSlugs}` });
+    } catch (err) {
+      setResponseError(err);
+    }
+  };
+
+  return (
+    <CreateOrEditPostForm
+      handleSubmit={handleSubmit}
+      onSubmit={onSubmit}
+      register={register}
+      errors={errors}
+      isSubmitting={isSubmitting}
+    />
+  );
+};
+
+export default CreatePost;

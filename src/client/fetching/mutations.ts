@@ -1,9 +1,4 @@
-import {
-  AddFavoriteMutationResponse,
-  CommentType,
-  PostType,
-  UpdatePostVotesMutationResponse,
-} from '../../common/types';
+import { AddFavoriteMutationResponse, CommentType, PostType } from '../../common/types';
 import { axiosDELETE, axiosPATCH, axiosPOST } from '../utils/axiosMethods';
 
 export const updatePostVotes = async (payload: { postId: string; voteValue: number }) =>
@@ -25,6 +20,29 @@ export const addComment = async (payload: AddCommentPayload) =>
 
 export const addFavorite = async (postId: string) =>
   await axiosPOST<AddFavoriteMutationResponse>('posts/favorites', { data: { postId } });
+
+export interface CreatePostPayload {
+  creatorUserId: string;
+  creatorUsername: string;
+  title: string;
+  body: string | null;
+  contentUrl: string | null;
+}
+
+export const createPost = async (payload: CreatePostPayload) =>
+  await axiosPOST<PostType>('posts', { data: payload });
+
+export interface EditPostPayload {
+  title: string | null;
+  body: string | null;
+  contentUrl: string | null;
+  postSlugs: string;
+}
+
+export const editPost = async (payload: EditPostPayload) =>
+  await axiosPATCH<PostType>('posts/post', {
+    data: payload,
+  });
 
 export const removePost = async (postId: string) => {
   await axiosDELETE('posts', { data: { postId } });

@@ -1,18 +1,24 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { PostType } from '../../common/types/entities';
-import { addComment, updateCommentVotes, updatePostVotes } from '../fetching/mutations';
-import { getPost, getPosts } from '../fetching/queries';
 import {
+  addComment,
+  AddCommentPayload,
+  addFavorite,
+  updateCommentVotes,
+  updatePostVotes,
+} from '../fetching/mutations';
+import {
+  CreatePostMutationVariables,
   UpdateCommentVotesMutationVariables,
   UpdatePostVotesMutationVariables,
   UpdateUserFavoriteStatusMutationVariables,
 } from '../types/mutations';
-import { AddCommentPayload, addFavorite } from './../fetching/mutations';
+import { getPost, getPosts } from '../fetching/queries';
 import { GetPostVariables } from './../fetching/queries';
 import { AddCommentMutationVariables } from './../types/mutations';
 
-const getPostsBaseKey = () => ['posts'];
-const getPostBaseKey = (variables: GetPostVariables) => ['post', variables];
+export const getPostsBaseKey = () => ['posts'];
+export const getPostBaseKey = (variables: GetPostVariables) => ['post', variables];
 
 export const usePostsQuery = () => useQuery(getPostsBaseKey(), getPosts);
 export const usePostQuery = (variables: GetPostVariables) =>

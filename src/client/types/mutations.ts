@@ -1,5 +1,7 @@
-import { AddCommentPayload } from '../fetching/mutations';
-
+import { CreatePostPayload } from './../fetching/mutations';
+export interface EditPostMutationVariables {
+  postSlugs: string;
+}
 export interface UpdatePostVotesMutationVariables {
   postSlugs: string;
   postId: string;
@@ -14,10 +16,13 @@ export interface UpdateCommentVotesMutationVariables {
 
 export interface AddCommentMutationVariables {
   postSlugs: string;
-  //   payload: AddCommentPayload;
 }
 
 export interface UpdateUserFavoriteStatusMutationVariables {
   postId: string;
   postSlugs: string;
+}
+
+export interface CreatePostMutationVariables {
+  payload: CreatePostPayload;
 }
