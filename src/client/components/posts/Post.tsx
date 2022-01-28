@@ -162,7 +162,7 @@ const PostMain = (props: PostProps) => {
 
   return (
     <HStack justifyContent='start' w='100%' spacing={6}>
-      <Votes item={post} mode='post' />
+      <Votes item={post} mode='post' postSlugs={post.urlSlugs} postId={post.id} />
       <VStack alignItems='start' width='100%' spacing={2}>
         <PostTitle title={title} contentUrl={contentUrl} />
         <PostedBy date={createdAt} creatorUsername={post.creatorUsername} />
@@ -196,10 +196,11 @@ const PostMain = (props: PostProps) => {
 
 interface CommentsProps {
   comments: CommentType[];
+  postSlugs: string;
 }
 
 const Comments = (props: CommentsProps) => {
-  const { comments } = props;
+  const { comments, postSlugs } = props;
 
   if (comments.length === 0) {
     return <Text>No comments to display.</Text>;
@@ -214,21 +215,19 @@ const Comments = (props: CommentsProps) => {
       const children = comments.filter((filteredComment) => filteredComment.parentCommentId === comment.id);
       const childrenNested = nestComments(children, true);
       const commentWithChildren = { ...comment, children: childrenNested };
-
       return commentWithChildren;
     });
 
     const nullsRemoved = nestedComments.filter((c) => c !== null);
-
     return nullsRemoved as NestedComment[];
   };
 
-  const nestedComments = nestComments(comments);
+  const nestedComments = React.useMemo(() => nestComments(comments), [comments]);
 
   return (
     <VStack alignItems='start' w='100%' spacing={10}>
       {nestedComments.map((nestedComment) => (
-        <CommentCard comment={nestedComment} key={nestedComment.id} />
+        <CommentCard comment={nestedComment} key={nestedComment.id} postSlugs={postSlugs} />
       ))}
     </VStack>
   );
@@ -236,7 +235,7 @@ const Comments = (props: CommentsProps) => {
 
 const Post = () => {
   const { postSlugs } = useParams() as { postSlugs: string };
-  const { data: post, isLoading, error } = usePostQuery(postSlugs);
+  const { data: post, isLoading, error } = usePostQuery({ postSlugs });
 
   if (isLoading || !post) {
     return <SrSpinner />;
@@ -248,7 +247,7 @@ const Post = () => {
         <PostMain post={post} />
         <Divider />
         <CommentBox postId={post.id} />
-        <Comments comments={post.comments} />
+        <Comments comments={post.comments} postSlugs={post.urlSlugs} />
       </VStack>
     </PageBox>
   );

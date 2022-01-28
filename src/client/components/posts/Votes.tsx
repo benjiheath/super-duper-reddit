@@ -10,19 +10,28 @@ interface VoteIconProps extends IconProps {
   itemId: string;
   currentVoteValue: -1 | 1 | null;
   mode: 'comment' | 'post';
+  postId: string;
+  postSlugs: string;
 }
 
 const VoteIcon = (props: VoteIconProps) => {
-  const { icon, voteValue, itemId, currentVoteValue, mode, ...rest } = props;
-  const actualVoteValue = voteValue === currentVoteValue ? 0 : voteValue;
-  const updatePostVotesMutation = useUpdatePostVotesMutation(itemId, actualVoteValue);
-  const updateCommentVotesMutation = useUpdateCommentVotesMutation(itemId, actualVoteValue);
+  const { icon, voteValue, itemId, currentVoteValue, mode, postId, postSlugs, ...rest } = props;
+  const resultantVoteValue = voteValue === currentVoteValue ? 0 : voteValue;
+  const slugsAndVoteValue = { postSlugs, voteValue: resultantVoteValue };
+  const updatePostVotesMutation = useUpdatePostVotesMutation({
+    postId,
+    ...slugsAndVoteValue,
+  });
+  const updateCommentVotesMutation = useUpdateCommentVotesMutation({
+    commentId: itemId,
+    ...slugsAndVoteValue,
+  });
 
   const handleClick = async () => {
     try {
       mode === 'post' ? updatePostVotesMutation.mutate() : updateCommentVotesMutation.mutate();
     } catch (err) {
-      console.error('PostVotes update err:', err);
+      console.error('Err updating votes:', err);
     }
   };
 
@@ -63,10 +72,12 @@ const Container = (props: ContainerProps) =>
 interface VotesProps {
   item: PostType | CommentType;
   mode: 'post' | 'comment';
+  postSlugs: string;
+  postId: string;
 }
 
 const Votes = (props: VotesProps) => {
-  const { item, mode } = props;
+  const { item, mode, postSlugs, postId } = props;
   const { points, id, userVoteStatus } = item;
 
   const pointsColor = points && points >= 1 ? 'sec.800' : 'prim.800';
@@ -83,6 +94,8 @@ const Votes = (props: VotesProps) => {
         fill={upFill}
         currentVoteValue={userVoteStatus}
         mode={mode}
+        postId={postId}
+        postSlugs={postSlugs}
       />
       <Text
         color={!points ? 'gray.100' : pointsColor}
@@ -98,6 +111,8 @@ const Votes = (props: VotesProps) => {
         fill={downFill}
         currentVoteValue={userVoteStatus}
         mode={mode}
+        postId={postId}
+        postSlugs={postSlugs}
       />
     </Container>
   );

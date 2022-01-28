@@ -81,7 +81,7 @@ const PostCard = (props: PostProps) => {
         bg='white'
         transition='0.15s'
       >
-        <Votes item={post} mode='post' />
+        <Votes item={post} mode='post' postId={post.id} postSlugs={post.urlSlugs} />
         <PostCardDetails post={post} />
       </HStack>
     </Link>
