@@ -5,12 +5,12 @@ import { FieldError } from '../../utils/errors';
 
 export const createPost: RequestHandler = async (req, res, next) => {
   try {
-    const { creator_user_id, creator_username, title, body, contentUrl: content_url } = req.body;
+    const { creatorUserId, creatorUsername, title, body, contentUrl } = req.body;
 
     const [post] = await dbPosts.insertRow({
-      creator_user_id,
-      creator_username,
-      content_url,
+      creator_user_id: creatorUserId,
+      creator_username: creatorUsername,
+      content_url: contentUrl,
       title,
       body,
     });

@@ -4,12 +4,12 @@ import { insertPointsAndComments } from '../../utils/misc';
 
 export const updatePostVotes: RequestHandler = async (req, res, _): Promise<void> => {
   try {
-    const { voteValue, postId, userId } = req.body;
+    const { voteValue, postId } = req.body;
 
     await dbPostsVotes.insertRow(
       {
         vote_status: voteValue,
-        user_id: userId,
+        user_id: req.session.userID,
         post_id: postId,
       },
       `ON CONFLICT (post_id, user_id) DO UPDATE SET vote_status = '${voteValue}'`
@@ -22,7 +22,7 @@ export const updatePostVotes: RequestHandler = async (req, res, _): Promise<void
       orderBy: 'updated_at',
     });
 
-    const clientReadyPost = await insertPointsAndComments(post, comments, userId);
+    const clientReadyPost = await insertPointsAndComments(post, comments, req.session.userID as string);
 
     res.status(200).send(clientReadyPost);
   } catch (err) {

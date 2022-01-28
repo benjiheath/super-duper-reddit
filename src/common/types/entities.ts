@@ -19,7 +19,7 @@ export interface PostType {
   creatorUsername: string;
   currentStatus: 'normal' | 'removed';
   urlSlugs: string;
-  comments: CommentType[];
+  comments: NestedComment[];
   userVoteStatus: -1 | 1 | null;
   userFavoriteStatus: boolean;
   points: number | null;
@@ -37,6 +37,11 @@ export interface CommentType {
   currentStatus: 'normal' | 'removed';
   userVoteStatus: -1 | 1 | null;
   points: number | null;
+  children: NestedComment[];
+}
+
+export interface NestedComment extends CommentType {
+  children: NestedComment[];
 }
 
 export interface PostFavoriteType {

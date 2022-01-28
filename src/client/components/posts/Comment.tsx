@@ -1,8 +1,7 @@
 import { Box, HStack, Icon, StackProps, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 import { FaReply } from 'react-icons/fa';
-import { CommentType } from '../../../common/types/entities';
-import { usePostsContext } from '../../contexts/posts/PostsContext';
+import { CommentType, NestedComment } from '../../../common/types/entities';
 import { getTimeAgo } from '../../utils/misc';
 import CommentBox from './CommentBox';
 import Votes from './Votes';
@@ -63,29 +62,27 @@ const CommentReplyBtn = (props: CommentReplyBtnProps) => {
 interface CommentActionsProps {
   comment: CommentType;
   handleReplyClick: () => void;
+  postSlugs: string;
 }
 
 const CommentActions = (props: CommentActionsProps) => {
-  const { comment, handleReplyClick } = props;
+  const { comment, handleReplyClick, postSlugs } = props;
 
   return (
     <HStack spacing={4}>
-      <Votes item={comment} mode='comment' />
+      <Votes item={comment} mode='comment' postId={comment.postId} postSlugs={postSlugs} />
       <CommentReplyBtn onClick={handleReplyClick} />
     </HStack>
   );
 };
 
-export interface NestedComment extends CommentType {
-  children: NestedComment[];
-}
-
 interface CommentProps extends StackProps {
   comment: NestedComment;
+  postSlugs: string;
 }
 
 const Comment = (props: CommentProps) => {
-  const { comment, ...rest } = props;
+  const { comment, postSlugs, ...rest } = props;
   const { createdAt, creatorUsername, body } = comment;
   const [replying, setReplying] = React.useState(false);
 
@@ -96,9 +93,14 @@ const Comment = (props: CommentProps) => {
     <VStack alignItems='start' spacing={0} w='100%' {...rest}>
       <CommentHeading username={creatorUsername} createdAt={createdAt} />
       <CommentBody body={body} />
-      <CommentActions comment={comment} handleReplyClick={handleReplyClick} />
+      <CommentActions comment={comment} handleReplyClick={handleReplyClick} postSlugs={postSlugs} />
       {replying ? (
-        <CommentBox postId={comment.postId} stopReplying={handleReplyFinish} parentCommentId={comment.id} />
+        <CommentBox
+          postId={comment.postId}
+          stopReplying={handleReplyFinish}
+          parentCommentId={comment.id}
+          postSlugs={postSlugs}
+        />
       ) : null}
     </VStack>
   );
@@ -107,16 +109,17 @@ const Comment = (props: CommentProps) => {
 interface CommentCardProps {
   comment: NestedComment;
   isNested?: boolean;
+  postSlugs?: string;
 }
 
 const CommentCard = (props: CommentCardProps) => {
-  const { comment, isNested } = props;
+  const { comment, isNested, postSlugs } = props;
 
   return (
     <VStack pl={isNested ? 6 : 0} w='100%'>
-      <Comment comment={comment} />
+      <Comment comment={comment} postSlugs={postSlugs!} />
       {comment.children.map((childComment) => (
-        <CommentCard comment={childComment} isNested />
+        <CommentCard comment={childComment} key={childComment.id} postSlugs={postSlugs} isNested />
       ))}
     </VStack>
   );

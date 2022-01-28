@@ -8,7 +8,6 @@ declare module 'express-session' {
 
 export const authChecker: RequestHandler = async (req, res, next) => {
   try {
-    // if (req.method === 'GET' && req.originalUrl !== '/session') {
     if (
       !req.originalUrl.includes('/user') &&
       !req.originalUrl.includes('/session') &&

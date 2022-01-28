@@ -31,5 +31,6 @@ export const editPost: RequestHandler = async (req, res, next) => {
     if (err instanceof FieldError) {
       res.status(200).send(err.info);
     }
+    // TODO handle invalid session ID (not auth)
   }
 };

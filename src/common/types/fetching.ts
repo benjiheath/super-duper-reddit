@@ -60,3 +60,9 @@ export interface CreatePostResponse {
   status: string;
   post: PostType;
 }
+
+export type UpdatePostVotesMutationResponse = Pick<PostType, 'userVoteStatus' | 'points'>;
+
+export interface AddFavoriteMutationResponse {
+  updatedUserFavoriteStatus: boolean;
+}

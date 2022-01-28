@@ -4,12 +4,12 @@ import { insertVoteInfoIntoComment } from '../../utils/misc';
 
 export const updateCommentVotes: RequestHandler = async (req, res, _): Promise<void> => {
   try {
-    const { voteValue, commentId, userId } = req.body;
+    const { voteValue, commentId } = req.body;
 
     await dbCommentsVotes.insertRow(
       {
         vote_status: voteValue,
-        user_id: userId,
+        user_id: req.session.userID,
         comment_id: commentId,
       },
       `ON CONFLICT (comment_id, user_id) DO UPDATE SET vote_status = '${voteValue}'`
@@ -17,7 +17,7 @@ export const updateCommentVotes: RequestHandler = async (req, res, _): Promise<v
 
     const [comment] = await dbComments.selectAll({ whereConditions: `id = '${commentId}'` });
 
-    const updatedComment = await insertVoteInfoIntoComment(comment, userId);
+    const updatedComment = await insertVoteInfoIntoComment(comment, req.session.userID as string);
 
     res.status(200).send(updatedComment);
   } catch (err) {

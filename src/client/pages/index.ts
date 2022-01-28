@@ -1,5 +1,5 @@
-import Register from './RegisterLogin';
-import AccountRecovery from './AccountRecovery';
-import Posts from './Posts';
+import Register from './RegisterLoginPage';
+import AccountRecovery from './AccountRecoveryPage';
+import PostsPage from './PostsPage';
 
-export { Register, AccountRecovery, Posts };
+export { Register, AccountRecovery, PostsPage };
