@@ -25,9 +25,9 @@ import { useHistory, useParams } from 'react-router-dom';
 import { CommentCard } from '.';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { removePost } from '../../fetching/mutations';
 import { useAddFavoriteMutation, usePostQuery } from '../../hooks/fetching';
 import { PostProps } from '../../types/posts';
-import { axiosDELETE } from '../../utils/axiosMethods';
 import { checkIfUrlIsImg } from '../../utils/misc';
 import { AlertPopup, PageBox, SrSpinner } from '../generic';
 import CommentBox from './CommentBox';
@@ -86,10 +86,9 @@ const PostActionsMenu = (props: PostProps) => {
   });
 
   const handleRemove = async () => {
-    await axiosDELETE('posts', { data: { postId: post.id } });
+    await removePost(post.id);
     setAlertIsOpen(false);
     history.push({ pathname: '/posts' });
-    toast({ title: 'Post successfully removed', status: 'success' });
   };
 
   const handleFavorite = async () => {
