@@ -219,7 +219,7 @@ const Post = () => {
   const { postSlugs } = useParams() as { postSlugs: string };
   const { data: post, isLoading, isFetching, isRefetching, error } = usePostQuery({ postSlugs });
 
-  if (isLoading || isFetching || isRefetching || !post) {
+  if (isLoading || !post) {
     return <SrSpinner />;
   }
 
