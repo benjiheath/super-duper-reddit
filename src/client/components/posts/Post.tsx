@@ -22,6 +22,7 @@ import React from 'react';
 import { FaEdit, FaEllipsisH, FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
 import { IconType } from 'react-icons/lib';
 import { useHistory, useParams } from 'react-router-dom';
+import { CommentCard } from '.';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
@@ -30,7 +31,6 @@ import { PostProps } from '../../types/posts';
 import { axiosDELETE, axiosPOST } from '../../utils/axiosMethods';
 import { checkIfUrlIsImg } from '../../utils/misc';
 import { AlertPopup, PageBox, SrSpinner } from '../generic';
-import CommentCard, { NestedComment } from './Comment';
 import CommentBox from './CommentBox';
 import { PostedBy } from './Posts';
 import Votes from './Votes';
@@ -206,28 +206,10 @@ const Comments = (props: CommentsProps) => {
     return <Text>No comments to display.</Text>;
   }
 
-  const nestComments = (commentList: CommentType[], isRecursiveCall?: boolean): NestedComment[] => {
-    const nestedComments = commentList.map((comment) => {
-      if (comment.parentCommentId && !isRecursiveCall) {
-        return null;
-      }
-
-      const children = comments.filter((filteredComment) => filteredComment.parentCommentId === comment.id);
-      const childrenNested = nestComments(children, true);
-      const commentWithChildren = { ...comment, children: childrenNested };
-      return commentWithChildren;
-    });
-
-    const nullsRemoved = nestedComments.filter((c) => c !== null);
-    return nullsRemoved as NestedComment[];
-  };
-
-  const nestedComments = React.useMemo(() => nestComments(comments), [comments]);
-
   return (
     <VStack alignItems='start' w='100%' spacing={10}>
-      {nestedComments.map((nestedComment) => (
-        <CommentCard comment={nestedComment} key={nestedComment.id} postSlugs={postSlugs} />
+      {comments.map((comment) => (
+        <CommentCard comment={comment} key={comment.id} postSlugs={postSlugs} />
       ))}
     </VStack>
   );

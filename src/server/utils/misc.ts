@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { CommentType, PostType } from '../../common/types/entities';
+import { CommentType, NestedComment, PostType } from '../../common/types/entities';
 import { CommentsColumn, DbComment, DbPost, PostsColumn, UserColumn } from '../types/dbTypes';
 import { dbCommentsVotes, dbPostsFavorites, dbPostsVotes } from './dbQueries';
 
@@ -114,12 +114,32 @@ export const insertPointsAndComments: InsertPointsAndComments = async (post, com
     insertVoteInfoIntoComment(postComment, userId)
   );
 
+  const nestComments = (commentList: CommentType[], isRecursiveCall?: boolean): NestedComment[] => {
+    const nestedComments = commentList.map((comment) => {
+      if (comment.parentCommentId && !isRecursiveCall) {
+        return null;
+      }
+
+      const children = postComments.filter(
+        (filteredComment) => filteredComment.parentCommentId === comment.id
+      );
+      const childrenNested = nestComments(children, true);
+      const commentWithChildren = { ...comment, children: childrenNested };
+      return commentWithChildren;
+    });
+
+    const nullsRemoved = nestedComments.filter((c) => c !== null);
+    return nullsRemoved as NestedComment[];
+  };
+
+  const nestedComments = nestComments(postComments);
+
   if (postVote && postVote.postId === post.id) {
-    return { ...post, comments: postComments, points: voteCount, userVoteStatus: postVote.voteStatus };
+    return { ...post, comments: nestedComments, points: voteCount, userVoteStatus: postVote.voteStatus };
   } else {
     return {
       ...post,
-      comments: postComments,
+      comments: nestedComments,
       points: voteCount,
       userVoteStatus: null,
       userFavoriteStatus: userFavoriteStatus ? true : false,

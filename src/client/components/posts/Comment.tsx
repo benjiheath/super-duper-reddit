@@ -1,8 +1,7 @@
 import { Box, HStack, Icon, StackProps, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 import { FaReply } from 'react-icons/fa';
-import { CommentType } from '../../../common/types/entities';
-import { usePostsContext } from '../../contexts/posts/PostsContext';
+import { CommentType, NestedComment } from '../../../common/types/entities';
 import { getTimeAgo } from '../../utils/misc';
 import CommentBox from './CommentBox';
 import Votes from './Votes';
@@ -76,10 +75,6 @@ const CommentActions = (props: CommentActionsProps) => {
     </HStack>
   );
 };
-
-export interface NestedComment extends CommentType {
-  children: NestedComment[];
-}
 
 interface CommentProps extends StackProps {
   comment: NestedComment;
