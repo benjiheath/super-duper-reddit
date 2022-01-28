@@ -16,3 +16,8 @@ export interface AddCommentMutationVariables {
   postSlugs: string;
   //   payload: AddCommentPayload;
 }
+
+export interface UpdateUserFavoriteStatusMutationVariables {
+  postId: string;
+  postSlugs: string;
+}

@@ -62,3 +62,7 @@ export interface CreatePostResponse {
 }
 
 export type UpdatePostVotesMutationResponse = Pick<PostType, 'userVoteStatus' | 'points'>;
+
+export interface AddFavoriteMutationResponse {
+  updatedUserFavoriteStatus: boolean;
+}

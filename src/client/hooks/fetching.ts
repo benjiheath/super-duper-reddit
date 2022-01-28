@@ -2,8 +2,12 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { PostType } from '../../common/types/entities';
 import { addComment, updateCommentVotes, updatePostVotes } from '../fetching/mutations';
 import { getPost, getPosts } from '../fetching/queries';
-import { UpdateCommentVotesMutationVariables, UpdatePostVotesMutationVariables } from '../types/mutations';
-import { AddCommentPayload } from './../fetching/mutations';
+import {
+  UpdateCommentVotesMutationVariables,
+  UpdatePostVotesMutationVariables,
+  UpdateUserFavoriteStatusMutationVariables,
+} from '../types/mutations';
+import { AddCommentPayload, addFavorite } from './../fetching/mutations';
 import { GetPostVariables } from './../fetching/queries';
 import { AddCommentMutationVariables } from './../types/mutations';
 
@@ -55,6 +59,21 @@ export const useAddCommentMutation = (variables: AddCommentMutationVariables) =>
   return useMutation((payload: AddCommentPayload) => addComment(payload), {
     onSuccess: async () => {
       await queryClient.invalidateQueries(getPostBaseKey({ postSlugs }));
+    },
+  });
+};
+
+export const useAddFavoriteMutation = (variables: UpdateUserFavoriteStatusMutationVariables) => {
+  const { postSlugs, postId } = variables;
+  const queryClient = useQueryClient();
+  const currentPost = queryClient.getQueryData<PostType>(getPostBaseKey({ postSlugs }));
+
+  return useMutation(() => addFavorite(postId), {
+    onSuccess: (resp) => {
+      queryClient.setQueryData(getPostBaseKey({ postSlugs }), {
+        ...currentPost,
+        userFavoriteStatus: resp.updatedUserFavoriteStatus,
+      });
     },
   });
 };

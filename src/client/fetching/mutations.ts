@@ -1,4 +1,9 @@
-import { CommentType, PostType, UpdatePostVotesMutationResponse } from '../../common/types';
+import {
+  AddFavoriteMutationResponse,
+  CommentType,
+  PostType,
+  UpdatePostVotesMutationResponse,
+} from '../../common/types';
 import { axiosPATCH, axiosPOST } from '../utils/axiosMethods';
 
 export const updatePostVotes = async (payload: { postId: string; voteValue: number }) =>
@@ -17,3 +22,6 @@ export interface AddCommentPayload {
 
 export const addComment = async (payload: AddCommentPayload) =>
   await axiosPOST<PostType>('posts/comments', { data: payload });
+
+export const addFavorite = async (postId: string) =>
+  await axiosPOST<AddFavoriteMutationResponse>('posts/favorites', { data: { postId } });

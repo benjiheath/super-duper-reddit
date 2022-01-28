@@ -24,11 +24,10 @@ import { IconType } from 'react-icons/lib';
 import { useHistory, useParams } from 'react-router-dom';
 import { CommentCard } from '.';
 import { CommentType, PostType } from '../../../common/types/entities';
-import { usePostsContext } from '../../contexts/posts/PostsContext';
 import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
-import { usePostQuery } from '../../hooks/fetching';
+import { useAddFavoriteMutation, usePostQuery } from '../../hooks/fetching';
 import { PostProps } from '../../types/posts';
-import { axiosDELETE, axiosPOST } from '../../utils/axiosMethods';
+import { axiosDELETE } from '../../utils/axiosMethods';
 import { checkIfUrlIsImg } from '../../utils/misc';
 import { AlertPopup, PageBox, SrSpinner } from '../generic';
 import CommentBox from './CommentBox';
@@ -78,10 +77,13 @@ const PostActionsMenu = (props: PostProps) => {
   const { post } = props;
   const { comments } = post;
   const { userId } = useGlobalUserContext();
-  const { setPostInView, postInView } = usePostsContext();
   const [alertIsOpen, setAlertIsOpen] = React.useState(false);
   const history = useHistory();
   const toast = useToast();
+  const addFavoriteMutation = useAddFavoriteMutation({
+    postSlugs: post.urlSlugs,
+    postId: post.id,
+  });
 
   const handleRemove = async () => {
     await axiosDELETE('posts', { data: { postId: post.id } });
@@ -91,8 +93,7 @@ const PostActionsMenu = (props: PostProps) => {
   };
 
   const handleFavorite = async () => {
-    const { updatedUserFavoriteStatus } = await axiosPOST('posts/favorites', { data: { postId: post.id } });
-    setPostInView({ ...postInView!, userFavoriteStatus: updatedUserFavoriteStatus! });
+    addFavoriteMutation.mutate();
   };
 
   const iconNotLiked = <Icon as={FaRegHeart} fill='prim.800' onClick={handleFavorite} cursor='pointer' />;
