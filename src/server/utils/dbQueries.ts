@@ -3,6 +3,8 @@ import { UserType, PostVoteType, PostFavoriteType, CommentVoteType } from './../
 import { pool } from '../db';
 import { ErrorTypes, FieldError, generateErrorType } from './errors';
 import { CommentType, PostType } from '../../common/types/entities';
+import { sanitizeKeys } from './misc';
+import { handlePostRemovedStatus } from './responseShaping';
 import {
   CommentsColumn,
   DbComment,
@@ -15,8 +17,6 @@ import {
   PostsVoteColumn,
   UserColumn,
 } from '../types/dbTypes';
-import { sanitizeKeys } from './misc';
-import { handlePostRemovedStatus } from './responseShaping';
 
 type updateFieldOverload<T, U> = {
   (field: T, conditionalValue: string): {
