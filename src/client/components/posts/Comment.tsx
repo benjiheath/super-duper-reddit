@@ -2,26 +2,23 @@ import { Box, HStack, Icon, StackProps, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 import { FaReply } from 'react-icons/fa';
 import { CommentType, NestedComment } from '../../../common/types/entities';
-import { getTimeAgo } from '../../utils/misc';
 import CommentBox from './CommentBox';
 import Votes from './Votes';
 
 interface CommentHeadingProps {
   username: string;
-  createdAt: string;
+  createdAtRelative: string;
   userPicture?: string;
 }
 
 const CommentHeading = (props: CommentHeadingProps) => {
-  const { username, createdAt } = props;
-
-  const timeAgo = getTimeAgo(createdAt);
+  const { username, createdAtRelative } = props;
 
   return (
     <HStack>
       <Box bg='prim.400' borderRadius={50} h='30px' w='30px' />
       <Text fontWeight='600'>{username} ·</Text>
-      <Text>{timeAgo}</Text>
+      <Text>{createdAtRelative}</Text>
     </HStack>
   );
 };
@@ -91,7 +88,7 @@ const Comment = (props: CommentProps) => {
 
   return (
     <VStack alignItems='start' spacing={0} w='100%' {...rest}>
-      <CommentHeading username={creatorUsername} createdAt={createdAt} />
+      <CommentHeading username={creatorUsername} createdAtRelative={comment.createdAtRelative} />
       <CommentBody body={body} />
       <CommentActions comment={comment} handleReplyClick={handleReplyClick} postSlugs={postSlugs} />
       {replying ? (

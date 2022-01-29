@@ -5,7 +5,7 @@ import Form from '../components/register/RegisterLoginForm';
 import { FormMode } from '../types/general';
 import { capitalize } from '../utils/misc';
 
-const Register = () => {
+const RegisterOrLogin = () => {
   // using pathname for formMode ('register' or 'login') to allow naviation to /login or /register via browser url
   const { pathname } = useLocation();
   const formattedPathname = capitalize(pathname) as FormMode;
@@ -20,4 +20,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterOrLogin;

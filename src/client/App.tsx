@@ -4,7 +4,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import ScrollToTop from './components/generic/ScrollToTop';
 import AuthProvider from './contexts/user/AuthContext';
-import { AccountRecovery, PostsPage, Register } from './pages';
+import { AccountRecovery, PostsPage, RegisterOrLogin } from './pages';
 import NotFound from './pages/NotFoundPage';
 import { theme } from './theme';
 
@@ -32,7 +32,7 @@ export const App = () => {
               </Route>
               <Flex minH='100vh' alignItems='center'>
                 <Route exact path={['/register', '/login']}>
-                  <Register />
+                  <RegisterOrLogin />
                 </Route>
                 <Route path='/reset-password'>
                   <AccountRecovery />

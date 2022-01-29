@@ -15,7 +15,6 @@ import {
   Spacer,
   Text,
   Tooltip,
-  useToast,
   VStack,
 } from '@chakra-ui/react';
 import React from 'react';
@@ -79,7 +78,6 @@ const PostActionsMenu = (props: PostProps) => {
   const { userId } = useAuthContext();
   const [alertIsOpen, setAlertIsOpen] = React.useState(false);
   const history = useHistory();
-  const toast = useToast();
   const addFavoriteMutation = useAddFavoriteMutation({
     postSlugs: post.urlSlugs,
     postId: post.id,
@@ -156,7 +154,7 @@ const PostActionsMenu = (props: PostProps) => {
 
 const PostMain = (props: PostProps) => {
   const { post } = props;
-  const { body, title, createdAt, contentUrl } = post;
+  const { body, title, contentUrl } = post;
 
   const image = checkIfUrlIsImg(post.contentUrl);
 
@@ -165,7 +163,7 @@ const PostMain = (props: PostProps) => {
       <Votes item={post} mode='post' postSlugs={post.urlSlugs} postId={post.id} />
       <VStack alignItems='start' width='100%' spacing={2}>
         <PostTitle title={title} contentUrl={contentUrl} />
-        <PostedBy date={createdAt} creatorUsername={post.creatorUsername} />
+        <PostedBy createdAtRelative={post.createdAtRelative} creatorUsername={post.creatorUsername} />
         {image && post.contentUrl && post.currentStatus === 'normal' ? (
           <Image
             height='300px'

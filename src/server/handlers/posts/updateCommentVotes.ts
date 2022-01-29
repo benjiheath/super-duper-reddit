@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import { dbComments, dbCommentsVotes } from '../../utils/dbQueries';
-import { insertVoteInfoIntoComment } from '../../utils/misc';
+import { makeCommentClientReady } from '../../utils/misc';
 
 export const updateCommentVotes: RequestHandler = async (req, res, _): Promise<void> => {
   try {
@@ -17,7 +17,7 @@ export const updateCommentVotes: RequestHandler = async (req, res, _): Promise<v
 
     const [comment] = await dbComments.selectAll({ whereConditions: `id = '${commentId}'` });
 
-    const updatedComment = await insertVoteInfoIntoComment(comment, req.session.userID as string);
+    const updatedComment = await makeCommentClientReady(comment, req.session.userID as string);
 
     res.status(200).send(updatedComment);
   } catch (err) {

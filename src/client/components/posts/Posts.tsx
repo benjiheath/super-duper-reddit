@@ -1,26 +1,23 @@
-import { Flex, VStack, HStack, Image, Text, Link as ChakraLink } from '@chakra-ui/react';
+import { Flex, HStack, Image, Link as ChakraLink, Text, VStack } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { Votes } from '.';
 import { usePostsQuery } from '../../hooks/fetching';
 import { PostProps } from '../../types/posts';
-import { getTimeAgo, checkIfUrlIsImg } from '../../utils/misc';
+import { checkIfUrlIsImg } from '../../utils/misc';
 import { SrSpinner } from '../generic';
 import { NavBar } from '../homepage';
 
 interface PostedByProps {
-  date: string;
+  createdAtRelative: string;
   creatorUsername: string;
 }
 
 export const PostedBy = (props: PostedByProps) => {
-  const { date, creatorUsername } = props;
-
-  const timeAgo = getTimeAgo(date);
-  // TODO - do this on server so it doesnt update in UI whenever a user votes
+  const { createdAtRelative, creatorUsername } = props;
 
   return (
     <Flex color='gray.400'>
-      <Text mr={2}>submitted {timeAgo} by * </Text>
+      <Text mr={2}>submitted {createdAtRelative} by * </Text>
       <Text color='prim.800' display='inline-block' fontWeight='700'>
         {creatorUsername}
       </Text>
@@ -56,7 +53,7 @@ const PostCardDetails = (props: PostProps) => {
       {image && post.contentUrl ? (
         <Image height='100px' objectFit='cover' src={post.contentUrl} alt='post image' borderRadius={4} />
       ) : null}
-      <PostedBy date={post.createdAt} creatorUsername={post.creatorUsername} />
+      <PostedBy createdAtRelative={post.createdAtRelative} creatorUsername={post.creatorUsername} />
       <Text>{post.comments.length} comments</Text>
     </VStack>
   );

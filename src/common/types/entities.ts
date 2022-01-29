@@ -15,6 +15,7 @@ export interface PostType {
   contentUrl: string | null;
   createdAt: string;
   updatedAt: string;
+  createdAtRelative: string;
   creatorUserId: string;
   creatorUsername: string;
   currentStatus: 'normal' | 'removed';
@@ -32,6 +33,7 @@ export interface CommentType {
   body: string;
   createdAt: string;
   updatedAt: string;
+  createdAtRelative: string;
   creatorUserId: string;
   creatorUsername: string;
   currentStatus: 'normal' | 'removed';

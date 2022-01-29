@@ -1,7 +1,17 @@
 import _ from 'lodash';
+import { DateTime } from 'luxon';
 import { CommentType, NestedComment, PostType } from '../../common/types/entities';
 import { CommentsColumn, DbComment, DbPost, PostsColumn, UserColumn } from '../types/dbTypes';
 import { dbCommentsVotes, dbPostsFavorites, dbPostsVotes } from './dbQueries';
+
+export const getTimeAgo = (date: string) => {
+  const dateISO = new Date(Date.parse(date)).toISOString();
+  const now = DateTime.local();
+  const past = DateTime.fromISO(dateISO);
+
+  const rel = past.toRelative({ base: now });
+  return rel as string;
+};
 
 export const createSQLWhereConditionsFromList = <T>(
   list: T[],
@@ -82,25 +92,32 @@ export const insertPointsAndVoteStatus = async (posts: PostType[], userId: strin
   return postsWithPointsAndVoteStatus;
 };
 
-export const insertVoteInfoIntoComment = async (
-  comment: CommentType,
-  userId: string
-): Promise<CommentType> => {
+/**
+ * Inserting total points (voteCount), user's vote status (userVoteStatus), and relative updatedAt (createdAtRelative)
+ */
+export const makeCommentClientReady = async (comment: CommentType, userId: string): Promise<CommentType> => {
   const voteCount = await dbCommentsVotes.getSum('vote_status').where('comment_id').equals(comment.id);
   const [commentVote] = await dbCommentsVotes.selectAll({
     whereConditions: `user_id = '${userId}' AND comment_id = '${comment.id}'`,
   });
+  const createdAtRelative = getTimeAgo(comment.createdAt);
 
   return {
     ...comment,
     points: voteCount,
     userVoteStatus: commentVote ? commentVote.voteStatus : null,
+    createdAtRelative,
   };
 };
 
-type InsertPointsAndComments = (post: PostType, comments: CommentType[], userId: string) => Promise<PostType>;
-
-export const insertPointsAndComments: InsertPointsAndComments = async (post, comments, userId) => {
+/**
+ * Inserting total points (voteCount), userVoteStatus, userFavoriteStatus, createdAtRelative. Also fetching the post's comments & then nesting them
+ */
+export const insertPointsAndComments = async (
+  post: PostType,
+  comments: CommentType[],
+  userId: string
+): Promise<PostType> => {
   const voteCount = await dbPostsVotes.getSum('vote_status').where('post_id').equals(post.id);
   const [postVote] = await dbPostsVotes.selectAll({
     whereConditions: `user_id = '${userId}' AND post_id = '${post.id}'`,
@@ -109,9 +126,11 @@ export const insertPointsAndComments: InsertPointsAndComments = async (post, com
     whereConditions: `user_id = '${userId}' AND post_id = '${post.id}'`,
   });
 
+  const createdAtRelative = getTimeAgo(post.createdAt);
+
   const postCommentsRaw = comments.filter((comment) => comment.postId === post.id);
   const postComments = await asyncMap(postCommentsRaw, (postComment) =>
-    insertVoteInfoIntoComment(postComment, userId)
+    makeCommentClientReady(postComment, userId)
   );
 
   const nestComments = (commentList: CommentType[], isRecursiveCall?: boolean): NestedComment[] => {
@@ -142,6 +161,7 @@ export const insertPointsAndComments: InsertPointsAndComments = async (post, com
     points: voteCount,
     userVoteStatus: userHasVoted ? postVote.voteStatus : null,
     userFavoriteStatus: userFavoriteStatus ? true : false,
+    createdAtRelative,
   };
 };
 

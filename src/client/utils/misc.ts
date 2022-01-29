@@ -17,15 +17,6 @@ export const getIdType = (id: string): 'email' | 'username' => {
   return id.includes('@') ? 'email' : 'username';
 };
 
-export const getTimeAgo = (date: string) => {
-  const dateISO = new Date(Date.parse(date)).toISOString();
-  const now = DateTime.local();
-  const past = DateTime.fromISO(dateISO);
-
-  const rel = past.toRelative({ base: now });
-  return rel;
-};
-
 export const checkIfUrlIsImg = (url: string | null) => {
   if (url?.endsWith('.png') || url?.endsWith('.jpg') || url?.endsWith('.jpeg') || url?.endsWith('.gif')) {
     return true;
