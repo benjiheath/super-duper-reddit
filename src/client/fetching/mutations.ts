@@ -1,13 +1,13 @@
 import { AddFavoriteMutationResponse, CommentType, PostType } from '../../common/types';
 import { axiosDELETE, axiosPATCH, axiosPOST } from '../utils/axiosMethods';
 
-export const updatePostVotes = async (payload: { postId: string; voteValue: number }) =>
+export const updatePostVotesMutation = async (payload: { postId: string; voteValue: number }) =>
   await axiosPATCH<PostType>('posts/votes', { data: payload });
 
-export const updateCommentVotes = async (payload: { commentId: string; voteValue: number }) =>
+export const updateCommentVotesMutation = async (payload: { commentId: string; voteValue: number }) =>
   await axiosPATCH<CommentType>('posts/comments/votes', { data: payload });
 
-export interface AddCommentPayload {
+export interface AddCommentMutationPayload {
   body: string;
   postId: string;
   creatorUserId: string;
@@ -15,13 +15,13 @@ export interface AddCommentPayload {
   parentCommentId: string | null;
 }
 
-export const addComment = async (payload: AddCommentPayload) =>
+export const addCommentMutation = async (payload: AddCommentMutationPayload) =>
   await axiosPOST<PostType>('posts/comments', { data: payload });
 
-export const addFavorite = async (postId: string) =>
+export const addFavoriteMutation = async (postId: string) =>
   await axiosPOST<AddFavoriteMutationResponse>('posts/favorites', { data: { postId } });
 
-export interface CreatePostPayload {
+export interface CreatePostMutationPayload {
   creatorUserId: string;
   creatorUsername: string;
   title: string;
@@ -29,7 +29,7 @@ export interface CreatePostPayload {
   contentUrl: string | null;
 }
 
-export const createPost = async (payload: CreatePostPayload) =>
+export const createPostMutation = async (payload: CreatePostMutationPayload) =>
   await axiosPOST<PostType>('posts', { data: payload });
 
 export interface EditPostPayload {
@@ -39,11 +39,11 @@ export interface EditPostPayload {
   postSlugs: string;
 }
 
-export const editPost = async (payload: EditPostPayload) =>
+export const editPostMutation = async (payload: EditPostPayload) =>
   await axiosPATCH<PostType>('posts/post', {
     data: payload,
   });
 
-export const removePost = async (postId: string) => {
+export const removePostMutation = async (postId: string) => {
   await axiosDELETE('posts', { data: { postId } });
 };

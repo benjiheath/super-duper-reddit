@@ -20,6 +20,7 @@ export const servePosts: RequestHandler = async (req, res, _): Promise<void> => 
 
     res.status(200).send(clientReadyPosts);
   } catch (err) {
+    console.error('servePosts err:', err);
     res.status(500).send(err);
   }
 };

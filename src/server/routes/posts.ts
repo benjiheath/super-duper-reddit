@@ -7,7 +7,6 @@ import {
   updatePostVotes,
   removePost,
   addFavorite,
-  removeFavorite,
   editPost,
   updateCommentVotes,
 } from '../handlers/posts';
@@ -23,6 +22,5 @@ router.patch('/post', editPost);
 router.patch('/votes', updatePostVotes);
 router.patch('/comments/votes', updateCommentVotes);
 router.delete('/', removePost);
-router.delete('/favorites', removeFavorite);
 
 export { router as postsRouter };

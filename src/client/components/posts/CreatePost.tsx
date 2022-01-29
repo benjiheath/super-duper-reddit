@@ -2,7 +2,7 @@ import { useToast } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { useAuthContext } from '../../contexts/user/AuthContext';
-import { createPost } from '../../fetching/mutations';
+import { createPostMutation } from '../../fetching/mutations';
 import { CreatePostFields } from '../../types/posts';
 import CreateOrEditPostForm from './CreateOrEditPostForm';
 
@@ -20,7 +20,7 @@ const CreatePost = () => {
     const newPostData = { creatorUserId: userId!, creatorUsername: username!, ...data };
 
     try {
-      const post = await createPost(newPostData);
+      const post = await createPostMutation(newPostData);
 
       toast({
         position: 'top',

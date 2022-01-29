@@ -1,28 +1,19 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { PostType } from '../../common/types/entities';
 import {
-  addComment,
-  AddCommentPayload,
-  addFavorite,
-  updateCommentVotes,
-  updatePostVotes,
+  addCommentMutation,
+  AddCommentMutationPayload,
+  addFavoriteMutation,
+  updateCommentVotesMutation,
+  updatePostVotesMutation,
 } from '../fetching/mutations';
 import {
-  CreatePostMutationVariables,
   UpdateCommentVotesMutationVariables,
   UpdatePostVotesMutationVariables,
   UpdateUserFavoriteStatusMutationVariables,
 } from '../types/mutations';
-import { getPost, getPosts } from '../fetching/queries';
-import { GetPostVariables } from './../fetching/queries';
-import { AddCommentMutationVariables } from './../types/mutations';
-
-export const getPostsBaseKey = () => ['posts'];
-export const getPostBaseKey = (variables: GetPostVariables) => ['post', variables];
-
-export const usePostsQuery = () => useQuery(getPostsBaseKey(), getPosts);
-export const usePostQuery = (variables: GetPostVariables) =>
-  useQuery(getPostBaseKey(variables), () => getPost(variables));
+import { AddCommentMutationVariables } from '../types/mutations';
+import { getPostBaseKey, getPostsBaseKey } from './queries';
+import { useMutation, useQueryClient } from 'react-query';
+import { PostType } from '../../common/types/entities';
 
 export const useUpdatePostVotesMutation = (variables: UpdatePostVotesMutationVariables) => {
   const { postId, voteValue, postSlugs } = variables;
@@ -33,7 +24,7 @@ export const useUpdatePostVotesMutation = (variables: UpdatePostVotesMutationVar
   const updatePosts = (posts: PostType[], newPost: PostType) =>
     posts.map((post) => (post.id === newPost.id ? newPost : post));
 
-  return useMutation(() => updatePostVotes({ postId, voteValue }), {
+  return useMutation(() => updatePostVotesMutation({ postId, voteValue }), {
     onSuccess: (resp) => {
       queryClient.setQueryData(getPostBaseKey({ postSlugs }), {
         ...currentPost,
@@ -51,7 +42,7 @@ export const useUpdateCommentVotesMutation = (variables: UpdateCommentVotesMutat
   const { commentId, voteValue, postSlugs } = variables;
   const queryClient = useQueryClient();
 
-  return useMutation(() => updateCommentVotes({ commentId, voteValue }), {
+  return useMutation(() => updateCommentVotesMutation({ commentId, voteValue }), {
     onSuccess: async () => {
       await queryClient.invalidateQueries(getPostBaseKey({ postSlugs }));
     },
@@ -62,7 +53,7 @@ export const useAddCommentMutation = (variables: AddCommentMutationVariables) =>
   const { postSlugs } = variables;
   const queryClient = useQueryClient();
 
-  return useMutation((payload: AddCommentPayload) => addComment(payload), {
+  return useMutation((payload: AddCommentMutationPayload) => addCommentMutation(payload), {
     onSuccess: async () => {
       await queryClient.invalidateQueries(getPostBaseKey({ postSlugs }));
     },
@@ -74,7 +65,7 @@ export const useAddFavoriteMutation = (variables: UpdateUserFavoriteStatusMutati
   const queryClient = useQueryClient();
   const currentPost = queryClient.getQueryData<PostType>(getPostBaseKey({ postSlugs }));
 
-  return useMutation(() => addFavorite(postId), {
+  return useMutation(() => addFavoriteMutation(postId), {
     onSuccess: (resp) => {
       queryClient.setQueryData(getPostBaseKey({ postSlugs }), {
         ...currentPost,

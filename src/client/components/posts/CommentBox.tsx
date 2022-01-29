@@ -1,7 +1,7 @@
 import { Box, Button, VStack } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { useAuthContext } from '../../contexts/user/AuthContext';
-import { useAddCommentMutation } from '../../hooks/fetching';
+import { useAddCommentMutation } from '../../hooks/mutations';
 import { CreateCommentFields } from '../../types/posts';
 import { ButtonSubmit, FormTextArea } from '../generic';
 

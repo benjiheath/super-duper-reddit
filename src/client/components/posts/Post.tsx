@@ -24,8 +24,9 @@ import { useHistory, useParams } from 'react-router-dom';
 import { CommentCard } from '.';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { useAuthContext } from '../../contexts/user/AuthContext';
-import { removePost } from '../../fetching/mutations';
-import { useAddFavoriteMutation, usePostQuery } from '../../hooks/fetching';
+import { removePostMutation } from '../../fetching/mutations';
+import { useAddFavoriteMutation } from '../../hooks/mutations';
+import { usePostQuery } from '../../hooks/queries';
 import { PostProps } from '../../types/posts';
 import { checkIfUrlIsImg } from '../../utils/misc';
 import { AlertPopup, PageBox, SrSpinner } from '../generic';
@@ -84,7 +85,7 @@ const PostActionsMenu = (props: PostProps) => {
   });
 
   const handleRemove = async () => {
-    await removePost(post.id);
+    await removePostMutation(post.id);
     setAlertIsOpen(false);
     history.push({ pathname: '/posts' });
   };

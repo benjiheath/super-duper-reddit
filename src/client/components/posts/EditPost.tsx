@@ -4,8 +4,8 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useAuthContext } from '../../contexts/user/AuthContext';
-import { editPost } from '../../fetching/mutations';
-import { usePostQuery } from '../../hooks/fetching';
+import { editPostMutation } from '../../fetching/mutations';
+import { usePostQuery } from '../../hooks/queries';
 import { CreatePostFields } from '../../types/posts';
 import CreateOrEditPostForm from './CreateOrEditPostForm';
 
@@ -30,7 +30,7 @@ const EditPost = () => {
     const newPostData = { creatorUserId: userId, creatorUsername: username, ...emptyFieldsNullified };
 
     try {
-      await editPost({ ...newPostData, postSlugs });
+      await editPostMutation({ ...newPostData, postSlugs });
 
       toast({
         position: 'top',
