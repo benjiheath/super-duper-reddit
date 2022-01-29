@@ -2,7 +2,7 @@ import { Input, useToast, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaArrowLeft } from 'react-icons/fa';
-import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { useAuthContext } from '../../contexts/user/AuthContext';
 import { RecoveryEmailFormData } from '../../types/user';
 import { axiosPOST } from '../../utils/axiosMethods';
 import { obscureEmail } from '../../utils/misc';
@@ -14,7 +14,7 @@ import AlertPop from '../register/AlertPop';
 export default function RecoveryEmailForm() {
   const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const { setResponseError } = useGlobalUserContext();
+  const { setResponseError } = useAuthContext();
 
   const {
     register,

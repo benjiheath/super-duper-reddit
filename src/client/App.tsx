@@ -3,8 +3,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import ScrollToTop from './components/generic/ScrollToTop';
-import PostsProvider from './contexts/posts/PostsContext';
-import GlobalUserProvider from './contexts/user/GlobalUserContext';
+import AuthProvider from './contexts/user/AuthContext';
 import { AccountRecovery, PostsPage, Register } from './pages';
 import NotFound from './pages/NotFoundPage';
 import { theme } from './theme';
@@ -22,17 +21,15 @@ export const App = () => {
     <Router>
       <ScrollToTop />
       <Switch>
-        <GlobalUserProvider>
+        <AuthProvider>
           <ChakraProvider theme={theme}>
             <QueryClientProvider client={queryClient}>
-              <PostsProvider>
-                <Route exact path='/'>
-                  <Redirect to='/posts' />
-                </Route>
-                <Route path='/posts'>
-                  <PostsPage />
-                </Route>
-              </PostsProvider>
+              <Route exact path='/'>
+                <Redirect to='/posts' />
+              </Route>
+              <Route path='/posts'>
+                <PostsPage />
+              </Route>
               <Flex minH='100vh' alignItems='center'>
                 <Route exact path={['/register', '/login']}>
                   <Register />
@@ -47,7 +44,7 @@ export const App = () => {
               <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
           </ChakraProvider>
-        </GlobalUserProvider>
+        </AuthProvider>
       </Switch>
     </Router>
   );

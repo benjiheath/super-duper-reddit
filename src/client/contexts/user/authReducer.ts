@@ -1,6 +1,6 @@
-import { UserState } from '../../types/user';
+import { AuthState as AuthState } from '../../types/user';
 
-export enum UserContextActions {
+export enum AuthActions {
   SET_AUTH = 'SET_AUTH',
   SET_USERNAME = 'SET_USERNAME',
   SET_USER_ID = 'SET_USER_ID',
@@ -10,36 +10,36 @@ export enum UserContextActions {
 }
 
 type ACTIONTYPE =
-  | { type: UserContextActions.SET_AUTH; payload: boolean }
-  | { type: UserContextActions.SET_USERNAME; payload: string | null }
-  | { type: UserContextActions.SET_USER_ID; payload: string | null }
-  | { type: UserContextActions.LOG_IN; payload: string }
-  | { type: UserContextActions.LOG_OUT; payload?: undefined }
-  | { type: UserContextActions.SET_CTX_ERR; payload: any };
+  | { type: AuthActions.SET_AUTH; payload: boolean }
+  | { type: AuthActions.SET_USERNAME; payload: string | null }
+  | { type: AuthActions.SET_USER_ID; payload: string | null }
+  | { type: AuthActions.LOG_IN; payload: string }
+  | { type: AuthActions.LOG_OUT; payload?: undefined }
+  | { type: AuthActions.SET_CTX_ERR; payload: any };
 
 const lsUsername = localStorage.getItem('username');
 const lsUserID = localStorage.getItem('userId');
 
-export const initState: UserState = {
+export const initState: AuthState = {
   authorized: lsUsername !== null,
   username: lsUsername ?? null,
   userId: lsUserID ?? null,
   err: null,
 };
 
-export const globalUserReducer = (state: UserState, action: ACTIONTYPE): UserState => {
+export const authReducer = (state: AuthState, action: ACTIONTYPE): AuthState => {
   switch (action.type) {
-    case UserContextActions.SET_AUTH:
+    case AuthActions.SET_AUTH:
       return { ...state, authorized: action.payload };
-    case UserContextActions.SET_USERNAME:
+    case AuthActions.SET_USERNAME:
       return { ...state, username: action.payload };
-    case UserContextActions.SET_USER_ID:
+    case AuthActions.SET_USER_ID:
       return { ...state, userId: action.payload };
-    case UserContextActions.LOG_IN:
+    case AuthActions.LOG_IN:
       return { ...state, username: action.payload, authorized: true };
-    case UserContextActions.LOG_OUT:
+    case AuthActions.LOG_OUT:
       return { username: null, userId: null, authorized: false, err: null };
-    case UserContextActions.SET_CTX_ERR:
+    case AuthActions.SET_CTX_ERR:
       return { ...state, err: action.payload };
     default:
       throw new Error(`Unable to execute action: ${action}`);

@@ -3,14 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
 import { ServerResponse } from '../../../common/types/fetching';
-import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { useAuthContext } from '../../contexts/user/AuthContext';
 import { axiosGET, axiosPATCH } from '../../utils/axiosMethods';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
 import AlertPop from '../register/AlertPop';
 
 export default function PasswordResetForm() {
-  const { logIn, setResponseError } = useGlobalUserContext();
+  const { logIn, setResponseError } = useAuthContext();
   const toast = useToast();
   const [loggingIn, setLoggingIn] = useState(false);
   const [loading, setLoading] = useState(false);

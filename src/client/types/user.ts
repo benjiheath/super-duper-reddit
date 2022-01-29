@@ -1,6 +1,6 @@
 import { Dispatch } from './general';
 
-export interface UserDispatchers {
+export interface AuthDispatchers {
   setAuth: Dispatch<boolean>;
   setUser: Dispatch<string>;
   setUserID: Dispatch<string>;
@@ -9,15 +9,15 @@ export interface UserDispatchers {
   setResponseError: (value: any) => void;
 }
 
-export interface UserState {
+export interface AuthState {
   authorized: boolean;
   username: string | null;
   userId: string | null;
   err: any;
 }
 
-export type UserCtx = UserDispatchers & UserState;
-export type useUserCtx = () => UserCtx;
+export type AuthContextType = AuthDispatchers & AuthState;
+export type UseAuthContextType = () => AuthContextType;
 
 export interface FormData {
   username: string;

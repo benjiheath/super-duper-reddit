@@ -1,13 +1,13 @@
 import { useToast } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
-import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { useAuthContext } from '../../contexts/user/AuthContext';
 import { createPost } from '../../fetching/mutations';
 import { CreatePostFields } from '../../types/posts';
 import CreateOrEditPostForm from './CreateOrEditPostForm';
 
 const CreatePost = () => {
-  const { setResponseError, username, userId } = useGlobalUserContext();
+  const { setResponseError, username, userId } = useAuthContext();
   const history = useHistory();
   const toast = useToast();
   const {

@@ -2,13 +2,13 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { SrSpinner } from '../../components/generic';
 import { ProviderProps } from '../../types/general';
-import { UserCtx, useUserCtx } from '../../types/user';
-import useGlobalUserReducer from './useGlobalUserReducer';
+import { AuthContextType as AuthContextType, UseAuthContextType } from '../../types/user';
+import useAuthReducer from './useAuthReducer';
 
-export const GlobalUserContext = createContext<UserCtx | null>(null);
+export const AuthContext = createContext<AuthContextType | null>(null);
 
-const GlobalUserProvider = (props: ProviderProps) => {
-  const [state, dispatchers] = useGlobalUserReducer();
+const AuthProvider = (props: ProviderProps) => {
+  const [state, dispatchers] = useAuthReducer();
   const { setAuth } = dispatchers;
   const { err } = state;
   const history = useHistory();
@@ -48,13 +48,9 @@ const GlobalUserProvider = (props: ProviderProps) => {
     return <SrSpinner />;
   }
 
-  return (
-    <GlobalUserContext.Provider value={{ ...state, ...dispatchers }}>
-      {props.children}
-    </GlobalUserContext.Provider>
-  );
+  return <AuthContext.Provider value={{ ...state, ...dispatchers }}>{props.children}</AuthContext.Provider>;
 };
 
-export const useGlobalUserContext: useUserCtx = () => useContext(GlobalUserContext) as UserCtx;
+export const useAuthContext: UseAuthContextType = () => useContext(AuthContext) as AuthContextType;
 
-export default GlobalUserProvider;
+export default AuthProvider;

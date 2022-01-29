@@ -1,19 +1,15 @@
 import { Button, Menu, MenuButton, MenuDivider, MenuItem, MenuList } from '@chakra-ui/react';
-import React from 'react';
 import { FaChevronDown, FaUser } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { usePostsContext } from '../../../contexts/posts/PostsContext';
-import { useGlobalUserContext } from '../../../contexts/user/GlobalUserContext';
+import { useAuthContext } from '../../../contexts/user/AuthContext';
 import { axiosDELETE } from '../../../utils/axiosMethods';
 
 const UserMenu = () => {
-  const { logOut, username } = useGlobalUserContext();
-  const { setPosts } = usePostsContext();
+  const { logOut, username } = useAuthContext();
 
   const logOutHandler = async () => {
     await axiosDELETE('session');
     logOut();
-    setPosts(null);
   };
 
   return (

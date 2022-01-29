@@ -24,7 +24,7 @@ import { IconType } from 'react-icons/lib';
 import { useHistory, useParams } from 'react-router-dom';
 import { CommentCard } from '.';
 import { CommentType, PostType } from '../../../common/types/entities';
-import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { useAuthContext } from '../../contexts/user/AuthContext';
 import { removePost } from '../../fetching/mutations';
 import { useAddFavoriteMutation, usePostQuery } from '../../hooks/fetching';
 import { PostProps } from '../../types/posts';
@@ -76,7 +76,7 @@ const PostActionsIcon = (props: PostActionsIconProps) => {
 const PostActionsMenu = (props: PostProps) => {
   const { post } = props;
   const { comments } = post;
-  const { userId } = useGlobalUserContext();
+  const { userId } = useAuthContext();
   const [alertIsOpen, setAlertIsOpen] = React.useState(false);
   const history = useHistory();
   const toast = useToast();

@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { ServerResponse } from '../../../common/types/fetching';
 import { inputFields } from '../../constants';
-import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { useAuthContext } from '../../contexts/user/AuthContext';
 import { FormProps } from '../../types/general';
 import { FormData } from '../../types/user';
 import { axiosPOST } from '../../utils/axiosMethods';
@@ -17,7 +17,7 @@ import { InputFields } from './InputFields';
 type Props = Pick<FormProps, 'formMode' | 'setFormMode'>;
 
 export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
-  const { logIn, setResponseError, setUserID } = useGlobalUserContext();
+  const { logIn, setResponseError, setUserID } = useAuthContext();
   const history = useHistory();
   const toast = useToast();
   const [loggingIn, setLoggingIn] = useState(false);

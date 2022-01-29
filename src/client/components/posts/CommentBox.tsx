@@ -1,6 +1,6 @@
 import { Box, Button, VStack } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { useAuthContext } from '../../contexts/user/AuthContext';
 import { useAddCommentMutation } from '../../hooks/fetching';
 import { CreateCommentFields } from '../../types/posts';
 import { ButtonSubmit, FormTextArea } from '../generic';
@@ -14,7 +14,7 @@ interface CommentBoxProps {
 
 const CommentBox = (props: CommentBoxProps) => {
   const { postId, parentCommentId, stopReplying, postSlugs } = props;
-  const { username, userId, setResponseError } = useGlobalUserContext();
+  const { username, userId, setResponseError } = useAuthContext();
   const {
     register,
     reset,

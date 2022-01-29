@@ -3,14 +3,14 @@ import _ from 'lodash';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { useGlobalUserContext } from '../../contexts/user/GlobalUserContext';
+import { useAuthContext } from '../../contexts/user/AuthContext';
 import { editPost } from '../../fetching/mutations';
 import { usePostQuery } from '../../hooks/fetching';
 import { CreatePostFields } from '../../types/posts';
 import CreateOrEditPostForm from './CreateOrEditPostForm';
 
 const EditPost = () => {
-  const { setResponseError, username, userId } = useGlobalUserContext();
+  const { setResponseError, username, userId } = useAuthContext();
   const { postSlugs } = useParams() as { postSlugs: string };
   const location = useLocation();
   const history = useHistory();
