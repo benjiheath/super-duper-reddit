@@ -27,9 +27,11 @@ const VoteIcon = (props: VoteIconProps) => {
     ...slugsAndVoteValue,
   });
 
+  const isPost = mode === 'post';
+
   const handleClick = async () => {
     try {
-      mode === 'post' ? updatePostVotesMutation.mutate() : updateCommentVotesMutation.mutate();
+      isPost ? updatePostVotesMutation.mutate() : updateCommentVotesMutation.mutate();
     } catch (err) {
       console.error('Err updating votes:', err);
     }
@@ -41,8 +43,8 @@ const VoteIcon = (props: VoteIconProps) => {
   return (
     <Icon
       as={icon}
-      h={8}
-      w={8}
+      h={isPost ? 8 : 6}
+      w={isPost ? 8 : 6}
       p={1}
       transition='0.15s'
       _hover={{ bg: hoverBg, fill: hoverFill }}
@@ -67,7 +69,7 @@ const Container = (props: ContainerProps) =>
   props.mode === 'post' ? (
     <VStack spacing={0}>{props.children}</VStack>
   ) : (
-    <HStack spacing={1}>{props.children}</HStack>
+    <HStack spacing={-1}>{props.children}</HStack>
   );
 
 interface VotesProps {

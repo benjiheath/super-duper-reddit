@@ -5,7 +5,6 @@ import { usePostsQuery } from '../../hooks/queries';
 import { PostProps } from '../../types/posts';
 import { checkIfUrlIsImg } from '../../utils/misc';
 import { SrSpinner } from '../generic';
-import { NavBar } from '../homepage';
 
 interface PostedByProps {
   createdAtRelative: string;
@@ -93,12 +92,7 @@ const Posts = () => {
   }
 
   if (isLoading) {
-    return (
-      <>
-        <NavBar />
-        <SrSpinner />;
-      </>
-    );
+    return <SrSpinner />;
   }
 
   return (
