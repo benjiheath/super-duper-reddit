@@ -18,8 +18,8 @@ const UserMenu = () => {
         as={Button}
         color='prim.800'
         bg='white'
-        _hover={{ bg: 'prim.100' }}
-        _active={{ bg: 'prim.100' }}
+        _hover={{ bg: 'prim.25' }}
+        _active={{ bg: 'prim.25' }}
         leftIcon={<FaUser />}
         rightIcon={<FaChevronDown />}
       >

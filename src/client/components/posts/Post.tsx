@@ -6,21 +6,18 @@ import {
   HStack,
   Icon,
   IconButton,
-  IconProps,
   Image,
+  keyframes,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   Spacer,
   Text,
-  Tooltip,
   VStack,
-  keyframes,
 } from '@chakra-ui/react';
 import React from 'react';
 import { FaEdit, FaEllipsisH, FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
-import { IconType } from 'react-icons/lib';
 import { useHistory, useParams } from 'react-router-dom';
 import { CommentCard } from '.';
 import { CommentType, PostType } from '../../../common/types/entities';
@@ -65,15 +62,6 @@ const PostTitle = (props: PostTitleProps) => {
   );
 };
 
-interface PostActionsIconProps extends IconProps {
-  icon: IconType;
-}
-
-const PostActionsIcon = (props: PostActionsIconProps) => {
-  const { icon, ...rest } = props;
-  return <Icon as={icon} {...rest} cursor='pointer' />;
-};
-
 const PostActionsMenu = (props: PostProps) => {
   const { post } = props;
   const { comments } = post;
@@ -114,10 +102,20 @@ const PostActionsMenu = (props: PostProps) => {
         {post.userFavoriteStatus ? iconLiked : iconNotLiked}
         <Spacer />
         {post.creatorUserId === userId && post.currentStatus === 'normal' ? (
-          <Menu>
-            <MenuButton as={IconButton} aria-label='Options' icon={<FaEllipsisH />} variant='ghost' h={8} />
-            <MenuList minWidth='120px'>
+          <Menu autoSelect={false}>
+            <MenuButton
+              as={IconButton}
+              aria-label='Options'
+              icon={<Icon as={FaEllipsisH} fill='prim.700' />}
+              variant='ghost'
+              h={8}
+              _hover={{ bg: 'prim.25' }}
+              _active={{ bg: 'prim.25' }}
+            />
+            <MenuList minWidth='120px' borderColor='prim.50' p={0}>
               <MenuItem
+                variant='primary'
+                _hover={{ bg: 'prim.50' }}
                 icon={<FaEdit />}
                 onClick={() => {
                   history.push({ pathname: `/posts/edit/${post.urlSlugs}` });
@@ -126,6 +124,8 @@ const PostActionsMenu = (props: PostProps) => {
                 Edit
               </MenuItem>
               <MenuItem
+                variant='primary'
+                _hover={{ bg: 'prim.50' }}
                 icon={<FaTrash />}
                 onClick={() => {
                   setAlertIsOpen(true);
