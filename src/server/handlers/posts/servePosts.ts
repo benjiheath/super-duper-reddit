@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import { dbPosts, dbComments } from '../../utils/dbQueries';
-import { createSQLWhereConditionsFromList, asyncMap, insertPointsAndComments } from '../../utils/misc';
+import { createSQLWhereConditionsFromList, asyncMap } from '../../utils/misc';
+import { makePostClientReady } from '../../utils/responseShaping';
 
 export const servePosts: RequestHandler = async (req, res, _): Promise<void> => {
   try {
@@ -14,7 +15,7 @@ export const servePosts: RequestHandler = async (req, res, _): Promise<void> => 
 
     // combining data into list where each post has its comments, points & userVoteStatus included
     const clientReadyPosts = await asyncMap(posts, (post) =>
-      insertPointsAndComments(post, comments, req.session.userID as string)
+      makePostClientReady(post, comments, req.session.userID as string)
     );
 
     res.status(200).send(clientReadyPosts);

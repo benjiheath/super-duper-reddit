@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import { dbPosts, dbComments } from '../../utils/dbQueries';
-import { insertPointsAndComments } from '../../utils/misc';
+import { makePostClientReady } from '../../utils/responseShaping';
 
 export const servePost: RequestHandler = async (req, res, _): Promise<void> => {
   try {
@@ -18,7 +18,7 @@ export const servePost: RequestHandler = async (req, res, _): Promise<void> => {
       orderBy: 'updated_at',
     });
 
-    const clientReadyPost = await insertPointsAndComments(post, comments, req.session.userID as string);
+    const clientReadyPost = await makePostClientReady(post, comments, req.session.userID as string);
 
     res.status(200).send(clientReadyPost);
   } catch (err) {

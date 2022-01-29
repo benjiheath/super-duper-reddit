@@ -3,7 +3,8 @@ import _ from 'lodash';
 import { pool } from '../../db';
 import { dbComments } from '../../utils/dbQueries';
 import { FieldError } from '../../utils/errors';
-import { insertPointsAndComments, sanitizeKeys } from '../../utils/misc';
+import { sanitizeKeys } from '../../utils/misc';
+import { makePostClientReady } from '../../utils/responseShaping';
 
 export const editPost: RequestHandler = async (req, res, next) => {
   try {
@@ -24,7 +25,7 @@ export const editPost: RequestHandler = async (req, res, next) => {
       orderBy: 'updated_at',
     });
 
-    const updatedPost = await insertPointsAndComments(postWithSanitizedKeys, comments, req.session.userID!);
+    const updatedPost = await makePostClientReady(postWithSanitizedKeys, comments, req.session.userID!);
 
     res.status(200).send(updatedPost);
   } catch (err) {

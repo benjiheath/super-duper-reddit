@@ -7,7 +7,6 @@ import { removePost } from './removePost';
 import { servePost } from './servePost';
 import { servePosts } from './servePosts';
 import { updatePostVotes } from './updatePostVotes';
-import { removeFavorite } from './removeFavorite';
 
 export {
   addCommentToPost,
@@ -18,6 +17,5 @@ export {
   updatePostVotes,
   updateCommentVotes,
   addFavorite,
-  removeFavorite,
   editPost,
 };

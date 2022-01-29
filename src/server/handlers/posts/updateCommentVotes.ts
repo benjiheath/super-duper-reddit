@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import { dbComments, dbCommentsVotes } from '../../utils/dbQueries';
-import { makeCommentClientReady } from '../../utils/misc';
+import { makeCommentClientReady } from '../../utils/responseShaping';
 
 export const updateCommentVotes: RequestHandler = async (req, res, _): Promise<void> => {
   try {

@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import { dbComments, dbPosts } from '../../utils/dbQueries';
-import { appendCommentsToPost, insertPointsAndComments } from '../../utils/misc';
+import { makePostClientReady } from '../../utils/responseShaping';
 
 declare module 'express-session' {
   interface SessionData {
@@ -30,11 +30,7 @@ export const addCommentToPost: RequestHandler = async (req, res, next) => {
 
     // const updatedPostWithComments = appendCommentsToPost(updatedPost, comments);
 
-    const clientReadyPost = await insertPointsAndComments(
-      updatedPost,
-      comments,
-      req.session.userID as string
-    );
+    const clientReadyPost = await makePostClientReady(updatedPost, comments, req.session.userID as string);
 
     res.status(200).send(clientReadyPost);
   } catch (err) {
