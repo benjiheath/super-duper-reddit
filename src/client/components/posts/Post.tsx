@@ -16,6 +16,7 @@ import {
   Text,
   Tooltip,
   VStack,
+  keyframes,
 } from '@chakra-ui/react';
 import React from 'react';
 import { FaEdit, FaEllipsisH, FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
@@ -94,24 +95,17 @@ const PostActionsMenu = (props: PostProps) => {
     addFavoriteMutation.mutate();
   };
 
-  const iconNotLiked = <Icon as={FaRegHeart} fill='prim.800' onClick={handleFavorite} cursor='pointer' />;
-  const iconLiked = <Icon as={FaHeart} fill='prim.800' onClick={handleFavorite} cursor='pointer' />;
+  const animation = keyframes`
+    from {transform: scale(2)}
+    to {transform: scale(1)}
+  `;
 
-  const iconRemove =
-    post.creatorUserId === userId && post.currentStatus === 'normal' ? (
-      <Tooltip label='Remove post' bg='prim.50' color='red'>
-        <span>
-          <Icon
-            as={FaTrash}
-            fill='gray.500'
-            onClick={() => {
-              setAlertIsOpen(true);
-            }}
-            cursor='pointer'
-          />
-        </span>
-      </Tooltip>
-    ) : null;
+  const likeAnimation = `${animation}  0.2s ease-in`;
+
+  const iconNotLiked = <Icon as={FaRegHeart} fill='prim.800' onClick={handleFavorite} cursor='pointer' />;
+  const iconLiked = (
+    <Icon as={FaHeart} fill='prim.800' onClick={handleFavorite} cursor='pointer' animation={likeAnimation} />
+  );
 
   return (
     <>
