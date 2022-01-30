@@ -1,6 +1,7 @@
 import { Flex, HStack, Image, Link as ChakraLink, Text, VStack } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { Votes } from '.';
+import { useAuthContext } from '../../contexts/user/AuthContext';
 import { usePostsQuery } from '../../hooks/queries';
 import { PostProps } from '../../types/posts';
 import { checkIfUrlIsImg } from '../../utils/misc';
@@ -86,8 +87,10 @@ const PostCard = (props: PostProps) => {
 
 const Posts = () => {
   const { data, isLoading, error } = usePostsQuery();
+  const { setResponseError } = useAuthContext();
 
   if (error) {
+    setResponseError(error);
     return <span>Error fetching posts</span>;
   }
 

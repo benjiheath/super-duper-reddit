@@ -210,7 +210,12 @@ const Comments = (props: CommentsProps) => {
 
 const Post = () => {
   const { postSlugs } = useParams() as { postSlugs: string };
-  const { data: post, isLoading, isFetching, isRefetching, error } = usePostQuery({ postSlugs });
+  const { setResponseError } = useAuthContext();
+  const { data: post, isLoading, error } = usePostQuery({ postSlugs });
+
+  if (error) {
+    setResponseError(error);
+  }
 
   if (isLoading || !post) {
     return <SrSpinner />;
