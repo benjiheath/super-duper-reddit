@@ -1,4 +1,5 @@
-import { CreatePostPayload } from './../fetching/mutations';
+import { CreatePostMutationPayload } from '../fetching/mutations';
+
 export interface EditPostMutationVariables {
   postSlugs: string;
 }
@@ -24,5 +25,5 @@ export interface UpdateUserFavoriteStatusMutationVariables {
 }
 
 export interface CreatePostMutationVariables {
-  payload: CreatePostPayload;
+  payload: CreatePostMutationPayload;
 }
