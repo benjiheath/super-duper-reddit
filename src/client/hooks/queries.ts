@@ -6,4 +6,4 @@ export const getPostBaseKey = (variables: GetPostVariables) => ['post', variable
 
 export const usePostsQuery = () => useQuery(getPostsBaseKey(), getPosts, { retry: false });
 export const usePostQuery = (variables: GetPostVariables) =>
-  useQuery(getPostBaseKey(variables), () => getPost(variables));
+  useQuery(getPostBaseKey(variables), () => getPost(variables), { retry: false });
