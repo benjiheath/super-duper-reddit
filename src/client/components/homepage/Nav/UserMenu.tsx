@@ -1,14 +1,17 @@
 import { Button, Menu, MenuButton, MenuDivider, MenuItem, MenuList } from '@chakra-ui/react';
 import { FaChevronDown, FaUser } from 'react-icons/fa';
+import { useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
 import { useAuthContext } from '../../../contexts/user/AuthContext';
 import { axiosDELETE } from '../../../utils/axiosMethods';
 
 const UserMenu = () => {
   const { logOut, username } = useAuthContext();
+  const queryClient = useQueryClient();
 
   const logOutHandler = async () => {
     await axiosDELETE('session');
+    queryClient.removeQueries();
     logOut();
   };
 
