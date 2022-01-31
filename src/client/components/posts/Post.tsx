@@ -72,6 +72,7 @@ const PostActionsMenu = (props: PostProps) => {
     postSlugs: post.urlSlugs,
     postId: post.id,
   });
+  const [animateLikeBtn, setAnimateLikeBtn] = React.useState(false);
 
   const handleRemove = async () => {
     await removePostMutation(post.id);
@@ -81,18 +82,34 @@ const PostActionsMenu = (props: PostProps) => {
 
   const handleFavorite = async () => {
     addFavoriteMutation.mutate();
+    setAnimateLikeBtn(!post.userFavoriteStatus);
   };
 
   const animation = keyframes`
-    from {transform: scale(2)}
-    to {transform: scale(1)}
+    from {transform: scale(1.75); opacity: 0}
+    to {transform: scale(1); opacity: 1}
   `;
 
-  const likeAnimation = `${animation}  0.2s ease-in`;
+  const likeAnimation = `${animation}  0.4s ease-in`;
 
-  const iconNotLiked = <Icon as={FaRegHeart} fill='prim.800' onClick={handleFavorite} cursor='pointer' />;
+  const iconNotLiked = (
+    <Icon
+      as={FaRegHeart}
+      fill='gray.300'
+      _hover={{ fill: 'prim.800' }}
+      transition='0.2s'
+      onClick={handleFavorite}
+      cursor='pointer'
+    />
+  );
   const iconLiked = (
-    <Icon as={FaHeart} fill='prim.800' onClick={handleFavorite} cursor='pointer' animation={likeAnimation} />
+    <Icon
+      as={FaHeart}
+      fill='prim.800'
+      onClick={handleFavorite}
+      cursor='pointer'
+      animation={animateLikeBtn ? likeAnimation : undefined}
+    />
   );
 
   return (
