@@ -28,20 +28,45 @@ export const appendCommentsToPost = (post: PostType, comments: CommentType[]) =>
   };
 };
 
+const getCommentVoteForUser = async (userId: string, commentId: string) => {
+  const [commentVote] = await dbCommentsVotes.selectAll({
+    whereConditions: `user_id = '${userId}' AND comment_id = '${commentId}'`,
+  });
+  return commentVote;
+};
+
+const getPostVoteForUser = async (userId: string, postId: string) => {
+  const [postVote] = await dbPostsVotes.selectAll({
+    whereConditions: `user_id = '${userId}' AND post_id = '${postId}'`,
+  });
+  return postVote;
+};
+
+const getVoteCountForPost = async (postId: string) =>
+  await dbPostsVotes.getSum('vote_status').where('post_id').equals(postId);
+
+const getVoteCountForComment = async (commentId: string) =>
+  await dbCommentsVotes.getSum('vote_status').where('comment_id').equals(commentId);
+
+const getUserFavoriteStatus = async (userId: string, postId: string) => {
+  const [userFavoriteStatus] = await dbPostsFavorites.selectAll({
+    whereConditions: `user_id = '${userId}' AND post_id = '${postId}'`,
+  });
+  return userFavoriteStatus;
+};
+
 /**
  * Inserting total points (voteCount), user's vote status (userVoteStatus), and relative updatedAt (createdAtRelative)
  */
 export const makeCommentClientReady = async (comment: CommentType, userId: string): Promise<CommentType> => {
-  const voteCount = await dbCommentsVotes.getSum('vote_status').where('comment_id').equals(comment.id);
-  const [commentVote] = await dbCommentsVotes.selectAll({
-    whereConditions: `user_id = '${userId}' AND comment_id = '${comment.id}'`,
-  });
+  const voteCount = await getVoteCountForComment(comment.id);
+  const commentVote = await getCommentVoteForUser(userId, comment.id);
   const createdAtRelative = getTimeAgo(comment.createdAt);
 
   return {
     ...comment,
     points: voteCount,
-    userVoteStatus: commentVote ? commentVote.voteStatus : null,
+    userVoteStatus: commentVote.voteStatus ?? null,
     createdAtRelative,
   };
 };
@@ -54,14 +79,10 @@ export const makePostClientReady = async (
   comments: CommentType[],
   userId: string
 ): Promise<PostType> => {
-  const [postVote] = await dbPostsVotes.selectAll({
-    whereConditions: `user_id = '${userId}' AND post_id = '${post.id}'`,
-  });
-  const [userFavoriteStatus] = await dbPostsFavorites.selectAll({
-    whereConditions: `user_id = '${userId}' AND post_id = '${post.id}'`,
-  });
-  const voteCount = await dbPostsVotes.getSum('vote_status').where('post_id').equals(post.id);
+  const postVote = await getPostVoteForUser(userId, post.id);
   const userHasVoted = postVote && postVote.postId === post.id;
+  const userFavoriteStatus = await getUserFavoriteStatus(userId, post.id);
+  const voteCount = await getVoteCountForPost(post.id);
   const createdAtRelative = getTimeAgo(post.createdAt);
 
   const postCommentsRaw = comments.filter((comment) => comment.postId === post.id);
