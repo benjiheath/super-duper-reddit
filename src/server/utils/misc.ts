@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { DateTime } from 'luxon';
+import { DatabaseError } from 'pg';
 import { CommentsColumn, DbComment, DbPost, PostsColumn, UserColumn } from '../types/dbTypes';
 
 export const getTimeAgo = (date: string) => {
@@ -35,4 +36,14 @@ export const asyncMap = async <T, U>(list: T[], callback: (item: T) => Promise<T
 export const sanitizeKeys = <T extends DbPost | DbComment>(postOrComment: T): T => {
   const camelCased = _.mapKeys(postOrComment, (value, key) => _.camelCase(key));
   return camelCased as unknown as T;
+};
+
+export const getFieldErrorInfoFromDbError = (err: DatabaseError) => {
+  if (!err.detail) {
+    throw new Error(`Error parsing info from DbError. The 'detail' property does not exist on the object`);
+  }
+  const field = err.detail.substring(5, err.detail.indexOf(')'));
+  const message = `Sorry, that ${field} is already taken`;
+
+  return { field, message };
 };

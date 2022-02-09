@@ -20,7 +20,7 @@ export const removePost: RequestHandler = async (req, res, next) => {
     res.status(200).send();
   } catch (err) {
     if (err instanceof FieldError) {
-      res.status(200).send(err.info);
+      res.status(500).send();
     }
   }
 };

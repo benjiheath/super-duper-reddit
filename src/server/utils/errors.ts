@@ -1,6 +1,6 @@
 import { CommentsVoteColumn } from './../types/dbTypes';
 import { CommentsColumn, PostsColumn, PostsVoteColumn, UserColumn } from '../types/dbTypes';
-import { FieldErrorResponse } from './../types/misc';
+import { FieldErrorData } from '../../common/types';
 
 export enum ErrorTypes {
   UserDataAlreadyExists = 'User data already exists',
@@ -8,6 +8,8 @@ export enum ErrorTypes {
   ResourceDoesNotExist = `This resource doesn't exist`,
   UnknownError = 'An unknown error occured',
 }
+
+export type FieldErrorResponse = { message: string; errors: FieldErrorData[] };
 
 export class FieldError extends Error {
   info: FieldErrorResponse & { status: string };

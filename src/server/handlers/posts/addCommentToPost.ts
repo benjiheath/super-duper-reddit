@@ -35,5 +35,6 @@ export const addCommentToPost: RequestHandler = async (req, res, next) => {
     res.status(200).send(clientReadyPost);
   } catch (err) {
     console.error(err);
+    res.status(500).send();
   }
 };

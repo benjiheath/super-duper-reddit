@@ -3,7 +3,7 @@ import { UserType, PostVoteType, PostFavoriteType, CommentVoteType } from './../
 import { pool } from '../db';
 import { ErrorTypes, FieldError, generateErrorType } from './errors';
 import { CommentType, PostType } from '../../common/types/entities';
-import { sanitizeKeys } from './misc';
+import { getFieldErrorInfoFromDbError as parseFieldErrorInfoFromDbError, sanitizeKeys } from './misc';
 import { handlePostRemovedStatus } from './responseShaping';
 import {
   CommentsColumn,
@@ -17,6 +17,7 @@ import {
   PostsVoteColumn,
   UserColumn,
 } from '../types/dbTypes';
+import { DatabaseError } from 'pg';
 
 type updateFieldOverload<T, U> = {
   (field: T, conditionalValue: string): {
@@ -148,14 +149,15 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
 
         return sanitizedRows;
       } catch (err: any) {
-        const field = err.detail.substring(5, err.detail.indexOf(')'));
-        const message = `Sorry, that ${field} is already taken`;
-
-        console.error('DB insertion error:', err);
-        throw new FieldError({
-          message,
-          errors: [{ field, message }],
-        });
+        if (err instanceof DatabaseError) {
+          const { field, message } = parseFieldErrorInfoFromDbError(err);
+          throw new FieldError({
+            message,
+            errors: [{ field, message }],
+          });
+        } else {
+          throw new Error('Error inserting rows');
+        }
       }
     },
     updateField: (field, value) => {

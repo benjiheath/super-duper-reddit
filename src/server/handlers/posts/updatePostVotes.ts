@@ -26,7 +26,6 @@ export const updatePostVotes: RequestHandler = async (req, res, _): Promise<void
 
     res.status(200).send(clientReadyPost);
   } catch (err) {
-    console.log('VOTES ERR', err);
-    res.status(403).send(err);
+    res.status(500).send();
   }
 };

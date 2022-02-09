@@ -21,7 +21,6 @@ export const updateCommentVotes: RequestHandler = async (req, res, _): Promise<v
 
     res.status(200).send(updatedComment);
   } catch (err) {
-    console.log('VOTES ERR', err);
-    res.status(403).send(err);
+    res.status(500).send(err);
   }
 };

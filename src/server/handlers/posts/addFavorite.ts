@@ -23,6 +23,6 @@ export const addFavorite: RequestHandler = async (req, res, _): Promise<void> =>
 
     res.status(200).send({ updatedUserFavoriteStatus });
   } catch (err) {
-    res.status(200).send(err);
+    res.status(500).send();
   }
 };

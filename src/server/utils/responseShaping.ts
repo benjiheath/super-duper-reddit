@@ -28,18 +28,18 @@ export const appendCommentsToPost = (post: PostType, comments: CommentType[]) =>
   };
 };
 
-const getCommentVoteForUser = async (userId: string, commentId: string) => {
-  const [commentVote] = await dbCommentsVotes.selectAll({
-    whereConditions: `user_id = '${userId}' AND comment_id = '${commentId}'`,
-  });
-  return commentVote;
-};
-
 const getPostVoteForUser = async (userId: string, postId: string) => {
   const [postVote] = await dbPostsVotes.selectAll({
     whereConditions: `user_id = '${userId}' AND post_id = '${postId}'`,
   });
   return postVote;
+};
+
+const getCommentVoteForUser = async (userId: string, commentId: string) => {
+  const [commentVote] = await dbCommentsVotes.selectAll({
+    whereConditions: `user_id = '${userId}' AND comment_id = '${commentId}'`,
+  });
+  return commentVote;
 };
 
 const getVoteCountForPost = async (postId: string) =>
@@ -66,7 +66,7 @@ export const makeCommentClientReady = async (comment: CommentType, userId: strin
   return {
     ...comment,
     points: voteCount,
-    userVoteStatus: commentVote.voteStatus ?? null,
+    userVoteStatus: commentVote?.voteStatus ?? null,
     createdAtRelative,
   };
 };
