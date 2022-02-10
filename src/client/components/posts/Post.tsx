@@ -230,6 +230,16 @@ const Post = () => {
   const { setResponseError } = useAuthContext();
   const { data: post, isLoading, error } = usePostQuery({ postSlugs });
 
+  React.useEffect(() => {
+    if (!post) return;
+
+    document.title = post.title;
+
+    return () => {
+      document.title = 'Super Reddit';
+    };
+  }, [post]);
+
   if (error) {
     setResponseError(error);
   }
