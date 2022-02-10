@@ -17,12 +17,11 @@ import { InputFields } from './InputFields';
 type Props = Pick<FormProps, 'formMode' | 'setFormMode'>;
 
 export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
-  const { logIn, setResponseError, setUserID } = useAuthContext();
+  const { logIn, setResponseError, setUserID, unauthedUrl, setUnauthedUrl } = useAuthContext();
   const history = useHistory();
   const toast = useToast();
   const [loggingIn, setLoggingIn] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const {
     register,
     reset,
@@ -30,6 +29,17 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
     setError,
     formState: { errors },
   } = useForm();
+
+  React.useEffect(() => {
+    if (unauthedUrl) {
+      toast({
+        status: 'info',
+        title: 'Log in or register to view this post',
+        duration: 5000,
+        position: 'top',
+      });
+    }
+  }, [unauthedUrl]);
 
   const onSubmit = async (data: FormData): Promise<void> => {
     setLoading(true);
@@ -49,7 +59,8 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
           formMode === 'Register' ? setLoggingIn(false) : setLoggingIn(true);
           logIn(data.username);
           setUserID(res.userId!);
-          history.push({ pathname: '/' });
+          history.push({ pathname: unauthedUrl ?? '/' });
+          setUnauthedUrl(null);
         } else {
           setLoading(false);
         }

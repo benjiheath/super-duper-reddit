@@ -16,7 +16,12 @@ export interface AuthState {
   err: any;
 }
 
-export type AuthContextType = AuthDispatchers & AuthState;
+export interface UnauthedUrlState {
+  unauthedUrl: string | null;
+  setUnauthedUrl: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+export type AuthContextType = AuthDispatchers & AuthState & UnauthedUrlState;
 export type UseAuthContextType = () => AuthContextType;
 
 export interface FormData {

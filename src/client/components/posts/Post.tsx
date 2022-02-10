@@ -242,6 +242,7 @@ const Post = () => {
 
   if (error) {
     setResponseError(error);
+    return null;
   }
 
   if (isLoading || !post) {
