@@ -16,6 +16,7 @@ interface Props {
 
 const CreateOrEditPostForm = (props: Props) => {
   const { postSlugs, handleSubmit, onSubmit, register, errors, isSubmitting } = props;
+
   return (
     <FormBox title={postSlugs ? 'Edit post' : 'New Post'} headingSize='lg' w='800px'>
       <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>

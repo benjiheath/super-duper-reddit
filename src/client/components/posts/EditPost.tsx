@@ -6,23 +6,37 @@ import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useAuthContext } from '../../contexts/user/AuthContext';
 import { editPostMutation } from '../../fetching/mutations';
 import { usePostQuery } from '../../hooks/queries';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { CreatePostFields } from '../../types/posts';
 import CreateOrEditPostForm from './CreateOrEditPostForm';
 
 const EditPost = () => {
   const { setResponseError, username, userId } = useAuthContext();
   const { postSlugs } = useParams() as { postSlugs: string };
-  const location = useLocation();
+  const { data: post, isLoading, error } = usePostQuery({ postSlugs });
+  const localStoragePostEdit = useLocalStorage<CreatePostFields>('editingPost');
   const history = useHistory();
   const toast = useToast();
+
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    watch,
+    setValue,
+    formState: { errors, isSubmitting, isDirty },
   } = useForm();
 
-  const { data: post, isLoading, error } = usePostQuery({ postSlugs });
+  // TODO - toast on load if reloaded uncommited changes. add 'reset' btn if so? (and if isDirty)
+
+  React.useEffect(() => {
+    const subscription = watch((value) => {
+      localStoragePostEdit.setLsItem(value as CreatePostFields);
+      console.log('FROM LOCAL STORE:', localStoragePostEdit.getLsItem());
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   const onSubmit = async (data: CreatePostFields): Promise<void> => {
     const emptyFieldsNullified = _.mapValues(data, (value) => (value?.length === 0 ? null : value));
@@ -40,6 +54,8 @@ const EditPost = () => {
         variant: 'subtle',
       });
 
+      localStoragePostEdit.removeLsItem();
+
       history.goBack();
     } catch (err) {
       setResponseError(err);
@@ -47,8 +63,14 @@ const EditPost = () => {
   };
 
   React.useEffect(() => {
-    reset({ title: post?.title, contentUrl: post?.contentUrl, body: post?.body });
-  }, [location.pathname]);
+    const savedFormData = localStoragePostEdit.getLsItem();
+
+    const title = savedFormData?.title ?? post?.title;
+    const contentUrl = savedFormData?.contentUrl ?? post?.contentUrl;
+    const body = savedFormData?.body ?? post?.body;
+
+    reset({ title, contentUrl, body });
+  }, [post]);
 
   return (
     <CreateOrEditPostForm
