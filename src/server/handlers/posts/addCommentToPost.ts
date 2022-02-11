@@ -28,8 +28,6 @@ export const addCommentToPost: RequestHandler = async (req, res, next) => {
       orderBy: 'updated_at',
     });
 
-    // const updatedPostWithComments = appendCommentsToPost(updatedPost, comments);
-
     const clientReadyPost = await makePostClientReady(updatedPost, comments, req.session.userID as string);
 
     res.status(200).send(clientReadyPost);

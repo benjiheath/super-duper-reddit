@@ -57,6 +57,7 @@ const EditPost = () => {
       register={register}
       errors={errors}
       isSubmitting={isSubmitting}
+      postSlugs={postSlugs}
     />
   );
 };
