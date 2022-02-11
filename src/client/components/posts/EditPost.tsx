@@ -2,7 +2,7 @@ import { useToast } from '@chakra-ui/react';
 import _ from 'lodash';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useAuthContext } from '../../contexts/user/AuthContext';
 import { editPostMutation } from '../../fetching/mutations';
 import { usePostQuery } from '../../hooks/queries';
@@ -32,7 +32,6 @@ const EditPost = () => {
   React.useEffect(() => {
     const subscription = watch((value) => {
       localStoragePostEdit.setLsItem(value as CreatePostFields);
-      console.log('FROM LOCAL STORE:', localStoragePostEdit.getLsItem());
     });
 
     return () => subscription.unsubscribe();
@@ -69,6 +68,7 @@ const EditPost = () => {
     const contentUrl = savedFormData?.contentUrl ?? post?.contentUrl;
     const body = savedFormData?.body ?? post?.body;
 
+    // pre-filling fields with unsaved changes if necessary
     reset({ title, contentUrl, body });
   }, [post]);
 
