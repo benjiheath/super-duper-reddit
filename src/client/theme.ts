@@ -31,6 +31,8 @@ export const theme = extendTheme({
     },
     prim: primaryColors,
     sec: {
+      25: '#f4fffb',
+      50: '#eafff8',
       100: '#dbfff4',
       200: '#9cffe1',
       300: '#85ffda',
@@ -41,6 +43,7 @@ export const theme = extendTheme({
       800: '#00ffb3',
       900: '#00e39f',
       950: '#00d696',
+      1000: '#00c68b',
     },
     // sec: {
     //   100: '#E6F7FF',
@@ -101,13 +104,12 @@ export const theme = extendTheme({
           bg: 'sec.800',
           border: '1px solid transparent',
           color: 'white',
-
           _hover: {
             bg: 'sec.100',
             _disabled: { bg: 'sec.800' },
-            color: 'sec.800',
+            color: 'sec.1000',
             border: '1px solid',
-            borderColor: 'sec.800',
+            borderColor: 'sec.1000',
           },
         },
         primInv: {

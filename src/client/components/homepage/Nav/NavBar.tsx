@@ -6,10 +6,10 @@ import UserMenu from './UserMenu';
 const NavBar = () => {
   const history = useHistory();
 
-  const [linkTo, btnVariant, btnText, btnIcon, btnColor] =
+  const [linkTo, btnVariant, btnText, btnIcon] =
     history.location.pathname === '/posts/create' || history.location.pathname.includes('posts/edit')
-      ? ['/', 'basicHoverInv', 'Back', FaArrowLeft, 'black']
-      : ['/posts/create', 'secondary', 'Create Post', FaPlus, 'white'];
+      ? ['/', 'basicHoverInv', 'Back', FaArrowLeft]
+      : ['/posts/create', 'secondary', 'Create Post', FaPlus];
 
   return (
     <Box position='sticky' top={0} zIndex={1} bg='white' mb={8} boxShadow='0px 0px 3px 1px #ececec'>
