@@ -23,8 +23,7 @@ const EditPost = () => {
     handleSubmit,
     reset,
     watch,
-    setValue,
-    formState: { errors, isSubmitting, isDirty },
+    formState: { errors, isSubmitting },
   } = useForm();
 
   // TODO - toast on load if reloaded uncommited changes. add 'reset' btn if so? (and if isDirty)
@@ -36,6 +35,17 @@ const EditPost = () => {
 
     return () => subscription.unsubscribe();
   }, [watch]);
+
+  React.useEffect(() => {
+    const savedFormData = localStoragePostEdit.getLsItem();
+
+    const title = savedFormData?.title ?? post?.title;
+    const contentUrl = savedFormData?.contentUrl ?? post?.contentUrl;
+    const body = savedFormData?.body ?? post?.body;
+
+    // pre-filling fields with unsaved changes if necessary
+    reset({ title, contentUrl, body });
+  }, [post]);
 
   const onSubmit = async (data: CreatePostFields): Promise<void> => {
     const emptyFieldsNullified = _.mapValues(data, (value) => (value?.length === 0 ? null : value));
@@ -60,17 +70,6 @@ const EditPost = () => {
       setResponseError(err);
     }
   };
-
-  React.useEffect(() => {
-    const savedFormData = localStoragePostEdit.getLsItem();
-
-    const title = savedFormData?.title ?? post?.title;
-    const contentUrl = savedFormData?.contentUrl ?? post?.contentUrl;
-    const body = savedFormData?.body ?? post?.body;
-
-    // pre-filling fields with unsaved changes if necessary
-    reset({ title, contentUrl, body });
-  }, [post]);
 
   return (
     <CreateOrEditPostForm
