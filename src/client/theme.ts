@@ -84,8 +84,13 @@ export const theme = extendTheme({
     },
     Button: {
       baseStyle: {
+        color: 'white',
         _disabled: {
-          bg: 'grey',
+          cursor: 'default',
+          color: 'lightgrey',
+          _hover: {
+            borderColor: 'transparent',
+          },
         },
       },
       variants: {
