@@ -17,7 +17,6 @@ const EditPost = () => {
   const localStoragePostEdit = useLocalStorage<CreatePostFields>('editingPost');
   const history = useHistory();
   const toast = useToast();
-
   const {
     register,
     handleSubmit,
@@ -25,12 +24,17 @@ const EditPost = () => {
     watch,
     formState: { errors, isSubmitting },
   } = useForm();
-
-  // TODO - toast on load if reloaded uncommited changes. add 'reset' btn if so? (and if isDirty)
+  const [isDirty, setIsDirty] = React.useState(false); // temp workaround for reset btn (currently can't rely on formState's isDirty)
 
   React.useEffect(() => {
+    const currentPostData = { title: post?.title, contentUrl: post?.contentUrl, body: post?.body };
+
     const subscription = watch((value) => {
-      localStoragePostEdit.setLsItem(value as CreatePostFields);
+      const changesHaveBeenMade = !_.isEqual(value, currentPostData);
+      if (changesHaveBeenMade) {
+        localStoragePostEdit.setLsItem(value as CreatePostFields);
+      }
+      setIsDirty(changesHaveBeenMade);
     });
 
     return () => subscription.unsubscribe();
@@ -45,16 +49,18 @@ const EditPost = () => {
 
     // pre-filling fields with unsaved changes if necessary
     reset({ title, contentUrl, body });
+
+    if (savedFormData) {
+      toast({ status: 'success', title: 'Loaded unsaved changes', position: 'top' });
+    }
   }, [post]);
 
   const onSubmit = async (data: CreatePostFields): Promise<void> => {
     const emptyFieldsNullified = _.mapValues(data, (value) => (value?.length === 0 ? null : value));
-
     const newPostData = { creatorUserId: userId, creatorUsername: username, ...emptyFieldsNullified };
 
     try {
       await editPostMutation({ ...newPostData, postSlugs });
-
       toast({
         position: 'top',
         title: 'Post updated successfully',
@@ -64,11 +70,16 @@ const EditPost = () => {
       });
 
       localStoragePostEdit.removeLsItem();
-
       history.goBack();
     } catch (err) {
       setResponseError(err);
     }
+  };
+
+  const handleReset = () => {
+    setIsDirty(false);
+    localStoragePostEdit.removeLsItem();
+    reset({ title: post?.title, contentUrl: post?.contentUrl, body: post?.body });
   };
 
   return (
@@ -78,6 +89,8 @@ const EditPost = () => {
       register={register}
       errors={errors}
       isSubmitting={isSubmitting}
+      handleReset={handleReset}
+      isResetDisabled={!isDirty}
       postSlugs={postSlugs}
     />
   );
