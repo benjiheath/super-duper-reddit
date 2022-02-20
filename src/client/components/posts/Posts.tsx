@@ -54,7 +54,7 @@ const PostCardDetails = (props: PostProps) => {
         <Image height='100px' objectFit='cover' src={post.contentUrl} alt='post image' borderRadius={4} />
       ) : null}
       <PostedBy createdAtRelative={post.createdAtRelative} creatorUsername={post.creatorUsername} />
-      <Text>{post.comments.length} comments</Text>
+      <Text>{post.commentCount} comments</Text>
     </VStack>
   );
 };

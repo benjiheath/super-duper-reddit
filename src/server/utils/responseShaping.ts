@@ -1,4 +1,6 @@
+import { QueryResult } from 'pg';
 import { CommentType, PostType } from '../../common/types';
+import { pool } from '../db';
 import { dbCommentsVotes, dbPostsFavorites, dbPostsVotes } from './dbQueries';
 import { asyncMap, getTimeAgo } from './misc';
 
@@ -55,6 +57,12 @@ const getUserFavoriteStatus = async (userId: string, postId: string) => {
   return userFavoriteStatus;
 };
 
+const getTotalCommentCountForPost = async (postId: string) => {
+  const { rows } = await pool.query(`SELECT COUNT(post_id) FROM comments WHERE post_id = '${postId}'`);
+  const totalCommentCount = rows[0].count;
+  return totalCommentCount;
+};
+
 /**
  * Inserting total points (voteCount), user's vote status (userVoteStatus), and relative updatedAt (createdAtRelative)
  */
@@ -84,6 +92,7 @@ export const makePostClientReady = async (
   const userFavoriteStatus = await getUserFavoriteStatus(userId, post.id);
   const voteCount = await getVoteCountForPost(post.id);
   const createdAtRelative = getTimeAgo(post.createdAt);
+  const commentCount = await getTotalCommentCountForPost(post.id);
 
   const postCommentsRaw = comments.filter((comment) => comment.postId === post.id);
   const postComments = await asyncMap(postCommentsRaw, (postComment) =>
@@ -114,6 +123,7 @@ export const makePostClientReady = async (
   return {
     ...post,
     comments: nestedComments,
+    commentCount,
     points: voteCount,
     userVoteStatus: userHasVoted ? postVote.voteStatus : null,
     userFavoriteStatus: userFavoriteStatus ? true : false,

@@ -64,7 +64,6 @@ const PostTitle = (props: PostTitleProps) => {
 
 const PostActionsMenu = (props: PostProps) => {
   const { post } = props;
-  const { comments } = post;
   const { userId } = useAuthContext();
   const [alertIsOpen, setAlertIsOpen] = React.useState(false);
   const history = useHistory();
@@ -115,7 +114,7 @@ const PostActionsMenu = (props: PostProps) => {
   return (
     <>
       <HStack spacing={4} mt='14px !important' w='100%'>
-        <Text>{comments.length} comments</Text>
+        <Text>{post.commentCount} comments</Text>
         {post.userFavoriteStatus ? iconLiked : iconNotLiked}
         <Spacer />
         {post.creatorUserId === userId && post.currentStatus === 'normal' ? (

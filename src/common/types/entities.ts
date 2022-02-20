@@ -21,6 +21,7 @@ export interface PostType {
   currentStatus: 'normal' | 'removed';
   urlSlugs: string;
   comments: NestedComment[];
+  commentCount: number;
   userVoteStatus: -1 | 1 | null;
   userFavoriteStatus: boolean;
   points: number | null;
