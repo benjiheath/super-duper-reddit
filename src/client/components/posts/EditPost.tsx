@@ -82,11 +82,11 @@ const EditPost = () => {
     }
   };
 
-  const handleReset = () => {
+  const handleReset = React.useCallback(() => {
     setIsDirty(false);
     localStoragePostEdit.removeLsItem();
     reset({ title: post?.title, contentUrl: post?.contentUrl, body: post?.body });
-  };
+  }, []);
 
   return (
     <CreateOrEditPostForm
