@@ -132,7 +132,7 @@ const PostActionsMenu = (props: PostProps) => {
             <MenuList minWidth='120px' borderColor='prim.50' p={0}>
               <MenuItem
                 variant='primary'
-                _hover={{ bg: 'prim.50' }}
+                _hover={{ bg: 'prim.50', color: 'prim.900', transition: '0.15s' }}
                 icon={<FaEdit />}
                 onClick={() => {
                   history.push({ pathname: `/posts/edit/${post.urlSlugs}` });
@@ -142,7 +142,7 @@ const PostActionsMenu = (props: PostProps) => {
               </MenuItem>
               <MenuItem
                 variant='primary'
-                _hover={{ bg: 'prim.50' }}
+                _hover={{ bg: 'prim.50', color: 'red', transition: '0.15s' }}
                 icon={<FaTrash />}
                 onClick={() => {
                   setAlertIsOpen(true);
