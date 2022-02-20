@@ -21,6 +21,7 @@ export const theme = extendTheme({
       'html, body': {
         color: 'gray.600',
         bg: 'gray.50',
+        fontSize: '14px',
       },
     },
   },
