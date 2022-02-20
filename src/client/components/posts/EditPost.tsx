@@ -51,7 +51,13 @@ const EditPost = () => {
     reset({ title, contentUrl, body });
 
     if (savedFormData) {
-      toast({ status: 'success', title: 'Loaded unsaved changes', position: 'top' });
+      toast({
+        status: 'success',
+        title: 'Loaded unsaved changes',
+        position: 'top',
+        duration: 3000,
+        variant: 'pink',
+      });
     }
   }, [post]);
 
@@ -66,7 +72,7 @@ const EditPost = () => {
         title: 'Post updated successfully',
         duration: 1600,
         status: 'success',
-        variant: 'subtle',
+        variant: 'srSuccessSubtle',
       });
 
       localStoragePostEdit.removeLsItem();

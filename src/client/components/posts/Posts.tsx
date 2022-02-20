@@ -73,7 +73,7 @@ const PostCard = (props: PostProps) => {
         cursor='pointer'
         _hover={{
           boxShadow: '0px 0px 1px 1px #ececec28',
-          bg: '#fcfcfc',
+          bg: '#fefefe',
         }}
         bg='white'
         transition='0.15s'

@@ -45,6 +45,7 @@ export default function RecoveryEmailForm() {
         duration: 6000,
         isClosable: true,
         position: 'top',
+        variant: 'srSuccess',
       });
     } catch (err) {
       setResponseError(err);

@@ -59,6 +59,34 @@ export const theme = extendTheme({
     // },
   },
   components: {
+    Alert: {
+      variants: {
+        pink: {
+          container: {
+            bg: 'prim.50',
+          },
+          icon: {
+            color: 'prim.800',
+          },
+        },
+        srSuccess: {
+          container: {
+            bg: 'sec.200',
+          },
+          icon: {
+            color: 'sec.950',
+          },
+        },
+        srSuccessSubtle: {
+          container: {
+            bg: 'sec.50',
+          },
+          icon: {
+            color: 'sec.900',
+          },
+        },
+      },
+    },
     Input: {
       baseStyle: {
         transition: 'all 5s',

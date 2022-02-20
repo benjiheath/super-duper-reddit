@@ -68,6 +68,7 @@ export default function PasswordResetForm() {
         duration: 2000,
         isClosable: true,
         position: 'top',
+        variant: 'srSuccess',
       });
 
       setTimeout(() => {

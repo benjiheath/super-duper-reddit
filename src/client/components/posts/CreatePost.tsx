@@ -27,7 +27,7 @@ const CreatePost = () => {
         title: 'Posted successfully',
         duration: 1600,
         status: 'success',
-        variant: 'subtle',
+        variant: 'srSuccess',
       });
 
       history.push({ pathname: `${post.urlSlugs}` });
