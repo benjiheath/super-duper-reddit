@@ -74,16 +74,16 @@ const PostActionsMenu = (props: PostProps) => {
   });
   const [animateLikeBtn, setAnimateLikeBtn] = React.useState(false);
 
-  const handleRemove = async () => {
+  const handleRemove = React.useCallback(async () => {
     await removePostMutation(post.id);
     setAlertIsOpen(false);
     history.push({ pathname: '/posts' });
-  };
+  }, [post.id]);
 
-  const handleFavorite = async () => {
+  const handleFavorite = React.useCallback(async () => {
     addFavoriteMutation.mutate();
     setAnimateLikeBtn(!post.userFavoriteStatus);
-  };
+  }, [post.userFavoriteStatus]);
 
   const animation = keyframes`
     from {transform: scale(1.75); opacity: 0}
