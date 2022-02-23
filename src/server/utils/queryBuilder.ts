@@ -27,9 +27,8 @@ export const queryBuilder = <A, B>(table: DbTables) => {
   // just make util to extract sum/count - call it in the methods that call this function
 
   const go = async <C = A[]>(options?: GoOptions) => {
-    if (!options?.returnAllRows) {
-      returningAllRows = false;
-    }
+    returningAllRows = options?.returnAllRows ?? returningAllRows;
+
     if (returningAllRows) {
       appendQuery(`RETURNING *`);
     }
