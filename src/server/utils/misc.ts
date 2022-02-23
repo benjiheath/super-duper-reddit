@@ -47,3 +47,9 @@ export const getFieldErrorInfoFromDbError = (err: DatabaseError) => {
 
   return { field, message };
 };
+
+export const append = (string1: string) => {
+  return { with: (string2: string) => string1.concat(` ${string2}`) };
+};
+
+export const getFirstElement = <A>(list: A[]) => list[0];

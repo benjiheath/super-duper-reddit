@@ -22,6 +22,7 @@ export const servePost: RequestHandler = async (req, res, _): Promise<void> => {
 
     res.status(200).send(clientReadyPost);
   } catch (err) {
+    console.error('servePost error:', err);
     res.status(500).send(err);
   }
 };
