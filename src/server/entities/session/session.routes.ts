@@ -1,16 +1,19 @@
-import bcrypt from 'bcrypt';
-import { RequestHandler } from 'express';
+import express, { RequestHandler } from 'express';
 import { dbUsers } from '../../utils/dbQueries';
 import { FieldError } from '../../utils/errors';
+import bcrypt from 'bcrypt';
 
-declare module 'express-session' {
-  interface SessionData {
-    userID?: string;
-    username?: string;
+const sendSessionStatus: RequestHandler = async (req, res, _) => {
+  try {
+    req.session.userID
+      ? res.status(200).send({ auth: true, userId: req.session.userID })
+      : res.status(200).send({ auth: false, userId: null });
+  } catch (err) {
+    console.error(err);
   }
-}
+};
 
-export const login: RequestHandler = async (req, res, _): Promise<void> => {
+const login: RequestHandler = async (req, res, _): Promise<void> => {
   try {
     const { username, password } = req.body;
 
@@ -46,3 +49,17 @@ export const login: RequestHandler = async (req, res, _): Promise<void> => {
     }
   }
 };
+
+const logout: RequestHandler = async (req, res, _): Promise<void> => {
+  req.session.destroy(() => {
+    res.clearCookie('connect.sid').status(200).send({ status: 'ok', message: 'Logged out successfully' });
+  });
+};
+
+const router = express.Router();
+
+router.get('/', sendSessionStatus);
+router.post('/', login);
+router.delete('/', logout);
+
+export { router as sessionRouter };

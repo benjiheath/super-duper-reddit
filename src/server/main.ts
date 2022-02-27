@@ -6,10 +6,12 @@ import { __prod__ } from './constants';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-import { postsRouter, sessionRouter, userRouter } from './routes';
 import { config } from './config';
 import history from 'connect-history-api-fallback';
-import { authChecker } from './handlers/middleware/authChecker';
+import { authChecker } from './middleware/authChecker';
+import { postsRouter } from './entities/post/post.routes';
+import { sessionRouter } from './entities/session/session.routes';
+import { userRouter } from './entities/user/user.routes';
 
 const app = express();
 const PostgreSqlStore = require('connect-pg-simple')(session);
