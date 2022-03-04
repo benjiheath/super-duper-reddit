@@ -1,4 +1,4 @@
-import { pool } from '../db';
+import { pool } from '../database/db';
 import { NumericProps } from '../types/misc';
 import {
   DbTables,

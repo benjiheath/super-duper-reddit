@@ -1,6 +1,5 @@
-import { QueryResult } from 'pg';
 import { CommentType, PostType } from '../../common/types';
-import { pool } from '../db';
+import { pool } from '../database/db';
 import { dbCommentsVotes, dbPostsFavorites, dbPostsVotes } from './dbQueries';
 import { asyncMap, getTimeAgo } from './misc';
 

@@ -77,3 +77,10 @@ export interface DbCommentVote {
   user_id: string;
   vote_status: 1 | -1 | 0;
 }
+
+export interface UpdateUserRequest {
+  username?: string;
+  password?: string;
+  email?: string;
+  resetPwToken?: string;
+}

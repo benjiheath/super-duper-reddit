@@ -14,18 +14,23 @@ export const getTimeAgo = (date: string) => {
 
 export const createSQLWhereConditionsFromList = <T>(
   list: T[],
-  valueA: PostsColumn | CommentsColumn | UserColumn,
-  valueB: keyof T,
+  column: PostsColumn | CommentsColumn | UserColumn,
+  value: keyof T,
   operator: 'OR' | 'AND' = 'OR'
 ) => {
   const operatorWithSpace = `${operator} `;
 
   const conditions = list
-    .map((item, idx) => `${idx !== 0 ? operatorWithSpace : ''}${valueA} = '${item[valueB]}'`)
+    .map((item, idx) => `${idx !== 0 ? operatorWithSpace : ''}${column} = '${item[value]}'`)
     .join(' ');
 
   return conditions;
 };
+
+type WhereCondition = { column: PostsColumn | CommentsColumn | UserColumn; value: string };
+
+export const stringifySQLWhereCondition = <A>(options: WhereCondition) =>
+  `WHERE ${options.column} = '${options.value}'`;
 
 export const asyncMap = async <T, U>(list: T[], callback: (item: T) => Promise<T>) => {
   const result = await Promise.all(list.map(callback));

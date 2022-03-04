@@ -138,18 +138,18 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
     insertRow: async (columns, appendQuery) => {
       try {
         const parsedColumns = Object.keys(columns);
-        const values = Object.values(columns);
+        const values = Object.values(columns).map((val) => `'${val}'`);
         const valueIDs = Object.values(columns).map((_, i) => `$${i + 1}`);
 
         const { rows } = await pool.query(
-          `INSERT INTO ${table} (${parsedColumns}) VALUES (${valueIDs}) ${appendQuery ?? ''} RETURNING *`,
-          values
+          `INSERT INTO ${table} (${parsedColumns}) VALUES (${values}) ${appendQuery ?? ''} RETURNING *`
         );
         const sanitizedRows = rows.map((row) => sanitizeKeys(row));
 
         return sanitizedRows;
       } catch (err: any) {
         if (err instanceof DatabaseError) {
+          console.log({ err });
           const { field, message } = parseFieldErrorInfoFromDbError(err);
           throw new FieldError({
             message,
@@ -184,6 +184,8 @@ export const dbQuery: DbQueryOverload = (table: DbTables) => {
                   `SELECT SUM(${columnToBeSummed}) FROM ${table} WHERE ${column} = $1`,
                   [value]
                 );
+
+                console.log(`SELECT SUM(${columnToBeSummed}) FROM ${table} WHERE ${column} = $1`);
                 // TODO - add where conditions
                 return Number(rows[0].sum);
               } catch (err) {
