@@ -1,18 +1,19 @@
 import { Box, Heading, Spinner, useToast, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router-dom';
+import { FormModeToggler } from './FormModeToggler';
 import { ServerResponse } from '../../../common/types/fetching';
-import { inputFields } from '../../constants';
 import { useAuthContext } from '../../contexts/user/AuthContext';
+import { useFormToast } from '../../hooks/useFormToast';
+import { inputFields } from '../../constants';
+import { InputFields } from './InputFields';
+import { useHistory } from 'react-router-dom';
+import { parseError } from '../../utils/errors';
 import { FormProps } from '../../types/general';
-import { FormData } from '../../types/user';
 import { axiosPOST } from '../../utils/axiosMethods';
-import { generateFormToast } from '../../utils/generateToast';
+import { FormData } from '../../types/user';
+import { useForm } from 'react-hook-form';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import RoutingLink from '../generic/RoutingLink';
-import { FormModeToggler } from './FormModeToggler';
-import { InputFields } from './InputFields';
 
 type Props = Pick<FormProps, 'formMode' | 'setFormMode'>;
 
@@ -22,6 +23,7 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
   const toast = useToast();
   const [loggingIn, setLoggingIn] = useState(false);
   const [loading, setLoading] = useState(false);
+  const formToast = useFormToast();
   const {
     register,
     reset,
@@ -50,7 +52,7 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
       const res = await axiosPOST<ServerResponse>(endpoint, { data });
 
       res.status === 'success' ? setLoggingIn(true) : setLoading(false);
-      toast(generateFormToast(formMode, res));
+      formToast(formMode, res);
 
       // simulating delay
       setTimeout(() => {
