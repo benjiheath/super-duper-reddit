@@ -141,7 +141,7 @@ const PostActionsMenu = (props: PostProps) => {
               </MenuItem>
               <MenuItem
                 variant='primary'
-                _hover={{ bg: 'prim.50', color: 'red', transition: '0.15s' }}
+                _hover={{ bg: '#fff4f4', color: 'red', transition: '0.15s' }}
                 icon={<FaTrash />}
                 onClick={() => {
                   setAlertIsOpen(true);
