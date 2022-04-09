@@ -1,17 +1,18 @@
 require('dotenv').config();
-import express from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
-import { __prod__ } from './constants';
-import session from 'express-session';
-import cookieParser from 'cookie-parser';
-import path from 'path';
-import { config } from './config';
-import history from 'connect-history-api-fallback';
-import { authChecker } from './middleware/authChecker';
-import { postsRouter } from './entities/post/post.routes';
 import { sessionRouter } from './entities/session/session.routes';
+import { errorHandler } from './middleware/error.middleware';
+import { authChecker } from './middleware/auth.middleware';
+import { postsRouter } from './entities/post/post.routes';
 import { userRouter } from './entities/user/user.routes';
+import { __prod__ } from './constants';
+import { config } from './config';
+import cookieParser from 'cookie-parser';
+import history from 'connect-history-api-fallback';
+import session from 'express-session';
+import express from 'express';
+import morgan from 'morgan';
+import cors from 'cors';
+import path from 'path';
 
 const app = express();
 const PostgreSqlStore = require('connect-pg-simple')(session);
@@ -58,6 +59,8 @@ app.use(authChecker);
 app.use('/api/session', sessionRouter);
 app.use('/api/user', userRouter);
 app.use('/api/posts', postsRouter);
+
+app.use(errorHandler);
 
 app.use(history());
 

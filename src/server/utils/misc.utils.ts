@@ -1,7 +1,10 @@
+import { RequestHandler } from 'express';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 import { DatabaseError } from 'pg';
-import { CommentsColumn, DbComment, DbPost, PostsColumn, UserColumn } from '../types/dbTypes';
+import { Query } from 'react-query';
+import { PostsColumn, CommentsColumn, UserColumn, DbPost, DbComment } from '../database/database.types';
+import { SrRequestHandler } from '../types/utils';
 
 export const getTimeAgo = (date: string) => {
   const dateISO = new Date(Date.parse(date)).toISOString();
@@ -32,7 +35,7 @@ type WhereCondition = { column: PostsColumn | CommentsColumn | UserColumn; value
 export const stringifySQLWhereCondition = <A>(options: WhereCondition) =>
   `WHERE ${options.column} = '${options.value}'`;
 
-export const asyncMap = async <T, U>(list: T[], callback: (item: T) => Promise<T>) => {
+export const mapAsync = async <A, B>(list: B[], callback: (item: B) => Promise<A extends B ? B : A>) => {
   const result = await Promise.all(list.map(callback));
 
   return result;
@@ -58,3 +61,9 @@ export const append = (string1: string) => {
 };
 
 export const getFirstElement = <A>(list: A[]) => list[0];
+
+export const asyncWrap =
+  <A, B = Query>(fn: SrRequestHandler<A, B>): RequestHandler =>
+  (req, res, next) => {
+    fn(req, res, next).catch(next);
+  };

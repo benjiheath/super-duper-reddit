@@ -1,54 +1,13 @@
 import express, { RequestHandler } from 'express';
-import { dbUsers } from '../../utils/dbQueries';
-import { FieldError } from '../../utils/errors';
-import bcrypt from 'bcrypt';
+import { LoginRequest } from '../../database/database.types';
+import { asyncWrap } from './../../utils/misc.utils';
+import { sessionService } from './session.service';
 
-const sendSessionStatus: RequestHandler = async (req, res, _) => {
-  try {
-    req.session.userID
-      ? res.status(200).send({ auth: true, userId: req.session.userID })
-      : res.status(200).send({ auth: false, userId: null });
-  } catch (err) {
-    console.error(err);
-  }
-};
+const login = asyncWrap<LoginRequest, any>(async (req, res) => {
+  const authenticatedUser = await sessionService.login(req);
 
-const login: RequestHandler = async (req, res, _): Promise<void> => {
-  try {
-    const { username, password } = req.body;
-
-    const { id: userId, password: hashedPassword } = await dbUsers
-      .findValues(['id', 'password'])
-      .where('username')
-      .equals(username);
-
-    const match = await bcrypt.compare(password, hashedPassword!);
-    if (match) {
-      req.session.userID = userId;
-      req.session.username = username;
-      res.status(200).send({
-        status: 'success',
-        auth: true,
-        userId,
-      });
-    } else {
-      res.status(200).send({
-        status: 'fail',
-        message: 'Invalid password',
-        errors: [
-          {
-            field: 'password',
-            message: 'Invalid password',
-          },
-        ],
-      });
-    }
-  } catch (error) {
-    if (error instanceof FieldError) {
-      res.status(200).send(error.info);
-    }
-  }
-};
+  res.status(200).send({ status: 'success', userId: authenticatedUser.id });
+});
 
 const logout: RequestHandler = async (req, res, _): Promise<void> => {
   req.session.destroy(() => {
@@ -58,7 +17,6 @@ const logout: RequestHandler = async (req, res, _): Promise<void> => {
 
 const router = express.Router();
 
-router.get('/', sendSessionStatus);
 router.post('/', login);
 router.delete('/', logout);
 

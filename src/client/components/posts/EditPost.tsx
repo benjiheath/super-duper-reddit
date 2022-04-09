@@ -11,6 +11,7 @@ import { CreatePostFields } from '../../types/posts';
 import CreateOrEditPostForm from './CreateOrEditPostForm';
 
 const EditPost = () => {
+  // ............ TODO.........FIX if you edit a different post, 'saved changes' still load from the other post... kms
   const { setResponseError, username, userId } = useAuthContext();
   const { postSlugs } = useParams() as { postSlugs: string };
   const { data: post, isLoading, error } = usePostQuery({ postSlugs });
@@ -63,7 +64,7 @@ const EditPost = () => {
 
   const onSubmit = async (data: CreatePostFields): Promise<void> => {
     const emptyFieldsNullified = _.mapValues(data, (value) => (value?.length === 0 ? null : value));
-    const newPostData = { creatorUserId: userId, creatorUsername: username, ...emptyFieldsNullified };
+    const newPostData = { userId, username, ...emptyFieldsNullified };
 
     try {
       await editPostMutation({ ...newPostData, postSlugs });

@@ -1,3 +1,4 @@
+import { DbColumnType } from '../../server/database/database.types';
 import { PostType } from './entities';
 
 export type Endpoint =
@@ -15,18 +16,18 @@ export type Endpoint =
 
 type Auth = { auth: boolean };
 
-export type FieldErrorData = { field: string; message: string };
+export type FieldError = { field: DbColumnType; message: string };
 
 export interface FieldErrorResponse {
   message: string;
-  errors: FieldErrorData[];
+  errors: FieldError[];
 }
 
-export type RegisterResponse = StatusAndMessage & { errors?: FieldErrorData[] };
+export type RegisterResponse = StatusAndMessage & { errors?: FieldError[] };
 
-export type LoginResponse = StatusAndMessage & Auth & { errors?: FieldErrorData[] };
+export type LoginResponse = StatusAndMessage & Auth & { errors?: FieldError[] };
 
-export type RecoveryResponse = StatusAndMessage & { sentTo: string } & { error?: FieldErrorData };
+export type RecoveryResponse = StatusAndMessage & { sentTo: string } & { error?: FieldError };
 
 export type PwResetResponse = StatusAndMessage & { username: string };
 
@@ -38,8 +39,8 @@ export interface StatusAndMessage {
 }
 
 export interface ServerResponse extends StatusAndMessage {
-  errors?: FieldErrorData[];
-  error?: FieldErrorData;
+  errors?: FieldError[];
+  error?: FieldError;
   auth?: boolean;
   sentTo?: string;
   username?: string;

@@ -1,31 +1,79 @@
-import { DbUser, UpdateUserRequest, UserColumn } from './../../types/dbTypes';
-import { CreateDbUserDto } from '../../database/database.types';
-import { databaseService, DatabaseService } from './../../database/database.service';
+import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
+import { SrError, SrErrorType } from '../../../common/utils/errors';
+import { DatabaseService, databaseService } from '../../database/database.service';
+import { UserColumn } from '../../database/database.types';
+import { sendRecEmail_test, generateReoveryEmailLink } from '../../utils/sendRecEmail_test';
+import { SessionService, sessionService } from '../session/session.service';
+import {
+  CreateDbUserDto,
+  DbUser,
+  ForgotPasswordRequest,
+  GetUserDto,
+  UpdateUserRequest,
+  PasswordResetDto,
+} from './user.types';
 
 export class UserService {
   constructor(private databaseService: DatabaseService) {}
 
+  async registerUser(request: CreateDbUserDto): Promise<DbUser> {
+    const { password } = request;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    return await this.createUser({ ...request, password: hashedPassword });
+  }
+
+  async handleForgotPassword(request: ForgotPasswordRequest): Promise<string> {
+    // TODO updateUser needs to take username/email too
+    const [[idType, id]] = Object.entries(request);
+    const resetPwToken = uuidv4();
+    const updatedUser = await this.updateUser(id, { resetPwToken });
+
+    await sendRecEmail_test(updatedUser.email, generateReoveryEmailLink(resetPwToken));
+
+    return updatedUser.email;
+  }
+
   async createUser(request: CreateDbUserDto): Promise<DbUser> {
-    const { username, password, email } = request;
-    return await this.databaseService.createUser({ username, password, email });
+    await this.checkUserIdentifiers(request);
+    return await this.databaseService.createUser(request);
   }
 
-  async getUser(usernameOrId: string): Promise<DbUser> {
-    return await this.databaseService.getUser(usernameOrId);
+  async getUser(identifier: GetUserDto): Promise<DbUser> {
+    const dbUser = await this.databaseService.getUser(identifier);
+
+    if (!dbUser) {
+      throw new SrError({ type: SrErrorType.AccountNotFound, fields: ['username'] });
+    }
+
+    return dbUser;
   }
 
-  async getUserValue(usernameOrId: string, value: UserColumn): Promise<Partial<DbUser>> {
-    return await this.databaseService.getUserValue(usernameOrId, value);
+  async getUserValues(usernameOrId: string, values: UserColumn | UserColumn[]): Promise<Partial<DbUser>> {
+    return await this.databaseService.getUserValues(usernameOrId, values);
+  }
+
+  async checkUserIdentifiers(request: Partial<CreateDbUserDto>) {
+    const alreadyExistingIdentifiers = await this.databaseService.checkUserIdentifiers(request);
+
+    if (alreadyExistingIdentifiers) {
+      throw new SrError({
+        type: SrErrorType.UserIdentifierAlreadyExists,
+        fields: alreadyExistingIdentifiers,
+      });
+    }
   }
 
   async updateUser(userId: string, request: UpdateUserRequest): Promise<DbUser> {
     const { username, email, password, resetPwToken } = request;
 
-    const dbUser = await this.databaseService.getUser(userId);
-
+    const dbUser = await this.databaseService.getUser({ id: userId });
     if (!dbUser) {
-      //throw err
+      throw new SrError({ type: SrErrorType.AccountNotFound });
     }
+
+    await this.checkUserIdentifiers(request);
 
     return this.databaseService.updateUser(userId, {
       username: username ?? dbUser.username,
@@ -33,6 +81,24 @@ export class UserService {
       password: password ?? dbUser.password,
       reset_pw_token: resetPwToken ?? dbUser.reset_pw_token,
     });
+  }
+
+  async checkUserResetPasswordTokenValidity(token: string): Promise<void> {
+    const dbToken = await this.databaseService.checkUserResetPasswordToken(token);
+
+    if (!dbToken) {
+      throw new SrError({ type: SrErrorType.InvalidToken });
+    }
+  }
+
+  async resetPassword(request: PasswordResetDto): Promise<DbUser> {
+    const { password, token } = request;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const dbUser = await this.databaseService.getUser({ reset_pw_token: token });
+    const updatedUser = this.updateUser(dbUser.id, { password: hashedPassword });
+    await this.databaseService.deleteUserResetPasswordToken(token);
+    return updatedUser;
   }
 }
 

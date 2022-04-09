@@ -67,11 +67,12 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
           setLoading(false);
         }
       }, 2000);
-
-      // set field errors from err objects in response
-      res.errors?.forEach(({ field, message }) => setError(field, { message }));
     } catch (err) {
-      setResponseError(err);
+      setLoading(false);
+      const { fieldErrors } = parseError(err);
+      fieldErrors
+        ? fieldErrors.forEach(({ field, message }) => setError(field, { message }))
+        : setResponseError(err);
     }
   };
 
