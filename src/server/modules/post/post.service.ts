@@ -139,5 +139,3 @@ export class PostService {
     return nestComments(comments);
   }
 }
-
-export const postService = new PostService(databaseService);

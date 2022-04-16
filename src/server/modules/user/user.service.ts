@@ -1,18 +1,17 @@
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import { SrError, SrErrorType } from '../../../common/utils/errors';
-import { DatabaseService, databaseService } from '../../database/database.service';
-import { UserColumn } from '../../database/database.types';
-import { sendRecEmail_test, generateReoveryEmailLink } from '../../utils/sendRecEmail_test';
-import { SessionService, sessionService } from '../session/session.service';
+import { DatabaseService } from '../../database/database.service';
 import {
   CreateDbUserDto,
   DbUser,
   ForgotPasswordRequest,
   GetUserDto,
-  UpdateUserRequest,
   PasswordResetDto,
-} from './user.types';
+  EditDbUserDto,
+  UserColumn,
+} from '../../database/database.types';
+import { sendRecEmail_test, generateReoveryEmailLink } from '../../utils/sendRecEmail_test';
 
 export class UserService {
   constructor(private databaseService: DatabaseService) {}
@@ -65,7 +64,7 @@ export class UserService {
     }
   }
 
-  async updateUser(userId: string, request: UpdateUserRequest): Promise<DbUser> {
+  async updateUser(userId: string, request: EditDbUserDto): Promise<DbUser> {
     const { username, email, password, resetPwToken } = request;
 
     const dbUser = await this.databaseService.getUser({ id: userId });
@@ -79,7 +78,7 @@ export class UserService {
       username: username ?? dbUser.username,
       email: email ?? dbUser.email,
       password: password ?? dbUser.password,
-      reset_pw_token: resetPwToken ?? dbUser.reset_pw_token,
+      resetPwToken: resetPwToken ?? dbUser.resetPwToken,
     });
   }
 
@@ -95,11 +94,9 @@ export class UserService {
     const { password, token } = request;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const dbUser = await this.databaseService.getUser({ reset_pw_token: token });
+    const dbUser = await this.databaseService.getUser({ resetPwToken: token });
     const updatedUser = this.updateUser(dbUser.id, { password: hashedPassword });
     await this.databaseService.deleteUserResetPasswordToken(token);
     return updatedUser;
   }
 }
-
-export const userService = new UserService(databaseService);
