@@ -30,14 +30,15 @@ export class Config {
     this.port = Number(env.PORT) || 3000;
 
     this.pg = {
-      conString: process.env.DB_CONSTRING ?? 'postgres://postgres:pass@localhost:5433/srdb',
+      conString: this.env.DB_CONSTRING ?? 'postgres://postgres:pass@localhost:5433/srdb',
       poolConfig: {
-        user: process.env.DB_USER ?? 'postgres',
-        password: (process.env.DB_PASSWORD as string) ?? 'pass',
-        host: process.env.DB_HOST ?? 'localhost',
-        port: Number(process.env.DB_PORT) ?? 5433,
-        database: process.env.DB_DATABASE ?? 'srdb',
-        ssl: { rejectUnauthorized: !this.isProd },
+        user: this.env.DB_USER ?? 'postgres',
+        password: (this.env.DB_PASSWORD as string) ?? 'pass',
+        host: this.env.DB_HOST ?? 'localhost',
+        // port: 5433,
+        port: Number(this.env.DB_PORT) || 5433,
+        database: this.env.DB_DATABASE ?? 'srdb',
+        ssl: this.isProd && { rejectUnauthorized: false },
       },
     };
 

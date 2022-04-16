@@ -1,8 +1,7 @@
 import express from 'express';
 import { CreateDbUserDto, ForgotPasswordRequest, PasswordResetRequest } from '../../database/database.types';
+import { userService, sessionService } from '../../main';
 import { asyncWrap } from '../../utils/misc.utils';
-import { sessionService } from '../session/session.service';
-import { userService } from './user.service';
 
 declare module 'express-session' {
   interface SessionData {

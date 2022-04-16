@@ -1,7 +1,7 @@
 import express, { RequestHandler } from 'express';
 import { LoginRequest } from '../../database/database.types';
+import { sessionService } from '../../main';
 import { asyncWrap } from '../../utils/misc.utils';
-import { sessionService } from './session.service';
 
 const login = asyncWrap<LoginRequest, any>(async (req, res) => {
   const authenticatedUser = await sessionService.login(req);

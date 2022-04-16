@@ -1,5 +1,4 @@
 import { asyncWrap } from '../../utils/misc.utils';
-import { postService } from './post.service';
 import express from 'express';
 import {
   UpdateCommentsVotesRequest,
@@ -11,6 +10,7 @@ import {
   EditPostRequest,
   GetPostRequest,
 } from '../../database/database.types';
+import { postService } from '../../main';
 
 const servePosts = asyncWrap(async (req, res) => {
   const posts = await postService.getFormedPosts(req.session.userID!);

@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { pool } from './pg';
 import { Pool, QueryResult } from 'pg';
 import { LooseObject } from '../types/utils';
 import { parseColumnAndValue } from './database.utils';
@@ -431,5 +430,3 @@ export class DatabaseService {
     );
   }
 }
-
-export const databaseService = new DatabaseService(pool);
