@@ -63,7 +63,8 @@ export const append = (string1: string) => {
 export const getFirstElement = <A>(list: A[]) => list[0];
 
 export const asyncWrap =
-  <A, B = Query>(fn: SrRequestHandler<A, B>): RequestHandler =>
+  <A, B = Query>(fn: SrRequestHandler<A, B>): SrRequestHandler<A, B> =>
   (req, res, next) => {
-    fn(req, res, next).catch(next);
+    //TODO find workaround to using Promise.resolve
+    Promise.resolve(fn(req, res, next)).catch(next);
   };

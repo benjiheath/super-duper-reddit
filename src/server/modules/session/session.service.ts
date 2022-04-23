@@ -1,16 +1,16 @@
 import bcrypt from 'bcrypt';
 import { Request } from 'express';
-import { RequestWithBody } from '../../types/utils';
-import { DbUser, LoginRequest } from '../../database/database.types';
 import { SrError, SrErrorType } from '../../../common/utils/errors';
-import { userService } from '../../main';
 import { DatabaseService } from '../../database/database.service';
+import { DbUser, LoginRequest } from '../../database/database.types';
+import { userService } from '../../main';
+import { SrRequest } from '../../types/utils';
 import { UserService } from '../user/user.service';
 
 export class SessionService {
   constructor(private databaseService: DatabaseService, private userService: UserService) {}
 
-  async authenticateUser(req: Request | RequestWithBody<unknown>, userId: string): Promise<void> {
+  async authenticateUser(req: Request | SrRequest<unknown>, userId: string): Promise<void> {
     const { username } = await userService.getUserValues(userId, 'username');
 
     if (!username) {

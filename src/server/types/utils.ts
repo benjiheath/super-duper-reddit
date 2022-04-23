@@ -17,10 +17,7 @@ export type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<
   }[Keys];
 
 export type SrRequestHandler<A, B = Query> = RequestHandler<LooseObject, {}, A, B>;
-
-export type SrRequestHandlerWithQuery<A, B = any> = RequestHandler<LooseObject, {}, A, B>;
-
-export interface RequestWithBody<A> extends Omit<Request, 'body'> {
+export interface SrRequest<A = any> extends Omit<Request, 'body'> {
   session: { userID: string; username: string };
   body: A;
 }

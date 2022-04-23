@@ -17,7 +17,7 @@ const servePosts = asyncWrap(async (req, res) => {
   res.status(200).send(posts);
 });
 
-const servePost = asyncWrap<any, GetPostRequest>(async (req, res) => {
+const servePost = asyncWrap<undefined, GetPostRequest>(async (req, res) => {
   const post = await postService.getFormedPost({
     userId: req.session.userID!,
     postSlugs: req.query.postSlugs,
