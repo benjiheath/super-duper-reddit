@@ -171,7 +171,7 @@ export interface UpdateCommentVotesDto {
 }
 export interface PasswordResetDto {
   token: string;
-  password: string;
+  newPassword: string;
 }
 
 export type GetUserDto = RequireOnlyOne<Omit<DbUser, 'createdAt'>>;

@@ -91,8 +91,8 @@ export class UserService {
   }
 
   async resetPassword(request: PasswordResetDto): Promise<DbUser> {
-    const { password, token } = request;
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const { newPassword, token } = request;
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     const dbUser = await this.databaseService.getUser({ resetPwToken: token });
     const updatedUser = this.updateUser(dbUser.id, { password: hashedPassword });

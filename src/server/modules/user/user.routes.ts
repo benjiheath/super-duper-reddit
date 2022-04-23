@@ -13,7 +13,6 @@ declare module 'express-session' {
 const register = asyncWrap<CreateDbUserDto, any>(async (req, res) => {
   const { id: userId } = await userService.registerUser(req.body);
   await sessionService.authenticateUser(req, userId);
-
   res.status(201).send({ status: 'success', userId });
 });
 
@@ -30,11 +29,9 @@ const checkResetPasswordToken = asyncWrap(async (req, res) => {
 });
 
 const resetPassword = asyncWrap<PasswordResetRequest, any>(async (req, res) => {
-  const { token } = req.params;
-  const { newPassword } = req.body;
+  const [{ token }, { newPassword }] = [req.params, req.body];
 
-  const updatedUser = await userService.resetPassword({ token, password: newPassword });
-
+  const updatedUser = await userService.resetPassword({ token, newPassword });
   await sessionService.authenticateUser(req, updatedUser.id);
 
   res.status(200).send({ status: 'success', username: updatedUser.username });
