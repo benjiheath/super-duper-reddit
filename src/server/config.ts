@@ -35,7 +35,6 @@ export class Config {
         user: this.env.DB_USER ?? 'postgres',
         password: (this.env.DB_PASSWORD as string) ?? 'pass',
         host: this.env.DB_HOST ?? 'localhost',
-        // port: 5433,
         port: Number(this.env.DB_PORT) || 5433,
         database: this.env.DB_DATABASE ?? 'srdb',
         ssl: this.isProd && { rejectUnauthorized: false },

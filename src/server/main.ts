@@ -37,8 +37,6 @@ const main = (config: Config) => {
   app.use(express.json());
   app.use(express.urlencoded());
 
-  // app.use(authMiddleware);
-
   app.use('/api/session', sessionRouter);
   app.use('/api/user', userRouter);
   app.use('/api/posts', authMiddleware, postsRouter);
