@@ -10,8 +10,8 @@ export const updateCommentVotesMutation = async (payload: { commentId: string; v
 export interface AddCommentMutationPayload {
   body: string;
   postId: string;
-  creatorUserId: string;
-  creatorUsername: string;
+  userId: string;
+  username: string;
   parentCommentId: string | null;
 }
 
@@ -22,15 +22,15 @@ export const addFavoriteMutation = async (postId: string) =>
   await axiosPOST<AddFavoriteMutationResponse>('posts/favorites', { data: { postId } });
 
 export interface CreatePostMutationPayload {
-  creatorUserId: string;
-  creatorUsername: string;
+  userId: string;
+  username: string;
   title: string;
   body: string | null;
   contentUrl: string | null;
 }
 
 export const createPostMutation = async (payload: CreatePostMutationPayload) =>
-  await axiosPOST<PostType>('posts', { data: payload });
+  await axiosPOST<string>('posts', { data: payload });
 
 export interface EditPostPayload {
   title: string | null;

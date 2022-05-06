@@ -22,6 +22,10 @@ const CreatePost = () => {
   } = useForm();
   const [isDirty, setIsDirty] = React.useState(false); // temp workaround for reset btn (currently can't rely on formState's isDirty)
 
+  if (!userId || !username) {
+    return null;
+  }
+
   React.useEffect(() => {
     const subscription = watch((value) => {
       const changesHaveBeenMade = !Object.values(value).every((v) => v === '');
@@ -56,10 +60,10 @@ const CreatePost = () => {
   }, []);
 
   const onSubmit = async (data: CreatePostFields): Promise<void> => {
-    const newPostData = { creatorUserId: userId!, creatorUsername: username!, ...data };
+    const newPostData = { userId, username, ...data };
 
     try {
-      const post = await createPostMutation(newPostData);
+      const newPostSlugs = await createPostMutation(newPostData);
 
       toast({
         position: 'top',
@@ -69,7 +73,7 @@ const CreatePost = () => {
         variant: 'srSuccess',
       });
 
-      history.push({ pathname: `${post.urlSlugs}` });
+      history.push({ pathname: `${newPostSlugs}` });
     } catch (err) {
       setResponseError(err);
     }

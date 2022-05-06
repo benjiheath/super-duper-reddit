@@ -1,21 +1,21 @@
-import { pool } from '../db';
-import { NumericProps } from '../types/misc';
 import {
   DbTables,
-  DbUser,
   UserColumn,
-  DbPost,
   PostsColumn,
-  DbComment,
   CommentsColumn,
-  DbPostFavorite,
   PostsFavoriteColumn,
-  DbPostVote,
   PostsVoteColumn,
-  DbCommentVote,
   CommentsVoteColumn,
-} from './../types/dbTypes';
-import { append } from './../utils/misc';
+  DbComment,
+  DbCommentVote,
+  DbPost,
+  DbPostFavorite,
+  DbPostVote,
+  DbUser,
+} from '../database/database.types';
+import { pool } from '../database/pg';
+import { NumericProps } from '../types/utils';
+import { append } from './misc.utils';
 
 interface GoOptions {
   returnAllRows?: boolean;

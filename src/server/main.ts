@@ -1,69 +1,57 @@
 require('dotenv').config();
-import express from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
+import { DatabaseService } from './database/database.service';
+import { sessionRouter } from './modules/session/session.routes';
+import { authMiddleware } from './middleware/auth.middleware';
+import { SessionService } from './modules/session/session.service';
+import { errorHandler } from './middleware/error.middleware';
+import { postsRouter } from './modules/post/post.routes';
+import { PostService } from './modules/post/post.service';
+import { UserService } from './modules/user/user.service';
+import { userRouter } from './modules/user/user.routes';
 import { __prod__ } from './constants';
-import session from 'express-session';
+import { Config } from './config';
+import { Pool } from 'pg';
 import cookieParser from 'cookie-parser';
-import path from 'path';
-import { postsRouter, sessionRouter, userRouter } from './routes';
-import { config } from './config';
 import history from 'connect-history-api-fallback';
-import { authChecker } from './handlers/middleware/authChecker';
+import session from 'express-session';
+import express from 'express';
+import morgan from 'morgan';
+import cors from 'cors';
+import path from 'path';
 
-const app = express();
-const PostgreSqlStore = require('connect-pg-simple')(session);
+export const config = new Config(process.env);
+export const pool = new Pool(config.pg.poolConfig);
+export const databaseService = new DatabaseService(pool);
+export const userService = new UserService(databaseService);
+export const postService = new PostService(databaseService);
+export const sessionService = new SessionService(databaseService, userService);
 
-const corsOptions =
-  process.env.NODE_ENV === 'production'
-    ? { credentials: true }
-    : {
-        origin: config.urls.client,
-        methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'DELETE', 'PATCH'],
-        credentials: true,
-      };
+const main = (config: Config) => {
+  const app = express();
 
-app.use(cors(corsOptions));
+  app.use(cors(config.corsOptions));
+  app.enable('trust proxy');
+  app.use(session(config.sessionOptions));
+  app.use(cookieParser());
+  app.use(morgan('dev'));
+  app.use(express.json());
+  app.use(express.urlencoded());
 
-app.enable('trust proxy');
+  app.use('/api/session', sessionRouter);
+  app.use('/api/user', userRouter);
+  app.use('/api/posts', authMiddleware, postsRouter);
 
-app.use(
-  session({
-    store: new PostgreSqlStore({
-      conString: config.pg.conString,
-    }),
-    secret: config.esCookieSecret,
-    resave: false,
-    cookie: {
-      maxAge: 24 * 60 * 60 * 1000,
-      path: '/',
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    }, // 1 day
-    saveUninitialized: false,
-    proxy: process.env.NODE_ENV === 'production' ? true : undefined,
-  })
-);
+  app.use(errorHandler);
 
-app.use(cookieParser());
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded());
+  app.use(history());
 
-app.use(authChecker);
+  if (config.isProd) {
+    app.use(express.static(path.join(__dirname, '../client')));
+  }
 
-// Routes
-app.use('/api/session', sessionRouter);
-app.use('/api/user', userRouter);
-app.use('/api/posts', postsRouter);
+  app.listen(config.port, () => {
+    console.log(`listening on port ${config.port}`);
+  });
+};
 
-app.use(history());
-
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client')));
-}
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`listening on port ${PORT}`);
-});
+main(config);

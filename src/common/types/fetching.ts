@@ -1,3 +1,4 @@
+import { DbColumnType } from '../../server/database/database.types';
 import { PostType } from './entities';
 
 export type Endpoint =
@@ -15,18 +16,18 @@ export type Endpoint =
 
 type Auth = { auth: boolean };
 
-export type FieldErrorData = { field: string; message: string };
+export type FieldError = { field: DbColumnType; message: string };
 
 export interface FieldErrorResponse {
   message: string;
-  errors: FieldErrorData[];
+  errors: FieldError[];
 }
 
-export type RegisterResponse = StatusAndMessage & { errors?: FieldErrorData[] };
+export type RegisterResponse = StatusAndMessage & { errors?: FieldError[] };
 
-export type LoginResponse = StatusAndMessage & Auth & { errors?: FieldErrorData[] };
+export type LoginResponse = StatusAndMessage & Auth & { errors?: FieldError[] };
 
-export type RecoveryResponse = StatusAndMessage & { sentTo: string } & { error?: FieldErrorData };
+export type RecoveryResponse = StatusAndMessage & { sentTo: string } & { error?: FieldError };
 
 export type PwResetResponse = StatusAndMessage & { username: string };
 
@@ -37,20 +38,12 @@ export interface StatusAndMessage {
   message?: string;
 }
 
-export interface ServerResponse extends StatusAndMessage {
-  errors?: FieldErrorData[];
-  error?: FieldErrorData;
-  auth?: boolean;
-  sentTo?: string;
-  username?: string;
-  userId?: string | null;
-  post?: PostType;
-  posts?: PostType[];
-  updatedUserFavoriteStatus?: boolean;
+export interface ServerResponse<A> {
+  status?: 'fail' | 'success';
+  errors?: FieldError[];
+  error?: FieldError;
+  data?: A;
 }
-
-export type PostResponse = { post: PostType };
-export type PostsResponse = { posts: PostType[] };
 
 export interface GetPostsResponse {
   posts: PostType[];

@@ -22,14 +22,18 @@ const CommentBox = (props: CommentBoxProps) => {
     formState: { errors, isValid, isSubmitting },
   } = useForm({ mode: 'onChange' });
 
+  if (!username || !userId) {
+    return null;
+  }
+
   const addCommentMutation = useAddCommentMutation({ postSlugs });
 
   const onSubmit = async (data: CreateCommentFields): Promise<void> => {
     const newCommentData = {
       body: data.body,
       postId,
-      creatorUserId: userId!,
-      creatorUsername: username!,
+      userId,
+      username,
       parentCommentId: parentCommentId ?? null,
     };
 

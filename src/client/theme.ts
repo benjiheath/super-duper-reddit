@@ -113,6 +113,7 @@ export const theme = extendTheme({
     },
     Button: {
       baseStyle: {
+        transition: '0.15s',
         color: 'white',
         _disabled: {
           cursor: 'default',

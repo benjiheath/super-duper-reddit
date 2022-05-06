@@ -1,5 +1,4 @@
 import { PostType, CommentType } from '../../common/types/entities';
-import { PostWithComments } from '../../server/types/dbTypes';
 import { Dispatch } from './general';
 
 export interface PostsDispatchers {

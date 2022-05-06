@@ -23,7 +23,7 @@ export interface PostType {
   comments: NestedComment[];
   commentCount: number;
   userVoteStatus: -1 | 1 | null;
-  userFavoriteStatus: boolean;
+  userFavoriteStatus: string | null;
   points: number | null;
 }
 

@@ -86,7 +86,7 @@ const PostCard = (props: PostProps) => {
 };
 
 const Posts = () => {
-  const { data, isLoading, error } = usePostsQuery();
+  const { data, isLoading, error, isFetching, isRefetching } = usePostsQuery();
   const { setResponseError } = useAuthContext();
 
   if (error) {
@@ -94,7 +94,7 @@ const Posts = () => {
     return <span>Error fetching posts</span>;
   }
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return <SrSpinner />;
   }
 

@@ -4,6 +4,24 @@ CREATE EXTENSION "uuid-ossp";
 
 CREATE TYPE normal_or_removed AS ENUM ('normal', 'removed');
 
+CREATE OR REPLACE FUNCTION toggle_favorite(
+    pid uuid, 
+    userid uuid
+) 
+RETURNS NUMERIC AS $$
+BEGIN
+    perform FROM posts_favorites WHERE post_id = pid and user_id = userid;
+    IF NOT FOUND THEN
+        INSERT INTO posts_favorites(post_id, user_id) VALUES(pid, userid);
+        RETURN 1;
+    ELSE
+         DELETE FROM posts_favorites WHERE post_id = pid and user_id = userid;
+        RETURN 0;
+    END IF;
+END;     
+$$
+LANGUAGE plpgsql;
+
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
