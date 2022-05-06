@@ -17,10 +17,11 @@ export class UserService {
   constructor(private databaseService: DatabaseService) {}
 
   async registerUser(request: CreateDbUserDto): Promise<DbUser> {
-    const { password } = request;
-    const hashedPassword = await bcrypt.hash(password, 10);
+    await this.checkUserIdentifiers(request);
 
-    return await this.createUser({ ...request, password: hashedPassword });
+    const hashedPassword = await bcrypt.hash(request.password, 10);
+
+    return await this.databaseService.createUser({ ...request, password: hashedPassword });
   }
 
   async handleForgotPassword(request: ForgotPasswordRequest): Promise<string> {
@@ -32,11 +33,6 @@ export class UserService {
     await sendRecEmail_test(updatedUser.email, generateReoveryEmailLink(resetPwToken));
 
     return updatedUser.email;
-  }
-
-  async createUser(request: CreateDbUserDto): Promise<DbUser> {
-    await this.checkUserIdentifiers(request);
-    return await this.databaseService.createUser(request);
   }
 
   async getUser(identifier: GetUserDto): Promise<DbUser> {

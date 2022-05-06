@@ -3,7 +3,7 @@ import { QueryResult } from 'pg';
 import { createPostSlugs } from '../../../common/utils';
 import { PostType, CommentType } from '../../../common/types';
 import { SrError, SrErrorType } from '../../../common/utils/errors';
-import { DatabaseService, databaseService } from '../../database/database.service';
+import { DatabaseService } from '../../database/database.service';
 import {
   DbPost,
   DbComment,
