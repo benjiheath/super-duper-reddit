@@ -2,6 +2,7 @@ import { Input, useToast, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaArrowLeft } from 'react-icons/fa';
+import { ServerResponse } from '../../../common/types';
 import { useAuthContext } from '../../contexts/user/AuthContext';
 import { RecoveryEmailFormData } from '../../types/user';
 import { axiosPOST } from '../../utils/axiosMethods';
@@ -29,7 +30,9 @@ export default function RecoveryEmailForm() {
     const idType = id.includes('@') ? 'email' : 'username';
 
     try {
-      const res = await axiosPOST('user/account', { data: { [idType]: id } });
+      const res = await axiosPOST<ServerResponse<string>>('user/account', {
+        data: { [idType]: id },
+      });
 
       // TODO need guard clause for atypical/unexpected errors. if so, setResponseError to something generic that CTX can handle, then return
 
@@ -39,14 +42,17 @@ export default function RecoveryEmailForm() {
         setLoading(false);
         return;
       }
-      toast({
-        title: `Email sent to ${obscureEmail(res.sentTo!)}`,
-        status: 'success',
-        duration: 6000,
-        isClosable: true,
-        position: 'top',
-        variant: 'srSuccess',
-      });
+
+      if (res.data) {
+        toast({
+          title: `Email sent to ${obscureEmail(res.data)}`,
+          status: 'success',
+          duration: 6000,
+          isClosable: true,
+          position: 'top',
+          variant: 'srSuccess',
+        });
+      }
     } catch (err) {
       setResponseError(err);
     }

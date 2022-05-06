@@ -1,10 +1,9 @@
 import { FormControl, FormLabel, Heading, Input, useToast, VStack } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
-import { ServerResponse } from '../../../common/types/fetching';
 import { useAuthContext } from '../../contexts/user/AuthContext';
-import { axiosGET, axiosPATCH } from '../../utils/axiosMethods';
+import { axiosPATCH } from '../../utils/axiosMethods';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
 import AlertPop from '../register/AlertPop';
@@ -16,25 +15,6 @@ export default function PasswordResetForm() {
   const [loading, setLoading] = useState(false);
   const history = useHistory();
   const { id: token } = useParams<{ id: string }>();
-
-  useEffect(() => {
-    const checkToken = async () => {
-      const res = await axiosGET<ServerResponse>('user/account', { params: token });
-      if (res.status === 'fail') {
-        toast({
-          title: 'Invalid request. Enter your username or email below to recieve a new reset-link',
-          status: 'warning',
-          duration: 5000,
-          isClosable: true,
-          position: 'top',
-        });
-        setLoading(false);
-        history.push({ pathname: '/reset-password' });
-      }
-    };
-
-    checkToken();
-  }, []);
 
   const {
     register,
@@ -58,7 +38,10 @@ export default function PasswordResetForm() {
     setLoading(true);
 
     try {
-      const res = await axiosPATCH<ServerResponse>('user/account', { data, params: token });
+      const username = await axiosPATCH<string>('user/account', {
+        data,
+        params: token,
+      });
 
       setLoggingIn(true);
 
@@ -72,7 +55,7 @@ export default function PasswordResetForm() {
       });
 
       setTimeout(() => {
-        logIn(res.username!);
+        logIn(username);
         setLoading(false);
         setLoggingIn(false);
         history.push({ pathname: '/' });

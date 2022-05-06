@@ -13,7 +13,7 @@ import {
   DbPostVote,
   DbUser,
 } from '../database/database.types';
-import { pool } from '../database/pg';
+import { pool } from '../main';
 import { NumericProps } from '../types/utils';
 import { append } from './misc.utils';
 

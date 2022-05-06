@@ -1,5 +1,5 @@
+import { config } from './../main';
 import nodemailer from 'nodemailer';
-import { config } from '../config';
 
 export const generateReoveryEmailLink = (token: string) =>
   `<a href='${config.urls.client}/reset-password/${token}' target="_blank">Reset password</a>`;

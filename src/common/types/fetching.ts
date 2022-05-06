@@ -25,7 +25,7 @@ export interface FieldErrorResponse {
 
 export type RegisterResponse = StatusAndMessage & { errors?: FieldError[] };
 
-export type LoginResponse = StatusAndMessage & Auth & { errors?: FieldError[] };
+export type LoginResponse = StatusAndMessage & Auth & { errors?: FieldError[] } & { userId: string };
 
 export type RecoveryResponse = StatusAndMessage & { sentTo: string } & { error?: FieldError };
 

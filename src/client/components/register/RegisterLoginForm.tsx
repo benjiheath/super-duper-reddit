@@ -1,7 +1,7 @@
 import { Box, Heading, Spinner, useToast, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { FormModeToggler } from './FormModeToggler';
-import { ServerResponse } from '../../../common/types/fetching';
+import { LoginResponse, ServerResponse } from '../../../common/types/fetching';
 import { useAuthContext } from '../../contexts/user/AuthContext';
 import { useFormToast } from '../../hooks/useFormToast';
 import { inputFields } from '../../constants';
@@ -49,7 +49,10 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
     try {
       const endpoint = formMode === 'Register' ? 'user' : 'session';
 
-      const res = await axiosPOST<ServerResponse>(endpoint, { data });
+      // todo - use RQ
+      // todo - fix types
+
+      const res = await axiosPOST<LoginResponse>(endpoint, { data });
 
       res.status === 'success' ? setLoggingIn(true) : setLoading(false);
       formToast(formMode, res);
@@ -60,7 +63,7 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
           setLoading(false);
           formMode === 'Register' ? setLoggingIn(false) : setLoggingIn(true);
           logIn(data.username);
-          setUserID(res.userId!);
+          setUserID(res.userId);
           history.push({ pathname: unauthedUrl ?? '/' });
           setUnauthedUrl(null);
         } else {

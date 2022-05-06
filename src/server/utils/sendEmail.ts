@@ -1,4 +1,4 @@
-import { config } from '../config';
+import { config } from '../main';
 
 const sendGridMail = require('@sendgrid/mail');
 sendGridMail.setApiKey(config.sgApiKey);
