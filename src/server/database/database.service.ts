@@ -331,13 +331,14 @@ export class DatabaseService {
     );
   }
 
+  // TODO send toast
   removePost(postId: string): Promise<QueryResult> {
     return this.withConn(
       async (conn) =>
         await conn.query(`
           UPDATE "posts"
-            SET "current_status" = 'removed',
-            WHERE "id" = ${postId}
+            SET "current_status" = 'removed'
+            WHERE "id" = '${postId}'
         `)
     );
   }
