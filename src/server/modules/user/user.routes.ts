@@ -37,11 +37,11 @@ const resetPassword = asyncWrap<PasswordResetRequest, any>(async (req, res) => {
   res.status(200).send({ status: 'success', username: updatedUser.username });
 });
 
-const router = express.Router();
+const userRouter = express.Router();
 
-router.post('/', register);
-router.post('/account', forgotPassword);
-router.get('/account/:token', checkResetPasswordToken);
-router.patch('/account/:token', resetPassword);
+userRouter.post('/', register);
+userRouter.post('/account', forgotPassword);
+userRouter.get('/account/:token', checkResetPasswordToken);
+userRouter.patch('/account/:token', resetPassword);
 
-export { router as userRouter };
+export { userRouter };

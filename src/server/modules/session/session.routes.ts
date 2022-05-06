@@ -15,9 +15,9 @@ const logout: RequestHandler = async (req, res, _): Promise<void> => {
   });
 };
 
-const router = express.Router();
+const sessionRouter = express.Router();
 
-router.post('/', login);
-router.delete('/', logout);
+sessionRouter.post('/', login);
+sessionRouter.delete('/', logout);
 
-export { router as sessionRouter };
+export { sessionRouter };

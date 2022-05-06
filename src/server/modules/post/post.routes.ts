@@ -60,16 +60,16 @@ const removePost = asyncWrap<RemovePostRequest>(async (req, res) => {
   res.status(200).send();
 });
 
-const router = express.Router();
+const postsRouter = express.Router();
 
-router.get('/', servePosts);
-router.get('/post', servePost);
-router.post('/', createPost);
-router.post('/comments', addCommentToPost);
-router.post('/favorites', addFavorite);
-router.patch('/post', editPost);
-router.patch('/votes', updatePostVotes);
-router.patch('/comments/votes', updateCommentVotes);
-router.delete('/', removePost);
+postsRouter.get('/', servePosts);
+postsRouter.get('/post', servePost);
+postsRouter.post('/', createPost);
+postsRouter.post('/comments', addCommentToPost);
+postsRouter.post('/favorites', addFavorite);
+postsRouter.patch('/post', editPost);
+postsRouter.patch('/votes', updatePostVotes);
+postsRouter.patch('/comments/votes', updateCommentVotes);
+postsRouter.delete('/', removePost);
 
-export { router as postsRouter };
+export { postsRouter };
