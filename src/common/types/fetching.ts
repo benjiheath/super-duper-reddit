@@ -38,20 +38,12 @@ export interface StatusAndMessage {
   message?: string;
 }
 
-export interface ServerResponse extends StatusAndMessage {
+export interface ServerResponse<A> {
+  status?: 'fail' | 'success';
   errors?: FieldError[];
   error?: FieldError;
-  auth?: boolean;
-  sentTo?: string;
-  username?: string;
-  userId?: string | null;
-  post?: PostType;
-  posts?: PostType[];
-  updatedUserFavoriteStatus?: boolean;
+  data?: A;
 }
-
-export type PostResponse = { post: PostType };
-export type PostsResponse = { posts: PostType[] };
 
 export interface GetPostsResponse {
   posts: PostType[];

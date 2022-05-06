@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { axiosOptions, apiUrl } from '../constants';
-import { Endpoint, ServerResponse } from './../../common/types/fetching';
+import { Endpoint } from './../../common/types/fetching';
 
-enum AxiosMethods {
+enum HttpMethod {
   GET = 'GET',
   POST = 'POST',
   PATCH = 'PATCH',
@@ -11,12 +11,12 @@ enum AxiosMethods {
 }
 
 interface Options extends AxiosRequestConfig {
-  queries?: { [key: string]: any };
+  queries?: Record<string, any>;
   params?: string;
 }
 
-export const axiosRequest = (method: AxiosMethods) => {
-  const request = async <T = ServerResponse>(endpoint: Endpoint, options?: Options): Promise<T> => {
+export const axiosRequest = (method: HttpMethod) => {
+  const request = async <A = unknown>(endpoint: Endpoint, options?: Options): Promise<A> => {
     const requestUrl = options?.params ? `${apiUrl}/${endpoint}/${options?.params}` : `${apiUrl}/${endpoint}`;
 
     try {
@@ -38,8 +38,8 @@ export const axiosRequest = (method: AxiosMethods) => {
   return request;
 };
 
-export const axiosGET = axiosRequest(AxiosMethods.GET);
-export const axiosPOST = axiosRequest(AxiosMethods.POST);
-export const axiosPATCH = axiosRequest(AxiosMethods.PATCH);
-export const axiosDELETE = axiosRequest(AxiosMethods.DELETE);
-export const axiosPUT = axiosRequest(AxiosMethods.PUT);
+export const axiosGET = axiosRequest(HttpMethod.GET);
+export const axiosPOST = axiosRequest(HttpMethod.POST);
+export const axiosPATCH = axiosRequest(HttpMethod.PATCH);
+export const axiosDELETE = axiosRequest(HttpMethod.DELETE);
+export const axiosPUT = axiosRequest(HttpMethod.PUT);
