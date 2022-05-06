@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { Pool, QueryResult } from 'pg';
-import { LooseObject } from '../types/utils';
+import { stringifyObjValues as stringifyDtoValues } from '../utils/misc.utils';
 import { parseColumnAndValue } from './database.utils';
+import { Pool, QueryResult } from 'pg';
 import {
   AddCommentToPostRequest,
   UpdateCommentVotesDto,
@@ -41,16 +41,8 @@ export class DatabaseService {
     });
   }
 
-  private stringifyDtoValues<A extends LooseObject>(values: A) {
-    return _.mapValues(values, (v) => (typeof v === 'string' ? `'${v}'` : v));
-  }
-
-  private stringifyValue(value: string) {
-    return typeof value === 'string' ? `'${value}'` : value;
-  }
-
   checkInsertion(dto: CreateDbUserDto): Promise<DbUser> {
-    const { username, password, email } = this.stringifyDtoValues(dto);
+    const { username, password, email } = stringifyDtoValues(dto);
 
     return this.withConn(async (conn) =>
       this.getFirst(
@@ -66,7 +58,7 @@ export class DatabaseService {
   }
 
   createUser(dto: CreateDbUserDto): Promise<DbUser> {
-    const { username, password, email } = this.stringifyDtoValues(dto);
+    const { username, password, email } = stringifyDtoValues(dto);
 
     return this.withConn(async (conn) =>
       this.getFirst(
@@ -82,7 +74,7 @@ export class DatabaseService {
   }
 
   checkUserIdentifier(identifier: CheckIdentifierDto): Promise<any> {
-    const [[column, value]] = Object.entries(this.stringifyDtoValues(identifier));
+    const [[column, value]] = Object.entries(stringifyDtoValues(identifier));
 
     return this.withConn(async (conn) =>
       this.getFirst(
@@ -96,7 +88,7 @@ export class DatabaseService {
   }
 
   async checkUserIdentifiers(dto: Partial<CreateDbUserDto>): Promise<IdentifierCheckResult[] | null> {
-    const { username, email } = this.stringifyDtoValues(dto);
+    const { username, email } = stringifyDtoValues(dto);
 
     const result = await this.withConn(async (conn) =>
       this.getFirst(
@@ -237,7 +229,7 @@ export class DatabaseService {
   }
 
   getPost(dto: GetPostDto): Promise<DbPost> {
-    const { userId, postId, postSlugs } = this.stringifyDtoValues(dto);
+    const { userId, postId, postSlugs } = stringifyDtoValues(dto);
     return this.withConn(async (conn) =>
       this.getFirst(
         await conn.query<DbPost>(
@@ -303,7 +295,7 @@ export class DatabaseService {
   }
 
   createPost(dto: CreatePostRequest): Promise<Pick<DbPost, 'id' | 'title'>> {
-    const { userId, username, contentUrl, title, body } = this.stringifyDtoValues(dto);
+    const { userId, username, contentUrl, title, body } = stringifyDtoValues(dto);
     return this.withConn(async (conn) =>
       this.getFirst(
         await conn.query<DbPost>(`
@@ -320,7 +312,7 @@ export class DatabaseService {
   }
 
   editPost(dto: EditPostRequest): Promise<QueryResult> {
-    const { userId, username, contentUrl, title, body, postSlugs } = this.stringifyDtoValues(dto);
+    const { userId, username, contentUrl, title, body, postSlugs } = stringifyDtoValues(dto);
     return this.withConn(
       async (conn) =>
         await conn.query(`
@@ -362,7 +354,7 @@ export class DatabaseService {
   }
 
   updatePostVotes(dto: UpdatePostVotesDto): Promise<QueryResult> {
-    const { voteValue, postId, userId } = this.stringifyDtoValues(dto);
+    const { voteValue, postId, userId } = stringifyDtoValues(dto);
     return this.withConn(
       async (conn) =>
         await conn.query<DbPost>(`
@@ -380,7 +372,7 @@ export class DatabaseService {
   }
 
   updateCommentVotes(dto: UpdateCommentVotesDto): Promise<QueryResult> {
-    const { voteValue, commentId, userId } = this.stringifyDtoValues(dto);
+    const { voteValue, commentId, userId } = stringifyDtoValues(dto);
     return this.withConn(
       async (conn) =>
         await conn.query<DbPost>(`
@@ -408,7 +400,7 @@ export class DatabaseService {
   }
 
   addCommentToPost(dto: AddCommentToPostRequest): Promise<QueryResult> {
-    const { userId, username, parentCommentId, body, postId } = this.stringifyDtoValues(dto);
+    const { userId, username, parentCommentId, body, postId } = stringifyDtoValues(dto);
     return this.withConn(
       async (conn) =>
         await conn.query<DbPost>(`

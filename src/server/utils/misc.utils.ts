@@ -1,10 +1,8 @@
-import { RequestHandler } from 'express';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
-import { DatabaseError } from 'pg';
 import { Query } from 'react-query';
-import { PostsColumn, CommentsColumn, UserColumn, DbPost, DbComment } from '../database/database.types';
-import { SrRequestHandler } from '../types/utils';
+import { DbComment, DbPost } from '../database/database.types';
+import { LooseObject, SrRequestHandler } from '../types/utils';
 
 export const getTimeAgo = (date: string) => {
   const dateISO = new Date(Date.parse(date)).toISOString();
@@ -15,25 +13,16 @@ export const getTimeAgo = (date: string) => {
   return rel as string;
 };
 
-export const createSQLWhereConditionsFromList = <T>(
-  list: T[],
-  column: PostsColumn | CommentsColumn | UserColumn,
-  value: keyof T,
-  operator: 'OR' | 'AND' = 'OR'
-) => {
-  const operatorWithSpace = `${operator} `;
+export const stringifyValue = (value: string) => (typeof value === 'string' ? `'${value}'` : value);
 
-  const conditions = list
-    .map((item, idx) => `${idx !== 0 ? operatorWithSpace : ''}${column} = '${item[value]}'`)
-    .join(' ');
+export const stringifyObjValues = <A extends LooseObject>(values: A) =>
+  _.mapValues(values, (v) => (typeof v === 'string' ? `'${v}'` : v));
 
-  return conditions;
+export const parseColumnAndValue = (obj: LooseObject) => {
+  const [[column, rawValue]] = Object.entries(obj);
+  const value = stringifyValue(rawValue);
+  return { column, value };
 };
-
-type WhereCondition = { column: PostsColumn | CommentsColumn | UserColumn; value: string };
-
-export const stringifySQLWhereCondition = <A>(options: WhereCondition) =>
-  `WHERE ${options.column} = '${options.value}'`;
 
 export const mapAsync = async <A, B>(list: B[], callback: (item: B) => Promise<A extends B ? B : A>) => {
   const result = await Promise.all(list.map(callback));
@@ -46,21 +35,9 @@ export const sanitizeKeys = <T extends DbPost | DbComment>(postOrComment: T): T 
   return camelCased as unknown as T;
 };
 
-export const getFieldErrorInfoFromDbError = (err: DatabaseError) => {
-  if (!err.detail) {
-    throw new Error(`Error parsing info from DbError. The 'detail' property does not exist on the object`);
-  }
-  const field = err.detail.substring(5, err.detail.indexOf(')'));
-  const message = `Sorry, that ${field} is already taken`;
-
-  return { field, message };
-};
-
 export const append = (string1: string) => {
   return { with: (string2: string) => string1.concat(` ${string2}`) };
 };
-
-export const getFirstElement = <A>(list: A[]) => list[0];
 
 export const asyncWrap =
   <A, B = Query>(fn: SrRequestHandler<A, B>): SrRequestHandler<A, B> =>
