@@ -11,10 +11,12 @@ export const useFormToast = () => {
     }
 
     const toastOptions: UseToastOptions = {
+      position: 'top',
       title: formMode === 'Login' ? 'Logging you in ...' : 'Registered!',
       status: 'success',
       duration: formMode === 'Login' ? 1500 : 3000,
       isClosable: true,
+      variant: 'srSuccess',
     };
 
     return toast(toastOptions);
