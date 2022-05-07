@@ -1,4 +1,10 @@
-import { CreatePostMutationPayload } from '../fetching/mutations';
+import { CreatePostMutationPayload } from '../fetchers/mutations';
+
+export interface RegisterLoginMutationVariables {
+  username: string;
+  password: string;
+  email?: string;
+}
 
 export interface EditPostMutationVariables {
   postSlugs: string;

@@ -1,10 +1,13 @@
+import { RegisterLoginMutationVariables } from './../types/mutations';
 import {
   addCommentMutation,
   AddCommentMutationPayload,
   addFavoriteMutation,
+  loginMutation,
+  registerMutation,
   updateCommentVotesMutation,
   updatePostVotesMutation,
-} from '../fetching/mutations';
+} from '../fetchers/mutations';
 import {
   UpdateCommentVotesMutationVariables,
   UpdatePostVotesMutationVariables,
@@ -14,6 +17,11 @@ import { AddCommentMutationVariables } from '../types/mutations';
 import { getPostBaseKey, getPostsBaseKey } from './queries';
 import { useMutation, useQueryClient } from 'react-query';
 import { PostType } from '../../common/types/entities';
+
+export const useRegisterLogin = () =>
+  useMutation((variables: RegisterLoginMutationVariables) =>
+    variables.email ? registerMutation(variables) : loginMutation(variables)
+  );
 
 export const useUpdatePostVotesMutation = (variables: UpdatePostVotesMutationVariables) => {
   const { postId, voteValue, postSlugs } = variables;

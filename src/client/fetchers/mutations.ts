@@ -1,5 +1,13 @@
+import { RegisterLoginMutationVariables } from './../types/mutations';
+import { LoginResponse } from './../../common/types/fetching';
 import { AddFavoriteMutationResponse, CommentType, PostType } from '../../common/types';
 import { axiosDELETE, axiosPATCH, axiosPOST } from '../utils/axiosMethods';
+
+export const registerMutation = async (payload: RegisterLoginMutationVariables) =>
+  await axiosPOST<LoginResponse>('user', { data: payload });
+
+export const loginMutation = async (payload: RegisterLoginMutationVariables) =>
+  await axiosPOST<LoginResponse>('session', { data: payload });
 
 export const updatePostVotesMutation = async (payload: { postId: string; voteValue: number }) =>
   await axiosPATCH<PostType>('posts/votes', { data: payload });

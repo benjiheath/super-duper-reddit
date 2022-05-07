@@ -4,7 +4,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
 import { useAuthContext } from '../../contexts/user/AuthContext';
-import { editPostMutation } from '../../fetching/mutations';
+import { editPostMutation } from '../../fetchers/mutations';
 import { usePostQuery } from '../../hooks/queries';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { CreatePostFields } from '../../types/posts';

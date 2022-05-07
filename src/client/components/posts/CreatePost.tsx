@@ -3,7 +3,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { useAuthContext } from '../../contexts/user/AuthContext';
-import { createPostMutation } from '../../fetching/mutations';
+import { createPostMutation } from '../../fetchers/mutations';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { CreatePostFields } from '../../types/posts';
 import CreateOrEditPostForm from './CreateOrEditPostForm';

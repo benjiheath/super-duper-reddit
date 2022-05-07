@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { GetPostVariables, getPosts, getPost } from '../fetching/queries';
+import { GetPostVariables, getPosts, getPost } from '../fetchers/queries';
 
 export const getPostsBaseKey = () => ['posts'];
 export const getPostBaseKey = (variables: GetPostVariables) => ['post', variables];

@@ -22,7 +22,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { CommentCard } from '.';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { useAuthContext } from '../../contexts/user/AuthContext';
-import { removePostMutation } from '../../fetching/mutations';
+import { removePostMutation } from '../../fetchers/mutations';
 import { useAddFavoriteMutation } from '../../hooks/mutations';
 import { usePostQuery } from '../../hooks/queries';
 import { useSuccessToast } from '../../hooks/useFormToast';
