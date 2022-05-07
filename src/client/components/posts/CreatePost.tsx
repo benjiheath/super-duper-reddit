@@ -73,6 +73,7 @@ const CreatePost = () => {
         variant: 'srSuccess',
       });
 
+      localStoragePostCreate.removeLsItem();
       history.push({ pathname: `${newPostSlugs}` });
     } catch (err) {
       setResponseError(err);
