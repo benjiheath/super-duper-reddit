@@ -30,17 +30,19 @@ export const App = () => {
               <Route path='/posts'>
                 <PostsPage />
               </Route>
-              <Flex minH='100vh' alignItems='center'>
-                <Route exact path={['/register', '/login']}>
-                  <RegisterOrLogin />
-                </Route>
-                <Route path='/reset-password'>
-                  <AccountRecovery />
-                </Route>
-                <Route exact path='/404'>
-                  <NotFound />
-                </Route>
-              </Flex>
+              <Route exact path={['/register', '/login', '/reset-password', '/404']}>
+                <Flex minH='100vh' alignItems='center'>
+                  <Route exact path={['/register', '/login']}>
+                    <RegisterOrLogin />
+                  </Route>
+                  <Route path='/reset-password'>
+                    <AccountRecovery />
+                  </Route>
+                  <Route exact path='/404'>
+                    <NotFound />
+                  </Route>
+                </Flex>
+              </Route>
               <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
           </ChakraProvider>
