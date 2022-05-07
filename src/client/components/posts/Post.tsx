@@ -25,6 +25,7 @@ import { useAuthContext } from '../../contexts/user/AuthContext';
 import { removePostMutation } from '../../fetching/mutations';
 import { useAddFavoriteMutation } from '../../hooks/mutations';
 import { usePostQuery } from '../../hooks/queries';
+import { useSuccessToast } from '../../hooks/useFormToast';
 import { PostProps } from '../../types/posts';
 import { checkIfUrlIsImg } from '../../utils/misc';
 import { AlertPopup, PageBox, SrSpinner } from '../generic';
@@ -67,6 +68,7 @@ const PostActionsMenu = (props: PostProps) => {
   const { userId } = useAuthContext();
   const [alertIsOpen, setAlertIsOpen] = React.useState(false);
   const history = useHistory();
+  const successToast = useSuccessToast();
   const addFavoriteMutation = useAddFavoriteMutation({
     postSlugs: post.urlSlugs,
     postId: post.id,
@@ -75,6 +77,7 @@ const PostActionsMenu = (props: PostProps) => {
 
   const handleRemove = React.useCallback(async () => {
     await removePostMutation(post.id);
+    successToast('Post successfully removed');
     setAlertIsOpen(false);
     history.push({ pathname: '/posts' });
   }, [post.id]);

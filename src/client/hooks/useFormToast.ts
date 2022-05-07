@@ -22,3 +22,17 @@ export const useFormToast = () => {
 
   return formToast;
 };
+
+export const useSuccessToast = () => {
+  const toast = useToast();
+
+  return (title: string, options?: UseToastOptions) =>
+    toast({
+      title,
+      position: 'top',
+      duration: 1600,
+      status: 'success',
+      variant: 'srSuccess',
+      ...options,
+    });
+};

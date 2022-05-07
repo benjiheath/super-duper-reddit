@@ -331,7 +331,6 @@ export class DatabaseService {
     );
   }
 
-  // TODO send toast
   removePost(postId: string): Promise<QueryResult> {
     return this.withConn(
       async (conn) =>
