@@ -1,16 +1,17 @@
-require('dotenv').config();
+import { config as envConfig } from 'dotenv';
 import { DatabaseService } from './database/database.service';
-import { sessionRouter } from './modules/session/session.routes';
+import { sessionRouter } from './modules/session/session.controller';
 import { authMiddleware } from './middleware/auth.middleware';
 import { SessionService } from './modules/session/session.service';
 import { errorHandler } from './middleware/error.middleware';
-import { postsRouter } from './modules/post/post.routes';
+import { postsRouter } from './modules/post/post.controller';
 import { PostService } from './modules/post/post.service';
 import { UserService } from './modules/user/user.service';
-import { userRouter } from './modules/user/user.routes';
+import { userRouter } from './modules/user/user.controller';
 import { __prod__ } from './constants';
 import { Config } from './config';
 import { Pool } from 'pg';
+import connectPgSimple from 'connect-pg-simple';
 import cookieParser from 'cookie-parser';
 import history from 'connect-history-api-fallback';
 import session from 'express-session';
@@ -19,8 +20,10 @@ import morgan from 'morgan';
 import cors from 'cors';
 import path from 'path';
 
-export const config = new Config(process.env);
-export const pool = new Pool(config.pg.poolConfig);
+envConfig();
+
+export const config = new Config(process.env, connectPgSimple, session);
+export const pool = new Pool(config.poolConfig);
 export const databaseService = new DatabaseService(pool);
 export const userService = new UserService(databaseService);
 export const postService = new PostService(databaseService);
