@@ -2,7 +2,8 @@ import { HStack, Icon, IconProps, Text, VStack } from '@chakra-ui/react';
 import { IconType } from 'react-icons';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import { CommentType, PostType } from '../../../common/types/entities';
-import { useUpdateCommentVotesMutation, useUpdatePostVotesMutation } from '../../hooks/mutations';
+import { useUpdateCommentVotesMutation } from '../../hooks/mutations/useUpdateCommentVotesMutation';
+import { useUpdatePostVotesMutation } from '../../hooks/mutations/useUpdatePostVotesMutation';
 
 interface VoteIconProps extends IconProps {
   icon: IconType;

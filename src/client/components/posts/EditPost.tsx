@@ -4,8 +4,8 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
 import { useAuthContext } from '../../contexts/user/AuthContext';
-import { editPostMutation } from '../../fetchers/mutations';
-import { usePostQuery } from '../../hooks/queries';
+import { useEditPostMutation } from '../../hooks/mutations/useEditPostMutation';
+import { usePostQuery } from '../../hooks/queries/usePostQuery';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { CreatePostFields } from '../../types/posts';
 import CreateOrEditPostForm from './CreateOrEditPostForm';
@@ -15,6 +15,7 @@ const EditPost = () => {
   const { setResponseError, username, userId } = useAuthContext();
   const { postSlugs } = useParams() as { postSlugs: string };
   const { data: post, isLoading, error } = usePostQuery({ postSlugs });
+  const editPostMutation = useEditPostMutation();
   const localStoragePostEdit = useLocalStorage<CreatePostFields>('editingPost');
   const history = useHistory();
   const toast = useToast();
@@ -67,7 +68,8 @@ const EditPost = () => {
     const newPostData = { userId, username, ...emptyFieldsNullified };
 
     try {
-      await editPostMutation({ ...newPostData, postSlugs });
+      await editPostMutation.mutateAsync({ ...newPostData, postSlugs });
+
       toast({
         position: 'top',
         title: 'Post updated successfully',

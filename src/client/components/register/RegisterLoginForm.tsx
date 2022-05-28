@@ -12,7 +12,7 @@ import { FormData } from '../../types/user';
 import { useForm } from 'react-hook-form';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import RoutingLink from '../generic/RoutingLink';
-import { useRegisterLogin } from '../../hooks/mutations';
+import { useRegisterLogin } from '../../hooks/mutations/useRegisterLogin';
 
 type Props = Pick<FormProps, 'formMode' | 'setFormMode'>;
 

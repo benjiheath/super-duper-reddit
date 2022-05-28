@@ -22,9 +22,9 @@ import { useHistory, useParams } from 'react-router-dom';
 import { CommentCard } from '.';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { useAuthContext } from '../../contexts/user/AuthContext';
-import { removePostMutation } from '../../fetchers/mutations';
-import { useAddFavoriteMutation } from '../../hooks/mutations';
-import { usePostQuery } from '../../hooks/queries';
+import { useAddFavoriteMutation } from '../../hooks/mutations/useAddFavoriteMutation';
+import { useRemovePostMutation } from '../../hooks/mutations/useRemovePostMutation';
+import { usePostQuery } from '../../hooks/queries/usePostQuery';
 import { useSuccessToast } from '../../hooks/useFormToast';
 import { PostProps } from '../../types/posts';
 import { checkIfUrlIsImg } from '../../utils/misc';
@@ -73,10 +73,11 @@ const PostActionsMenu = (props: PostProps) => {
     postSlugs: post.urlSlugs,
     postId: post.id,
   });
+  const removePostMutation = useRemovePostMutation();
   const [animateLikeBtn, setAnimateLikeBtn] = React.useState(false);
 
   const handleRemove = React.useCallback(async () => {
-    await removePostMutation(post.id);
+    await removePostMutation.mutateAsync(post.id);
     successToast('Post successfully removed');
     setAlertIsOpen(false);
     history.push({ pathname: '/posts' });
