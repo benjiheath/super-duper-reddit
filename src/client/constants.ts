@@ -34,6 +34,7 @@ export const inputFields: InputFieldsObject = {
         maxLength: { value: 20, message: 'Username must have less than 20 characters' },
         pattern: { value: /^[A-Za-z0-9]+$/i, message: 'Username can only include letters & numbers' },
       },
+      autoComplete: 'username',
     },
     {
       type: 'text',
@@ -52,6 +53,7 @@ export const inputFields: InputFieldsObject = {
         required: 'Please enter a password',
         minLength: { value: 4, message: 'Password must have at least 4 characters' },
       },
+      autoComplete: 'current-password',
     },
   ],
   createPost: [
