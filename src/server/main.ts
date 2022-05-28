@@ -1,35 +1,41 @@
-import { config as envConfig } from 'dotenv';
 import { DatabaseService } from './database/database.service';
-import { sessionRouter } from './modules/session/session.controller';
 import { authMiddleware } from './middleware/auth.middleware';
 import { SessionService } from './modules/session/session.service';
+import { sessionRouter } from './modules/session/session.controller';
 import { errorHandler } from './middleware/error.middleware';
 import { postsRouter } from './modules/post/post.controller';
 import { PostService } from './modules/post/post.service';
 import { UserService } from './modules/user/user.service';
 import { userRouter } from './modules/user/user.controller';
-import { __prod__ } from './constants';
+import { getConfig } from './config';
+import { Router } from 'express';
 import { Config } from './config';
 import { Pool } from 'pg';
-import connectPgSimple from 'connect-pg-simple';
+import express from 'express';
 import cookieParser from 'cookie-parser';
 import history from 'connect-history-api-fallback';
 import session from 'express-session';
-import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import path from 'path';
 
-envConfig();
+interface MainDeps {
+  config: Config;
+  sessionRouter: Router;
+  userRouter: Router;
+  postsRouter: Router;
+}
 
-export const config = new Config(process.env, connectPgSimple, session);
+export const config = getConfig();
 export const pool = new Pool(config.poolConfig);
 export const databaseService = new DatabaseService(pool);
 export const userService = new UserService(databaseService);
 export const postService = new PostService(databaseService);
 export const sessionService = new SessionService(databaseService, userService);
 
-const main = (config: Config) => {
+const main = (deps: MainDeps) => {
+  const { config, sessionRouter, userRouter, postsRouter } = deps;
+
   const app = express();
 
   app.use(cors(config.corsOptions));
@@ -43,7 +49,6 @@ const main = (config: Config) => {
   app.use('/api/session', sessionRouter);
   app.use('/api/user', userRouter);
   app.use('/api/posts', authMiddleware, postsRouter);
-
   app.use(errorHandler);
 
   app.use(history());
@@ -57,4 +62,4 @@ const main = (config: Config) => {
   });
 };
 
-main(config);
+main({ config, sessionRouter, userRouter, postsRouter });
