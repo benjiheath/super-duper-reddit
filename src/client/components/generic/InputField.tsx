@@ -19,6 +19,7 @@ const InputField = (props: Props) => {
         {...register(field.stateName, field.register)}
         focusBorderColor='prim.200'
         {...field.styleProps}
+        autoComplete={field?.autoComplete}
       />
       {errors[field.stateName] && <AlertPop title={errors[field.stateName].message} mt={2} />}
     </>

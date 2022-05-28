@@ -1,74 +1,70 @@
-import session, { SessionOptions } from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
 import { CorsOptions } from 'cors';
+import { config as dotenvConfig } from 'dotenv';
+import session, { SessionOptions } from 'express-session';
 import { PoolConfig } from 'pg';
 
-const PostgreSqlStore = require('connect-pg-simple')(session);
+dotenvConfig();
 
-interface PgConfig {
-  conString: string;
-  poolConfig: PoolConfig;
-}
-
-interface Urls {
-  client: string;
-}
-
-export class Config {
-  private env: NodeJS.ProcessEnv;
+export interface Config {
   isProd: boolean;
   port: number;
-  pg: PgConfig;
-  urls: Urls;
+  poolConfig: PoolConfig;
+  urls: { client: string; api: string };
   corsOptions: CorsOptions;
   sessionOptions: SessionOptions;
-  esCookieSecret: string;
-  sgApiKey: string | undefined;
-
-  constructor(env: NodeJS.ProcessEnv) {
-    this.env = env;
-    this.isProd = env.NODE_ENV === 'production';
-    this.port = Number(env.PORT) || 3000;
-
-    this.pg = {
-      conString: this.env.DB_CONSTRING ?? 'postgres://postgres:pass@localhost:5433/srdb',
-      poolConfig: {
-        user: this.env.DB_USER ?? 'postgres',
-        password: (this.env.DB_PASSWORD as string) ?? 'pass',
-        host: this.env.DB_HOST ?? 'localhost',
-        port: Number(this.env.DB_PORT) || 5433,
-        database: this.env.DB_DATABASE ?? 'srdb',
-        ssl: this.isProd && { rejectUnauthorized: false },
-      },
-    };
-
-    this.urls = {
-      client: this.env.PROD_URL ?? 'http://localhost:3001',
-    };
-
-    this.corsOptions = {
-      credentials: true,
-      origin: this.isProd ? '*' : this.urls.client,
-      methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'DELETE', 'PATCH', 'HEAD'],
-    };
-
-    this.esCookieSecret = this.env.ES_COOKIE_SECRET ?? 'coccyx';
-
-    this.sessionOptions = {
-      store: new PostgreSqlStore({
-        conString: this.pg.conString,
-      }),
-      secret: this.esCookieSecret,
-      resave: false,
-      cookie: {
-        maxAge: 24 * 60 * 60 * 1000,
-        path: '/',
-        secure: this.isProd,
-        sameSite: this.isProd ? 'none' : 'lax',
-      }, // 1 day
-      saveUninitialized: false,
-      proxy: this.isProd ? true : undefined,
-    };
-
-    this.sgApiKey = this.env.SG_API_KEY;
-  }
+  sendgridApiKey?: string;
 }
+
+export const getEnv = (value: string) => {
+  const envValue = process.env[value];
+
+  if (!envValue) {
+    throw new Error(`Value "${value}" not found in environment variables`);
+  } else {
+    return envValue;
+  }
+};
+
+export const getConfig = (): Config => {
+  const isProd = getEnv('NODE_ENV') === 'production';
+  const urls = { api: getEnv('API_URL'), client: getEnv('CLIENT_URL') };
+  const port = Number(getEnv('PORT'));
+  const sendgridApiKey = getEnv('SG_API_KEY');
+
+  const poolConfig: PoolConfig = {
+    connectionString: getEnv('DB_CONSTRING'),
+    ssl: isProd && { rejectUnauthorized: false },
+  };
+
+  const corsOptions: CorsOptions = {
+    credentials: true,
+    origin: isProd ? '*' : urls.client,
+  };
+
+  const PgStore = connectPgSimple(session);
+
+  const sessionOptions: SessionOptions = {
+    store: new PgStore({ conString: poolConfig.connectionString }),
+    secret: getEnv('SESSION_COOKIE_SECRET'),
+    resave: false,
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000,
+      path: '/',
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
+    }, // 1 day
+    saveUninitialized: false,
+    proxy: isProd ? true : undefined,
+  };
+
+  return {
+    isProd,
+    urls,
+    port,
+    poolConfig,
+    corsOptions,
+    sessionOptions,
+    sendgridApiKey,
+  };
+};

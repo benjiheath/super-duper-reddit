@@ -28,6 +28,7 @@ export interface InputFieldType {
   register: Partial<RegisterProps>;
   labelTitle?: string;
   styleProps?: InputProps;
+  autoComplete?: string;
 }
 
 export type ComponentVariant = 'primary' | 'secondary';

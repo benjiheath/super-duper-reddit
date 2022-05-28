@@ -2,7 +2,7 @@ import { Flex, HStack, Image, Link as ChakraLink, Text, VStack } from '@chakra-u
 import { Link } from 'react-router-dom';
 import { Votes } from '.';
 import { useAuthContext } from '../../contexts/user/AuthContext';
-import { usePostsQuery } from '../../hooks/queries';
+import { usePostsQuery } from '../../hooks/queries/usePostsQuery';
 import { PostProps } from '../../types/posts';
 import { checkIfUrlIsImg } from '../../utils/misc';
 import { SrSpinner } from '../generic';

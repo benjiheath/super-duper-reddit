@@ -14,15 +14,17 @@ export const InputFields = (props: Props) => {
   const { inputFields, formMode, register, errors } = props;
 
   if (formMode) {
-    const registerFields = inputFields.map((field) => (
-      <InputField field={field} register={register} errors={errors} key={field.stateName} />
-    ));
-    const loginFields = inputFields
-      .filter((field) => field.stateName !== 'email')
-      .map((field) => <InputField field={field} register={register} errors={errors} key={field.stateName} />);
+    const inputFieldsToRender = inputFields.filter((field) =>
+      formMode === 'Register' ? field : field.stateName !== 'email'
+    );
 
-    // register? show all 3 fields. login? only show username & password
-    return <>{formMode === 'Register' ? registerFields : loginFields}</>;
+    return (
+      <>
+        {inputFieldsToRender.map((field) => (
+          <InputField field={field} register={register} errors={errors} key={field.stateName} />
+        ))}
+      </>
+    );
   }
 
   return (

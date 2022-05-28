@@ -3,7 +3,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { useAuthContext } from '../../contexts/user/AuthContext';
-import { createPostMutation } from '../../fetching/mutations';
+import { useCreatePostMutation } from '../../hooks/mutations/useCreatePostMutation';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { CreatePostFields } from '../../types/posts';
 import CreateOrEditPostForm from './CreateOrEditPostForm';
@@ -12,6 +12,7 @@ const CreatePost = () => {
   const { setResponseError, username, userId } = useAuthContext();
   const history = useHistory();
   const toast = useToast();
+  const createPostMutation = useCreatePostMutation();
   const localStoragePostCreate = useLocalStorage<CreatePostFields>('creatingPost');
   const {
     register,
@@ -63,7 +64,7 @@ const CreatePost = () => {
     const newPostData = { userId, username, ...data };
 
     try {
-      const newPostSlugs = await createPostMutation(newPostData);
+      const newPostSlugs = await createPostMutation.mutateAsync(newPostData);
 
       toast({
         position: 'top',

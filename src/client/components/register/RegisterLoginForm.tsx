@@ -1,7 +1,6 @@
 import { Box, Heading, Spinner, useToast, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { FormModeToggler } from './FormModeToggler';
-import { LoginResponse, ServerResponse } from '../../../common/types/fetching';
 import { useAuthContext } from '../../contexts/user/AuthContext';
 import { useFormToast } from '../../hooks/useFormToast';
 import { inputFields } from '../../constants';
@@ -9,11 +8,11 @@ import { InputFields } from './InputFields';
 import { useHistory } from 'react-router-dom';
 import { parseError } from '../../utils/errors';
 import { FormProps } from '../../types/general';
-import { axiosPOST } from '../../utils/axiosMethods';
 import { FormData } from '../../types/user';
 import { useForm } from 'react-hook-form';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import RoutingLink from '../generic/RoutingLink';
+import { useRegisterLogin } from '../../hooks/mutations/useRegisterLogin';
 
 type Props = Pick<FormProps, 'formMode' | 'setFormMode'>;
 
@@ -23,6 +22,7 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
   const toast = useToast();
   const [loggingIn, setLoggingIn] = useState(false);
   const [loading, setLoading] = useState(false);
+  const registerLoginMutation = useRegisterLogin();
   const formToast = useFormToast();
   const {
     register,
@@ -47,12 +47,8 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
     setLoading(true);
 
     try {
-      const endpoint = formMode === 'Register' ? 'user' : 'session';
-
-      // todo - use RQ
       // todo - fix types
-
-      const res = await axiosPOST<LoginResponse>(endpoint, { data });
+      const res = await registerLoginMutation.mutateAsync(data);
 
       res.status === 'success' ? setLoggingIn(true) : setLoading(false);
       formToast(formMode, res);
@@ -79,7 +75,7 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
     }
   };
 
-  const FormActions = () =>
+  const renderFormActions = () =>
     loading ? (
       <Spinner color='prim.800' mt='30px !important' />
     ) : (
@@ -89,7 +85,7 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
       </>
     );
 
-  const WelcomeMessage = () => {
+  const renderWelcomeMessage = () => {
     if (loggingIn) {
       return (
         <>
@@ -105,7 +101,7 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
     return null;
   };
 
-  const PasswordActions = () => {
+  const renderPasswordActions = () => {
     if (formMode === 'Login' && !loggingIn) {
       return <RoutingLink text='Forgot your password?' to='/reset-password' subtle />;
     }
@@ -123,11 +119,11 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
               register={register}
               errors={errors}
             />
-            <FormActions />
+            {renderFormActions()}
           </VStack>
         </form>
-        <WelcomeMessage />
-        <PasswordActions />
+        {renderWelcomeMessage()}
+        {renderPasswordActions()}
       </Box>
     </VStack>
   );
