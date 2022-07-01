@@ -1,7 +1,7 @@
 import { config } from '../main';
 
 const sendGridMail = require('@sendgrid/mail');
-sendGridMail.setApiKey(config.sgApiKey);
+sendGridMail.setApiKey(config.sendgridApiKey);
 
 export async function sendEmail(to: string, html: string): Promise<void> {
   try {

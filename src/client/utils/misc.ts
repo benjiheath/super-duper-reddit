@@ -1,5 +1,3 @@
-import { DateTime } from 'luxon';
-
 export const capitalize = (str: string): string =>
   str.includes('/')
     ? str.replace(`/${str.charAt(1)}`, str.charAt(1).toUpperCase())

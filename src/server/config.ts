@@ -1,10 +1,10 @@
-import connectPgSimple from 'connect-pg-simple';
 import { CorsOptions } from 'cors';
 import { config as dotenvConfig } from 'dotenv';
 import session, { SessionOptions } from 'express-session';
 import { PoolConfig } from 'pg';
 
 dotenvConfig();
+const PostgreSqlStore = require('connect-pg-simple')(session);
 
 export interface Config {
   isProd: boolean;
@@ -42,10 +42,8 @@ export const getConfig = (): Config => {
     origin: isProd ? '*' : urls.client,
   };
 
-  const PgStore = connectPgSimple(session);
-
   const sessionOptions: SessionOptions = {
-    store: new PgStore({ conString: poolConfig.connectionString }),
+    store: new PostgreSqlStore({ conString: poolConfig.connectionString }),
     secret: getEnv('SESSION_COOKIE_SECRET'),
     resave: false,
     cookie: {
