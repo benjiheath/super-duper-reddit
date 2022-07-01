@@ -30,11 +30,11 @@ export const getConfig = (): Config => {
   const isProd = getEnv('NODE_ENV') === 'production';
   const urls = { api: getEnv('API_URL'), client: getEnv('CLIENT_URL') };
   const port = Number(getEnv('PORT'));
-  const sendgridApiKey = getEnv('SG_API_KEY');
+  const sendgridApiKey = getEnv('SENDGRID_API_KEY');
 
   const poolConfig: PoolConfig = {
     connectionString: getEnv('DB_CONSTRING'),
-    ssl: isProd && { rejectUnauthorized: false },
+    ssl: isProd ? { rejectUnauthorized: false } : undefined,
   };
 
   const corsOptions: CorsOptions = {
