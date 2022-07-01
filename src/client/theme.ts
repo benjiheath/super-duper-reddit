@@ -18,6 +18,7 @@ export const primaryColors = {
 export const theme = extendTheme({
   styles: {
     global: {
+      html: { overflowY: 'scroll' },
       'html, body': {
         color: 'gray.600',
         bg: 'gray.50',
