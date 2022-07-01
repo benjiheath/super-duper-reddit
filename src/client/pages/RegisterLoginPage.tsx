@@ -1,3 +1,4 @@
+import { Flex } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import FormBox from '../components/generic/FormBox';
@@ -14,9 +15,11 @@ const RegisterOrLogin = () => {
   const minH = formMode === 'Login' ? '450px' : '490px';
 
   return (
+    // <Flex minH='100vh' alignItems='center'>
     <FormBox title='Super Reddit' subTitle={formMode} minH={minH}>
       <Form formMode={formMode} setFormMode={setFormMode} />
     </FormBox>
+    // </Flex>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Heading, Text, VStack } from '@chakra-ui/react';
+import { Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import SrSpinner from '../components/generic/SrSpinner';
@@ -13,6 +13,7 @@ const NotFound = () => {
   }, []);
 
   return (
+    // <Flex minH='100vh' alignItems='center'>
     <VStack minW='100%' spacing={5}>
       <Heading as='h1' fontWeight={800} color='prim.800'>
         404
@@ -21,6 +22,7 @@ const NotFound = () => {
       <Text>Redirecting...</Text>
       <SrSpinner top='60%' left='49%' />
     </VStack>
+    // </Flex>
   );
 };
 

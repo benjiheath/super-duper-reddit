@@ -24,5 +24,5 @@ export interface PostProps {
   post: PostType;
 }
 
-export type CreatePostFields = Pick<PostType, 'title' | 'body' | 'contentUrl'>;
+export type CreatePostFields = Pick<PostType, 'title' | 'body' | 'contentUrl' | 'id'>;
 export type CreateCommentFields = Pick<CommentType, 'body'>;
