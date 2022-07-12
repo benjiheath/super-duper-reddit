@@ -2,100 +2,81 @@ import { Box, Heading, Spinner, useToast, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { FormModeToggler } from './FormModeToggler';
 import { useAuthContext } from '../../contexts/user/AuthContext';
-import { useFormToast } from '../../hooks/useFormToast';
 import { inputFields } from '../../constants';
 import { InputFields } from './InputFields';
 import { useHistory } from 'react-router-dom';
 import { parseError } from '../../utils/errors';
-import { FormProps } from '../../types/general';
+import { FormMode, FormProps } from '../../types/general';
 import { FormData } from '../../types/user';
 import { useForm } from 'react-hook-form';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import RoutingLink from '../generic/RoutingLink';
 import { useRegisterLogin } from '../../hooks/mutations/useRegisterLogin';
+import { useSuccessToast } from '../../hooks/useSrToast';
 
 type Props = Pick<FormProps, 'formMode' | 'setFormMode'>;
 
 export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
-  const { logIn, setResponseError, setUserID, unauthedUrl, setUnauthedUrl } = useAuthContext();
+  const auth = useAuthContext();
   const history = useHistory();
-  const toast = useToast();
-  const [loggingIn, setLoggingIn] = useState(false);
-  const [loading, setLoading] = useState(false);
   const registerLoginMutation = useRegisterLogin();
-  const formToast = useFormToast();
+  const successToast = useSuccessToast();
   const {
     register,
     reset,
     handleSubmit,
     setError,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm();
 
-
   const onSubmit = async (data: FormData): Promise<void> => {
-    setLoading(true);
-
     try {
       // todo - fix types
       const res = await registerLoginMutation.mutateAsync(data);
 
-      res.status === 'success' ? setLoggingIn(true) : setLoading(false);
-      formToast(formMode, res);
+      successToast(formMode === 'Register' ? 'Welcome to Super Reddit!' : 'Welcome back!');
 
-      // simulating delay
-      setTimeout(() => {
-        if (res.status === 'success') {
-          setLoading(false);
-          formMode === 'Register' ? setLoggingIn(false) : setLoggingIn(true);
-          logIn(data.username);
-          setUserID(res.userId);
-          history.push({ pathname: unauthedUrl ?? '/' });
-          setUnauthedUrl(null);
-        } else {
-          setLoading(false);
-        }
-      }, 2000);
+      auth.logIn(data.username);
+      auth.setUserID(res.userId);
+      history.push({ pathname: auth.unauthedUrl ?? '/' });
+      auth.setUnauthedUrl(null);
     } catch (err) {
-      setLoading(false);
       const { fieldErrors } = parseError(err);
       fieldErrors
         ? fieldErrors.forEach(({ field, message }) => setError(field, { message }))
-        : setResponseError(err);
+        : auth.setResponseError(err);
     }
   };
 
   const renderFormActions = () =>
-    loading ? (
+    isSubmitting ? (
       <Spinner color='prim.800' mt='30px !important' />
     ) : (
       <>
-        {<ButtonSubmit text={formMode} loading={loading} />}
+        {<ButtonSubmit text={formMode} loading={isSubmitting} />}
         <FormModeToggler formMode={formMode} setFormMode={setFormMode} reset={reset} />
       </>
     );
 
-  const renderWelcomeMessage = () => {
-    if (loggingIn) {
+  const renderSubmittingMessage = () => {
+    if (isSubmitting) {
       return (
         <>
           <Heading my={5} as='h4' fontSize='20px' color='prim.700'>
-            {formMode === 'Register' ? 'Welcome to Super Reddit!' : 'Welcome back!'}
+            {formMode === 'Register' ? 'Registering your account ...' : 'Logging you in ...'}
           </Heading>
           <Heading my={2} as='h5' fontSize='16px'>
-            Please wait while we log you in
+            Please wait
           </Heading>
         </>
       );
     }
-    return null;
   };
 
   const renderPasswordActions = () => {
-    if (formMode === 'Login' && !loggingIn) {
+    if (formMode === 'Login' && !isSubmitting) {
       return <RoutingLink text='Forgot your password?' to='/reset-password' subtle />;
     }
-    return null;
   };
 
   return (
@@ -112,7 +93,7 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
             {renderFormActions()}
           </VStack>
         </form>
-        {renderWelcomeMessage()}
+        {renderSubmittingMessage()}
         {renderPasswordActions()}
       </Box>
     </VStack>

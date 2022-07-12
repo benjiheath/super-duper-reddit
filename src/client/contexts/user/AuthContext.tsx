@@ -1,6 +1,7 @@
 import { useToast } from '@chakra-ui/react';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
+import { useInfoToast } from '../../hooks/useSrToast';
 import { ProviderProps } from '../../types/general';
 import { AuthContextType as AuthContextType, UseAuthContextType } from '../../types/user';
 import useAuthReducer from './useAuthReducer';
@@ -8,7 +9,7 @@ import useAuthReducer from './useAuthReducer';
 export const AuthContext = React.createContext<AuthContextType | null>(null);
 
 const AuthProvider = (props: ProviderProps) => {
-  const toast = useToast();
+  const infoToast = useInfoToast();
   const history = useHistory();
   const location = useLocation();
   const [state, dispatchers] = useAuthReducer();
@@ -40,12 +41,7 @@ const AuthProvider = (props: ProviderProps) => {
 
   React.useEffect(() => {
     if (unauthedUrl) {
-      toast({
-        status: 'info',
-        title: 'Log in or register to view this post',
-        duration: 5000,
-        position: 'top',
-      });
+      infoToast('Log in or register to view this post');
     }
   }, [unauthedUrl]);
 

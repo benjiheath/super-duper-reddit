@@ -25,7 +25,7 @@ import { useAuthContext } from '../../contexts/user/AuthContext';
 import { useAddFavoriteMutation } from '../../hooks/mutations/useAddFavoriteMutation';
 import { useRemovePostMutation } from '../../hooks/mutations/useRemovePostMutation';
 import { usePostQuery } from '../../hooks/queries/usePostQuery';
-import { useSuccessToast } from '../../hooks/useFormToast';
+import { useSuccessToast } from '../../hooks/useSrToast';
 import { PostProps } from '../../types/posts';
 import { checkIfUrlIsImg } from '../../utils/misc';
 import { AlertPopup, PageBox, SrSpinner } from '../generic';
