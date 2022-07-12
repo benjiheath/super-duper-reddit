@@ -1,3 +1,4 @@
+import { useToast } from '@chakra-ui/react';
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ProviderProps } from '../../types/general';
@@ -7,11 +8,10 @@ import useAuthReducer from './useAuthReducer';
 export const AuthContext = React.createContext<AuthContextType | null>(null);
 
 const AuthProvider = (props: ProviderProps) => {
-  const [state, dispatchers] = useAuthReducer();
-  const { setAuth } = dispatchers;
-  const { err } = state;
+  const toast = useToast();
   const history = useHistory();
   const location = useLocation();
+  const [state, dispatchers] = useAuthReducer();
   const [unauthedUrl, setUnauthedUrl] = React.useState<string | null>(null);
 
   const firstUpdate = React.useRef(true);
@@ -21,10 +21,10 @@ const AuthProvider = (props: ProviderProps) => {
       return;
     }
 
-    if (err) {
-      switch (err.response?.status) {
+    if (state.err) {
+      switch (state.err.response?.status) {
         case 401:
-          setAuth(false);
+          dispatchers.setAuth(false);
           history.push({ pathname: '/login' });
           location.pathname.includes('posts/') ? setUnauthedUrl(location.pathname) : setUnauthedUrl(null);
           return;
@@ -32,9 +32,22 @@ const AuthProvider = (props: ProviderProps) => {
         case 404:
           history.push({ pathname: '/404' });
           return;
+
+        // todo notify user hook?
       }
     }
-  }, [err]);
+  }, [state.err]);
+
+  React.useEffect(() => {
+    if (unauthedUrl) {
+      toast({
+        status: 'info',
+        title: 'Log in or register to view this post',
+        duration: 5000,
+        position: 'top',
+      });
+    }
+  }, [unauthedUrl]);
 
   return (
     <AuthContext.Provider value={{ ...state, ...dispatchers, unauthedUrl, setUnauthedUrl }}>

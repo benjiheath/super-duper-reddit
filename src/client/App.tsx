@@ -21,8 +21,8 @@ export const App = () => {
     <Router>
       <ScrollToTop />
       <Switch>
-        <AuthProvider>
-          <ChakraProvider theme={theme}>
+        <ChakraProvider theme={theme}>
+          <AuthProvider>
             <QueryClientProvider client={queryClient}>
               <Route exact path='/'>
                 <Redirect to='/posts' />
@@ -45,8 +45,8 @@ export const App = () => {
               </Route>
               <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
-          </ChakraProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </ChakraProvider>
       </Switch>
     </Router>
   );

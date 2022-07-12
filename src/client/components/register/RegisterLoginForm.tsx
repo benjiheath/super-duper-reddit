@@ -32,16 +32,6 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
     formState: { errors },
   } = useForm();
 
-  React.useEffect(() => {
-    if (unauthedUrl) {
-      toast({
-        status: 'info',
-        title: 'Log in or register to view this post',
-        duration: 5000,
-        position: 'top',
-      });
-    }
-  }, [unauthedUrl]);
 
   const onSubmit = async (data: FormData): Promise<void> => {
     setLoading(true);
