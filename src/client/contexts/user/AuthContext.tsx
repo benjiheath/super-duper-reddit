@@ -22,7 +22,7 @@ const AuthProvider = (props: ProviderProps) => {
     }
 
     if (err) {
-      switch (err.response.status) {
+      switch (err.response?.status) {
         case 401:
           setAuth(false);
           history.push({ pathname: '/login' });
