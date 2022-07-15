@@ -1,6 +1,8 @@
-import { Box, HStack, Icon, StackProps, Text, VStack } from '@chakra-ui/react';
+import { Avatar, Box, Collapse, Flex, HStack, Icon, StackProps, Text, useDisclosure } from '@chakra-ui/react';
+import _ from 'lodash';
 import React from 'react';
-import { FaReply } from 'react-icons/fa';
+import { IconType } from 'react-icons';
+import { FaChevronDown, FaChevronUp, FaReply } from 'react-icons/fa';
 import { CommentType, NestedComment } from '../../../common/types/entities';
 import CommentBox from './CommentBox';
 import Votes from './Votes';
@@ -16,21 +18,12 @@ const CommentHeading = (props: CommentHeadingProps) => {
 
   return (
     <HStack>
-      <Box bg='prim.400' borderRadius={50} h='30px' w='30px' />
       <Text fontWeight='600'>{username} ·</Text>
-      <Text>{createdAtRelative}</Text>
+      <Text fontSize={12} color='gray.500' pt={0.5}>
+        {createdAtRelative}
+      </Text>
     </HStack>
   );
-};
-
-interface CommentBodyProps {
-  body: string;
-}
-
-const CommentBody = (props: CommentBodyProps) => {
-  const { body } = props;
-
-  return <Text pl={2}>{body}</Text>;
 };
 
 interface CommentReplyBtnProps {
@@ -38,7 +31,6 @@ interface CommentReplyBtnProps {
 }
 
 const CommentReplyBtn = (props: CommentReplyBtnProps) => {
-  const { onClick } = props;
   return (
     <HStack
       cursor='pointer'
@@ -46,7 +38,7 @@ const CommentReplyBtn = (props: CommentReplyBtnProps) => {
       p='4px 8px'
       borderRadius={4}
       role='group'
-      onClick={onClick}
+      onClick={props.onClick}
     >
       <Icon as={FaReply} fill='prim.400' _groupHover={{ fill: 'prim.800' }} />
       <Text color='gray.400' _groupHover={{ color: 'prim.800' }}>
@@ -79,47 +71,58 @@ interface CommentProps extends StackProps {
 }
 
 const Comment = (props: CommentProps) => {
-  const { comment, postSlugs, ...rest } = props;
-  const { createdAt, creatorUsername, body } = comment;
+  const { comment, postSlugs } = props;
   const [replying, setReplying] = React.useState(false);
+  const disclosure = useDisclosure({ defaultIsOpen: true });
 
-  const handleReplyClick = () => setReplying(true);
+  const handleReplyClick = () => setReplying(!replying);
   const handleReplyFinish = () => setReplying(false);
 
+  const renderCollapseIcon = (icon: IconType) => <Icon as={icon} ml={3} w={2} h={2} fill='prim.200' />;
+
   return (
-    <VStack alignItems='start' spacing={0} w='100%' {...rest}>
-      <CommentHeading username={creatorUsername} createdAtRelative={comment.createdAtRelative} />
-      <CommentBody body={body} />
-      <CommentActions comment={comment} handleReplyClick={handleReplyClick} postSlugs={postSlugs} />
-      {replying ? (
-        <CommentBox
-          postId={comment.postId}
-          stopReplying={handleReplyFinish}
-          parentCommentId={comment.id}
-          postSlugs={postSlugs}
-        />
-      ) : null}
-    </VStack>
+    <Box>
+      <Flex alignItems='start' mt={4} mb={-10}>
+        <Box>
+          <Avatar name={comment.creatorUsername} w={8} h={8} bg='prim.500' />
+        </Box>
+        <Box ml={4}>
+          <CommentHeading username={comment.creatorUsername} createdAtRelative={comment.createdAtRelative} />
+          <Text color='secondary' data-pw='userEmail'>
+            {comment.body}
+          </Text>
+          <CommentActions comment={comment} handleReplyClick={handleReplyClick} postSlugs={postSlugs} />
+          <Collapse in={replying}>
+            <CommentBox
+              postId={comment.postId}
+              stopReplying={handleReplyFinish}
+              parentCommentId={comment.id}
+              postSlugs={postSlugs}
+              width={300}
+            />
+          </Collapse>
+        </Box>
+      </Flex>
+      {!_.isEmpty(comment.children) && (
+        <Text cursor='pointer' onClick={() => disclosure.onToggle()}>
+          {renderCollapseIcon(disclosure.isOpen ? FaChevronUp : FaChevronDown)}
+        </Text>
+      )}
+      <Collapse in={disclosure.isOpen}>
+        <Box
+          ml={4}
+          pl={4}
+          borderLeftWidth={comment.children.length ? '1px' : 0}
+          borderLeftColor='prim.100'
+          pt={8}
+        >
+          {_.map(comment.children, (childComment) => (
+            <Comment comment={childComment} postSlugs={postSlugs} />
+          ))}
+        </Box>
+      </Collapse>
+    </Box>
   );
 };
 
-interface CommentCardProps {
-  comment: NestedComment;
-  isNested?: boolean;
-  postSlugs?: string;
-}
-
-const CommentCard = (props: CommentCardProps) => {
-  const { comment, isNested, postSlugs } = props;
-
-  return (
-    <VStack pl={isNested ? 6 : 0} w='100%'>
-      <Comment comment={comment} postSlugs={postSlugs!} />
-      {comment.children.map((childComment) => (
-        <CommentCard comment={childComment} key={childComment.id} postSlugs={postSlugs} isNested />
-      ))}
-    </VStack>
-  );
-};
-
-export default CommentCard;
+export default Comment;

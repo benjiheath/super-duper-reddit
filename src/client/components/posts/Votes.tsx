@@ -41,11 +41,13 @@ const VoteIcon = (props: VoteIconProps) => {
   const hoverFill = voteValue === 1 ? 'sec.800' : 'prim.600';
   const hoverBg = voteValue === 1 ? 'sec.100' : 'prim.50';
 
+  const size = isPost ? 9 : 7;
+
   return (
     <Icon
       as={icon}
-      h={isPost ? 8 : 6}
-      w={isPost ? 8 : 6}
+      h={size}
+      w={size}
       p={1}
       transition='0.15s'
       _hover={{ bg: hoverBg, fill: hoverFill }}

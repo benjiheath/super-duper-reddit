@@ -1,11 +1,11 @@
-import { Box, Button, VStack } from '@chakra-ui/react';
+import { Box, BoxProps, Button, Flex, HStack, VStack } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { useAuthContext } from '../../contexts/user/AuthContext';
 import { useAddCommentMutation } from '../../hooks/mutations/useAddCommentMutation';
 import { CreateCommentFields } from '../../types/posts';
 import { ButtonSubmit, FormTextArea } from '../generic';
 
-interface CommentBoxProps {
+interface CommentBoxProps extends BoxProps {
   postId: string;
   postSlugs: string;
   parentCommentId?: string;
@@ -13,7 +13,7 @@ interface CommentBoxProps {
 }
 
 const CommentBox = (props: CommentBoxProps) => {
-  const { postId, parentCommentId, stopReplying, postSlugs } = props;
+  const { postId, parentCommentId, stopReplying, postSlugs, ...rest } = props;
   const { username, userId, setResponseError } = useAuthContext();
   const {
     register,
@@ -39,7 +39,7 @@ const CommentBox = (props: CommentBoxProps) => {
 
     await addCommentMutation
       .mutateAsync(newCommentData)
-      .then((_) => {
+      .then(() => {
         stopReplying?.();
         reset();
       })
@@ -47,7 +47,7 @@ const CommentBox = (props: CommentBoxProps) => {
   };
 
   return (
-    <Box w='100%'>
+    <Box w='100%' {...rest}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing={2}>
           <FormTextArea
@@ -57,8 +57,20 @@ const CommentBox = (props: CommentBoxProps) => {
             errors={errors}
             required
           />
-          <ButtonSubmit text='Save' isDisabled={!isValid} isLoading={isSubmitting} />
-          {stopReplying && <Button onClick={stopReplying}>cancel</Button>}
+          <HStack alignItems='center'>
+            <ButtonSubmit
+              text='Save'
+              isDisabled={!isValid}
+              isLoading={isSubmitting}
+              m='0'
+              size={!!stopReplying ? 'sm' : 'md'}
+            />
+            {stopReplying && (
+              <Button onClick={stopReplying} size='sm'>
+                cancel
+              </Button>
+            )}
+          </HStack>
         </VStack>
       </form>
     </Box>

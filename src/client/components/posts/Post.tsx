@@ -19,7 +19,6 @@ import {
 import React from 'react';
 import { FaEdit, FaEllipsisH, FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
 import { useHistory, useParams } from 'react-router-dom';
-import { CommentCard } from '.';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { useAuthContext } from '../../contexts/user/AuthContext';
 import { useAddFavoriteMutation } from '../../hooks/mutations/useAddFavoriteMutation';
@@ -29,6 +28,7 @@ import { useSuccessToast } from '../../hooks/useSrToast';
 import { PostProps } from '../../types/posts';
 import { checkIfUrlIsImg } from '../../utils/misc';
 import { AlertPopup, PageBox, SrSpinner } from '../generic';
+import Comment from './Comment';
 import CommentBox from './CommentBox';
 import { PostedBy } from './Posts';
 import Votes from './Votes';
@@ -220,9 +220,9 @@ const Comments = (props: CommentsProps) => {
   }
 
   return (
-    <VStack alignItems='start' w='100%' spacing={10}>
+    <VStack alignItems='start' w='100%' spacing={2}>
       {comments.map((comment) => (
-        <CommentCard comment={comment} key={comment.id} postSlugs={postSlugs} />
+        <Comment comment={comment} key={comment.id} postSlugs={postSlugs} />
       ))}
     </VStack>
   );

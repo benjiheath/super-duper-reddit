@@ -9,7 +9,7 @@ interface Props extends ButtonProps {
 }
 
 const ButtonSubmit = (props: Props) => {
-  const { text, variant, loading, m, ...rest } = props;
+  const { text, variant, loading, m, size, ...rest } = props;
 
   return (
     <Button
@@ -17,10 +17,10 @@ const ButtonSubmit = (props: Props) => {
       variant={variant || 'primary'}
       color='white'
       type='submit'
-      p='15px 30px'
+      p={size === 'sm' ? '6px 12px' : '15px 30px'} // Todo - refactor to make this less dirty
       m={m ? `${m} !important` : '25px 0 0 !important'}
+      h={size === 'sm' ? '30px' : undefined}
       isDisabled={loading}
-      _disabled={{ cursor: 'not-allowed' }}
       isLoading={loading}
       {...rest}
     >
