@@ -5,38 +5,30 @@ import { PropsWithChildren } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { AccountRecovery, PostsPage, RegisterOrLogin } from './pages';
 
-const UnprotectedRoutes = (props: PropsWithChildren<{}>) => {
-  return (
-    <Route exact path={['/register', '/login', '/reset-password', '/404']}>
-      <Flex minH='100vh' alignItems='center'>
-        {props.children}
-      </Flex>
-    </Route>
-  );
-};
-
-const ProtectedRoutes = (props: PropsWithChildren<{}>) => {
-  return (
-    <Route path={['/', '/posts']}>
-      <NavBar />
-      {props.children}
-    </Route>
-  );
-};
-
 export const App = () => {
   return (
     <Switch>
-      <ProtectedRoutes>
-        <Route exact path='/' children={<Redirect to='posts' />} />
-        <Route path='/posts' component={PostsPage} />
-      </ProtectedRoutes>
+      <Route exact path='/'>
+        <Redirect to='/posts' />
+      </Route>
+      <Route path='/posts'>
+        <NavBar />
+        <PostsPage />
+      </Route>
 
-      <UnprotectedRoutes>
-        <Route exact path={['/register', '/login']} component={RegisterOrLogin} />
-        <Route path='/reset-password' component={AccountRecovery} />
-        <Route exact path='/404' component={NotFound} />
-      </UnprotectedRoutes>
+      <Route exact path={['/register', '/login', '/reset-password', '/404']}>
+        <Flex minH='100vh' alignItems='center'>
+          <Route exact path={['/register', '/login']}>
+            <RegisterOrLogin />
+          </Route>
+          <Route path='/reset-password'>
+            <AccountRecovery />
+          </Route>
+          <Route exact path='/404'>
+            <NotFound />
+          </Route>
+        </Flex>
+      </Route>
     </Switch>
   );
 };
