@@ -4,7 +4,7 @@ import { FaUndo } from 'react-icons/fa';
 import { inputFields } from '../../constants';
 import { CreatePostFields } from '../../types/posts';
 import { ButtonSubmit, FormBox, FormTextArea } from '../generic';
-import { InputFields } from '../register/InputFields';
+import { InputFields } from '../resisterAndLogin/InputFields';
 
 interface Props {
   handleSubmit: UseFormHandleSubmit<FieldValues>;

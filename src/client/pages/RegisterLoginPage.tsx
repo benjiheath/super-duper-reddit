@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import FormBox from '../components/generic/FormBox';
-import Form from '../components/register/RegisterLoginForm';
+import Form from '../components/resisterAndLogin/RegisterLoginForm';
 import { FormMode } from '../types/general';
 import { capitalize } from '../utils/misc';
 

@@ -1,6 +1,6 @@
 import { FormControl, FormLabel, Textarea, TextareaProps } from '@chakra-ui/react';
 import { DeepMap, FieldError, FieldValues, UseFormRegister } from 'react-hook-form/dist/types';
-import AlertPop from '../register/AlertPop';
+import AlertPop from '../resisterAndLogin/AlertPop';
 
 interface Props extends TextareaProps {
   register: UseFormRegister<FieldValues>;

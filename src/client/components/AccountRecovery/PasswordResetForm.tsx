@@ -6,7 +6,7 @@ import { useAuthContext } from '../../contexts/user/AuthContext';
 import { axiosPATCH } from '../../utils/axiosMethods';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
-import AlertPop from '../register/AlertPop';
+import AlertPop from '../resisterAndLogin/AlertPop';
 
 export default function PasswordResetForm() {
   const { logIn, setResponseError } = useAuthContext();

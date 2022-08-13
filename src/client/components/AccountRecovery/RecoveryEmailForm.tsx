@@ -10,7 +10,7 @@ import { obscureEmail } from '../../utils/misc';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
 import RoutingLink from '../generic/RoutingLink';
-import AlertPop from '../register/AlertPop';
+import AlertPop from '../resisterAndLogin/AlertPop';
 
 export default function RecoveryEmailForm() {
   const toast = useToast();
