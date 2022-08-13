@@ -86,7 +86,7 @@ const PostCard = (props: PostProps) => {
 };
 
 const Posts = () => {
-  const { data, isLoading, error, isFetching, isRefetching } = usePostsQuery();
+  const { data, isLoading, error, isFetching } = usePostsQuery();
   const { setResponseError } = useAuthContext();
 
   if (error) {

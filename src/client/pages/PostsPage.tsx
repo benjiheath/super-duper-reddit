@@ -7,25 +7,22 @@ const PostsPage = () => {
   const match = useRouteMatch();
 
   return (
-    <Flex flexDir='column'>
-      <NavBar />
-      <Switch>
-        <Route exact path={`${match.path}/create`}>
-          <CreatePost />
-        </Route>
-        <Route exact path={`${match.path}/edit/:postSlugs`}>
-          <EditPost />
-        </Route>
-        <Route exact path='/posts/:postSlugs'>
-          <Post />
-        </Route>
-        <Route path={`${match.path}/`}>
-          <VStack spacing={4}>
-            <Posts />
-          </VStack>
-        </Route>
-      </Switch>
-    </Flex>
+    <Switch>
+      <Route exact path={`${match.path}/create`}>
+        <CreatePost />
+      </Route>
+      <Route exact path={`${match.path}/edit/:postSlugs`}>
+        <EditPost />
+      </Route>
+      <Route exact path='/posts/:postSlugs'>
+        <Post />
+      </Route>
+      <Route path={`${match.path}/`}>
+        <VStack spacing={4}>
+          <Posts />
+        </VStack>
+      </Route>
+    </Switch>
   );
 };
 

@@ -117,7 +117,7 @@ const Comment = (props: CommentProps) => {
           pt={8}
         >
           {_.map(comment.children, (childComment) => (
-            <Comment comment={childComment} postSlugs={postSlugs} />
+            <Comment comment={childComment} postSlugs={postSlugs} key={childComment.id} />
           ))}
         </Box>
       </Collapse>

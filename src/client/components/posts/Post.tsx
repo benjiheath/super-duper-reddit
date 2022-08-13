@@ -228,8 +228,12 @@ const Comments = (props: CommentsProps) => {
   );
 };
 
+interface PostParams {
+  postSlugs: string;
+}
+
 const Post = () => {
-  const { postSlugs } = useParams() as { postSlugs: string };
+  const { postSlugs } = useParams<PostParams>();
   const { setResponseError } = useAuthContext();
   const { data: post, isLoading, error } = usePostQuery({ postSlugs });
 
