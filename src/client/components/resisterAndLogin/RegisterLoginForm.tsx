@@ -1,61 +1,47 @@
-import { Box, Heading, Spinner, useToast, VStack } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import { RegisterLoginMutationVariables, useRegisterLogin } from '../../hooks/mutations/useRegisterLogin';
+import { Box, Heading, Spinner, VStack } from '@chakra-ui/react';
+import { Dispatch, SetStateAction } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useSuccessToast } from '../../hooks/useSrToast';
 import { FormModeToggler } from './FormModeToggler';
 import { useAuthContext } from '../../contexts/user/AuthContext';
+import { useSrHistory } from '../../hooks/useSrHistory';
 import { inputFields } from '../../constants';
 import { InputFields } from './InputFields';
-import { useHistory } from 'react-router-dom';
-import { parseError } from '../../utils/errors';
-import { FormMode, FormProps } from '../../types/general';
-import { FormData } from '../../types/user';
-import { useForm } from 'react-hook-form';
+import { FormMode } from '../../pages/RegisterLoginPage';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import RoutingLink from '../generic/RoutingLink';
-import { useRegisterLogin } from '../../hooks/mutations/useRegisterLogin';
-import { useSuccessToast } from '../../hooks/useSrToast';
 
-type Props = Pick<FormProps, 'formMode' | 'setFormMode'>;
+interface Props {
+  formMode: 'Register' | 'Login';
+  setFormMode: Dispatch<SetStateAction<FormMode>>;
+}
 
 export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
   const auth = useAuthContext();
-  const history = useHistory();
-  const registerLoginMutation = useRegisterLogin();
+  const history = useSrHistory();
+  const methods = useForm();
+  const registerLoginMutation = useRegisterLogin(methods.setError);
   const successToast = useSuccessToast();
-  const {
-    register,
-    reset,
-    handleSubmit,
-    setError,
-    formState: { errors, isSubmitting },
-  } = useForm();
 
-  const onSubmit = async (data: FormData): Promise<void> => {
-    try {
-      // todo - fix types
-      const res = await registerLoginMutation.mutateAsync(data);
+  const { isSubmitting, errors } = methods.formState;
 
-      successToast(formMode === 'Register' ? 'Welcome to Super Reddit!' : 'Welcome back!');
+  const onSubmit = async (data: RegisterLoginMutationVariables): Promise<void> => {
+    const res = await registerLoginMutation.mutateAsync(data);
 
-      auth.logIn(data.username);
-      auth.setUserID(res.userId);
-      history.push({ pathname: auth.unauthedUrl ?? '/' });
-      auth.setUnauthedUrl(null);
-    } catch (err) {
-      const { fieldErrors } = parseError(err);
-      fieldErrors
-        ? fieldErrors.forEach(({ field, message }) => setError(field, { message }))
-        : auth.setResponseError(err);
-    }
+    auth.logIn(res.userId, res.username);
+    history.push(history.location.state?.unauthedUrl ?? '/');
+    successToast(formMode === 'Register' ? 'Welcome to Super Reddit!' : 'Welcome back!');
   };
 
   const renderFormActions = () =>
     isSubmitting ? (
       <Spinner color='prim.800' mt='30px !important' />
     ) : (
-      <>
+      <Box pt='25px'>
         {<ButtonSubmit text={formMode} loading={isSubmitting} />}
-        <FormModeToggler formMode={formMode} setFormMode={setFormMode} reset={reset} />
-      </>
+        <FormModeToggler formMode={formMode} setFormMode={setFormMode} reset={methods.reset} />
+      </Box>
     );
 
   const renderSubmittingMessage = () => {
@@ -81,21 +67,21 @@ export default function RegisterLoginForm({ formMode, setFormMode }: Props) {
 
   return (
     <VStack mt={8} spacing='3px'>
-      <Box width={310}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+      <FormProvider {...methods}>
+        <Box as='form' onSubmit={methods.handleSubmit(onSubmit)} width={310}>
           <VStack>
             <InputFields
               inputFields={inputFields.registerLoginForm}
               formMode={formMode}
-              register={register}
+              register={methods.register}
               errors={errors}
             />
             {renderFormActions()}
           </VStack>
-        </form>
-        {renderSubmittingMessage()}
-        {renderPasswordActions()}
-      </Box>
+          {renderSubmittingMessage()}
+          {renderPasswordActions()}
+        </Box>
+      </FormProvider>
     </VStack>
   );
 }

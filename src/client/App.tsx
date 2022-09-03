@@ -1,34 +1,54 @@
-import NotFound from './pages/NotFoundPage';
-import { Flex } from '@chakra-ui/react';
-import { NavBar } from './components/homepage';
-import { PropsWithChildren } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AccountRecovery, PostsPage, RegisterOrLogin } from './pages';
+import { Redirect, Route, Switch } from 'react-router-dom';
+import { useHandleHttpError } from './hooks/useHandleHttpError';
+import { NavBar } from './components/homepage';
+import { Flex } from '@chakra-ui/react';
+import NotFound from './pages/NotFoundPage';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export const App = () => {
-  return (
-    <Switch>
-      <Route exact path='/'>
-        <Redirect to='/posts' />
-      </Route>
-      <Route path='/posts'>
-        <NavBar />
-        <PostsPage />
-      </Route>
+  const handleHttpError = useHandleHttpError();
 
-      <Route exact path={['/register', '/login', '/reset-password', '/404']}>
-        <Flex minH='100vh' alignItems='center'>
-          <Route exact path={['/register', '/login']}>
-            <RegisterOrLogin />
-          </Route>
-          <Route path='/reset-password'>
-            <AccountRecovery />
-          </Route>
-          <Route exact path='/404'>
-            <NotFound />
-          </Route>
-        </Flex>
-      </Route>
-    </Switch>
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
+    },
+    mutationCache: new MutationCache({
+      onError: handleHttpError,
+    }),
+    queryCache: new QueryCache({
+      onError: handleHttpError,
+    }),
+  });
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Switch>
+        <Route exact path='/'>
+          <Redirect to='/posts' />
+        </Route>
+        <Route path='/posts'>
+          <NavBar />
+          <PostsPage />
+        </Route>
+        <Route exact path={['/register', '/login', '/reset-password', '/404']}>
+          <Flex minH='100vh' alignItems='center'>
+            <Route exact path={['/register', '/login']}>
+              <RegisterOrLogin />
+            </Route>
+            <Route path='/reset-password'>
+              <AccountRecovery />
+            </Route>
+            <Route path='/404'>
+              <NotFound />
+            </Route>
+          </Flex>
+        </Route>
+      </Switch>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 };

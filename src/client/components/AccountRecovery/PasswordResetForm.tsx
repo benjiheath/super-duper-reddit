@@ -1,18 +1,17 @@
-import { FormControl, FormLabel, Heading, Input, useToast, VStack } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import { FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
+import { LoginResponse } from '../../../common/types';
 import { useAuthContext } from '../../contexts/user/AuthContext';
+import { useSuccessToast } from '../../hooks/useSrToast';
 import { axiosPATCH } from '../../utils/axiosMethods';
 import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
 import AlertPop from '../resisterAndLogin/AlertPop';
 
 export default function PasswordResetForm() {
-  const { logIn, setResponseError } = useAuthContext();
-  const toast = useToast();
-  const [loggingIn, setLoggingIn] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const auth = useAuthContext();
+  const successToast = useSuccessToast();
   const history = useHistory();
   const { id: token } = useParams<{ id: string }>();
 
@@ -35,34 +34,11 @@ export default function PasswordResetForm() {
       return;
     }
 
-    setLoading(true);
+    const res = await axiosPATCH<LoginResponse>('user/account', { data: { ...data, token } });
 
-    try {
-      const username = await axiosPATCH<string>('user/account', {
-        data,
-        params: token,
-      });
-
-      setLoggingIn(true);
-
-      toast({
-        title: 'Your password was reset successfully!',
-        status: 'success',
-        duration: 2000,
-        isClosable: true,
-        position: 'top',
-        variant: 'srSuccess',
-      });
-
-      setTimeout(() => {
-        logIn(username);
-        setLoading(false);
-        setLoggingIn(false);
-        history.push({ pathname: '/' });
-      }, 2000);
-    } catch (err) {
-      setResponseError(err);
-    }
+    auth.logIn(res.userId, res.username);
+    history.push('/');
+    successToast('Your password was reset successfully!');
 
     reset();
   };
@@ -94,6 +70,7 @@ export default function PasswordResetForm() {
                 required: 'Please verify your password',
                 minLength: { value: 4, message: 'Password must have at least 4 characters' },
               })}
+              mb={4}
             />
           </FormControl>
           {errors.newPassword2 && <AlertPop title={errors.newPassword2.message} />}
@@ -101,23 +78,11 @@ export default function PasswordResetForm() {
             variant='secondary'
             text='Submit '
             colorScheme='green'
-            m='30px 0 0'
-            loading={loading}
+            loading={false}
             loadingText='Verifying'
           />
         </VStack>
       </form>
-
-      {loggingIn && (
-        <>
-          <Heading mt={5} as='h4' fontSize='20px' color='green'>
-            Your password reset successfully
-          </Heading>
-          <Heading mt={2} as='h5' fontSize='16px'>
-            Please wait while we log you in
-          </Heading>
-        </>
-      )}
     </FormBox>
   );
 }

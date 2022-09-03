@@ -87,10 +87,8 @@ const PostCard = (props: PostProps) => {
 
 const Posts = () => {
   const { data, isLoading, error, isFetching } = usePostsQuery();
-  const { setResponseError } = useAuthContext();
 
   if (error) {
-    setResponseError(error);
     return <span>Error fetching posts</span>;
   }
 
