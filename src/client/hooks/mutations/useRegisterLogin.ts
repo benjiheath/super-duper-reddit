@@ -1,7 +1,7 @@
+import { handleAsyncFormErrors } from './../../utils/errors';
 import { FieldValues, UseFormSetError } from 'react-hook-form';
 import { LoginResponse } from '../../../common/types';
 import { useMutation } from '@tanstack/react-query';
-import { parseError } from './../../utils/errors';
 import { axiosPOST } from '../../utils/axiosMethods';
 
 export interface RegisterLoginMutationVariables {
@@ -17,17 +17,11 @@ const loginMutation = async (payload: RegisterLoginMutationVariables) =>
   await axiosPOST<LoginResponse>('session', { data: payload });
 
 export const useRegisterLogin = (setFormError: UseFormSetError<FieldValues>) => {
+  const onError = (e: unknown) => handleAsyncFormErrors(e, setFormError);
+
   return useMutation(
     (variables: RegisterLoginMutationVariables) =>
       variables.email ? registerMutation(variables) : loginMutation(variables),
-    {
-      onError: (e: unknown) => {
-        const { fieldErrors } = parseError(e);
-
-        if (fieldErrors) {
-          fieldErrors.forEach(({ field, message }) => setFormError(field, { message }));
-        }
-      },
-    }
+    { onError }
   );
 };

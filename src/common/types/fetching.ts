@@ -1,11 +1,11 @@
+import { UserType } from './entities';
 import { DbColumnType } from '../../server/database/database.types';
-import { PostType } from './entities';
+import { RequireOnlyOne } from './utils';
 
 export type Endpoint =
   | 'session'
   | 'user'
   | 'posts'
-  | 'posts/post'
   | 'account'
   | 'account/:token'
   | 'posts/comments'
@@ -14,48 +14,70 @@ export type Endpoint =
   | 'posts/votes'
   | 'user/account';
 
-type Auth = { auth: boolean };
-
 export type FieldError = { field: DbColumnType; message: string };
 
-export interface FieldErrorResponse {
-  message: string;
-  errors: FieldError[];
+export interface GetPostRequest {
+  slugs: string;
 }
 
-export type RegisterResponse = StatusAndMessage & { errors?: FieldError[] };
+export type CreatePostRequest = {
+  title: string;
+  body: string;
+  contentUrl: string;
+};
 
-export type LoginResponse = StatusAndMessage & Auth & { errors?: FieldError[] } & { userId: string };
-
-export type RecoveryResponse = StatusAndMessage & { sentTo: string } & { error?: FieldError };
-
-export type PwResetResponse = StatusAndMessage & { username: string };
-
-export type SessionInfo = Auth & { userId: string | null };
-
-export interface StatusAndMessage {
-  status: 'fail' | 'success';
-  message?: string;
+export interface EditPostRequest extends CreatePostRequest {
+  postSlugs: string;
 }
 
-export interface ServerResponse<A> {
-  status?: 'fail' | 'success';
-  errors?: FieldError[];
-  error?: FieldError;
-  data?: A;
+export interface AddCommentRequest {
+  postId: string;
+  body: string;
+  parentCommentId?: string;
 }
 
-export interface GetPostsResponse {
-  posts: PostType[];
+export type UpdateCommentsVotesRequest = {
+  voteValue: 1 | -1;
+  commentId: string;
+};
+
+export type UpdatePostVotesRequest = {
+  voteValue: 1 | -1;
+  postId: string;
+};
+
+export type AddPostFavoriteRequest = {
+  postId: string;
+};
+
+export type RemovePostRequest = {
+  postId: string;
+};
+
+export interface PasswordResetRequest {
+  newPassword: string;
+  token: string;
 }
 
-export interface CreatePostResponse {
-  status: string;
-  post: PostType;
-}
-
-export type UpdatePostVotesMutationResponse = Pick<PostType, 'userVoteStatus' | 'points'>;
-
-export interface AddFavoriteMutationResponse {
+export interface AddPostFavoriteResponse {
   updatedUserFavoriteStatus: boolean;
+}
+
+export interface RegisterRequest {
+  username: string;
+  password: string;
+  email: string;
+}
+
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export type ForgotPasswordRequest = RequireOnlyOne<Pick<UserType, 'username' | 'email'>>;
+
+export interface LoginResponse {
+  status: string;
+  userId: string;
+  username: string;
 }

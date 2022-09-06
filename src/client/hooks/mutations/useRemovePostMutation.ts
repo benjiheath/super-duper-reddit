@@ -1,4 +1,4 @@
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { axiosDELETE } from '../../utils/axiosMethods';
 
 const removePostMutation = async (postId: string) => {

@@ -1,17 +1,7 @@
 import { InputProps } from '@chakra-ui/react';
-import { SetStateAction } from 'react';
-import { FieldValues, UseFormReset } from 'react-hook-form';
 
 export interface ProviderProps {
   children: React.ReactNode;
-}
-
-export type FormMode = 'Register' | 'Login';
-
-export interface FormProps {
-  formMode: 'Register' | 'Login';
-  setFormMode: Dispatch<SetStateAction<FormMode>>;
-  reset: UseFormReset<FieldValues>;
 }
 
 export interface RegisterProps {

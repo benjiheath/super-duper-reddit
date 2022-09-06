@@ -1,4 +1,4 @@
-import { useQueryClient, useMutation } from 'react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { PostType } from '../../../common/types';
 import { axiosPATCH } from '../../utils/axiosMethods';
 import { getPostBaseKey } from '../queries/usePostQuery';

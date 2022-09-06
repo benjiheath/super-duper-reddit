@@ -1,3 +1,4 @@
+import { UseFormSetError, FieldValues } from 'react-hook-form';
 import { FieldError } from '../../common/types';
 import { SrError, SrErrorType } from './../../common/utils/errors';
 
@@ -16,4 +17,12 @@ export const parseError = (error: any) => {
   }
 
   return new SrError({ type: SrErrorType.UnknownError });
+};
+
+export const handleAsyncFormErrors = (e: unknown, setFormError: UseFormSetError<FieldValues>) => {
+  const { fieldErrors } = parseError(e);
+
+  if (fieldErrors) {
+    fieldErrors.forEach(({ field, message }) => setFormError(field, { message }));
+  }
 };
