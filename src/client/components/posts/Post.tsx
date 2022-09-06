@@ -253,7 +253,7 @@ const Post = () => {
     return null;
   }
 
-  if (isLoading || !post || isFetching) {
+  if (isLoading || !post) {
     return <SrSpinner />;
   }
 
