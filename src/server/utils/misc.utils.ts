@@ -1,8 +1,8 @@
 import _ from 'lodash';
+import { RequestHandler } from 'express';
 import { DateTime } from 'luxon';
-import { Query } from 'react-query';
 import { DbComment, DbPost } from '../database/database.types';
-import { LooseObject, SrRequestHandler } from '../types/utils';
+import { LooseObject } from '../types/utils';
 
 export const getTimeAgo = (date: string) => {
   const dateISO = new Date(Date.parse(date)).toISOString();
@@ -15,14 +15,17 @@ export const getTimeAgo = (date: string) => {
 
 export const stringifyValue = (value: string) => (typeof value === 'string' ? `'${value}'` : value);
 
-export const stringifyObjValues = <A extends LooseObject>(values: A) =>
-  _.mapValues(values, (v) => (typeof v === 'string' ? `'${v}'` : v));
-
-export const parseColumnAndValue = (obj: LooseObject) => {
-  const [[column, rawValue]] = Object.entries(obj);
-  const value = stringifyValue(rawValue);
-  return { column, value };
-};
+export const parseDtoValues = <A extends LooseObject>(values: A) =>
+  _.mapValues(values, (v) => {
+    switch (typeof v) {
+      case 'string':
+        return `'${v}'`;
+      case 'undefined':
+        return null;
+      default:
+        return v;
+    }
+  });
 
 export const mapAsync = async <A, B>(list: B[], callback: (item: B) => Promise<A extends B ? B : A>) => {
   const result = await Promise.all(list.map(callback));
@@ -39,9 +42,16 @@ export const append = (string1: string) => {
   return { with: (string2: string) => string1.concat(` ${string2}`) };
 };
 
-export const asyncWrap =
-  <A, B = Query>(fn: SrRequestHandler<A, B>): SrRequestHandler<A, B> =>
-  (req, res, next) => {
-    //TODO find workaround to using Promise.resolve
-    Promise.resolve(fn(req, res, next)).catch(next);
+/**
+ allows request handlers to automatically forward errors to the error-handling middleware
+ */
+export const wrapHandler = <A extends Function>(handler: A): RequestHandler => {
+  return (req, res, next) => {
+    Promise.resolve(handler(req, res, next)).catch(next);
   };
+};
+
+export const getWrappedHandlers = <A>(handlers: { [K in keyof A]: Function }) => {
+  const wrappedHandlers = _.mapValues(handlers, (handler) => wrapHandler(handler));
+  return wrappedHandlers as Record<keyof typeof handlers, RequestHandler>;
+};

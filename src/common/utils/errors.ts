@@ -6,6 +6,7 @@ export enum SrErrorType {
   EmailAlreadyExists = 'Sorry, that email address is already taken',
   UrlSlugsAlreadyExist = 'Url slugs already exist',
   UserIdentifierAlreadyExists = 'UserIdentifierAlreadyExists',
+  UnAuthorized = 'UnAuthorized',
   AccountNotFound = 'Account not found',
   ResourceDoesNotExist = `This resource doesn't exist`,
   UnknownError = 'An unknown error occured',
