@@ -1,8 +1,7 @@
-import { Button, Flex, Icon, Link } from '@chakra-ui/react';
-import { FaArrowLeft } from 'react-icons/fa';
+import { Flex, Icon, Link, LinkProps } from '@chakra-ui/react';
 import { Link as RRLink } from 'react-router-dom';
 
-interface Props {
+interface Props extends LinkProps {
   text: string;
   to: string;
   subtle?: boolean;
@@ -11,13 +10,13 @@ interface Props {
 }
 
 const RoutingLink = (props: Props) => {
-  const { subtle, icon, text, to, onClick } = props;
+  const { subtle, icon, text, to, onClick, ...rest } = props;
 
   const color = subtle ? '#caaec6' : 'inherit';
 
   return (
-    <Link as={RRLink} to={to} color={color} onClick={onClick} fontSize={12}>
-      <Flex alignItems='center' justifyContent='center'>
+    <Link as={RRLink} to={to} color={color} onClick={onClick} fontSize={12} {...rest}>
+      <Flex alignItems='center' justifyContent='center' mt={2}>
         {icon ? <Icon as={icon} mr={1} /> : null}
         {text}
       </Flex>
