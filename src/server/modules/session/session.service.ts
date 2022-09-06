@@ -14,7 +14,7 @@ export class SessionService {
     const { username } = await userService.getUserValues(userId, 'username');
 
     if (!username) {
-      throw new SrError({ type: SrErrorType.AccountNotFound });
+      throw new SrError({ type: SrErrorType.InvalidUsername, fields: ['username'] });
     }
 
     req.session.userId = userId;

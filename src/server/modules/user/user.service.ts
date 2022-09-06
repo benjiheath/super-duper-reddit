@@ -31,7 +31,7 @@ export class UserService {
     const dbUser = await this.databaseService.getUser(identifier);
 
     if (!dbUser) {
-      throw new SrError({ type: SrErrorType.AccountNotFound, fields: ['username'] });
+      throw new SrError({ type: SrErrorType.InvalidUsername, fields: ['username'] });
     }
 
     return dbUser;

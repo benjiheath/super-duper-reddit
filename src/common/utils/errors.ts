@@ -11,8 +11,10 @@ export enum SrErrorType {
   ResourceDoesNotExist = `This resource doesn't exist`,
   UnknownError = 'An unknown error occured',
   DuplicationError = 'DuplicationError',
-  InvalidToken = 'InvalidToken',
+  InvalidCredentials = 'InvalidCredentials',
+  InvalidUsername = 'InvalidUsername',
   InvalidPassword = 'InvalidPassword',
+  InvalidToken = 'InvalidToken',
   InvalidArgumentException = 'InvalidArgumentException',
   NotAllowed = 'NotAllowed',
 }
@@ -48,6 +50,8 @@ export class SrError extends Error {
         return 'Account not found';
       case SrErrorType.InvalidPassword:
         return 'Invalid Password';
+      case SrErrorType.InvalidUsername:
+        return 'Invalid Username';
       default:
         throw new SrError({ type: SrErrorType.InvalidArgumentException });
     }
