@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLocation } from 'react-router-dom';
 import FormBox from '../components/generic/FormBox';
-import Form from '../components/register/RegisterLoginForm';
-import { FormMode } from '../types/general';
+import Form from '../components/resisterAndLogin/RegisterLoginForm';
 import { capitalize } from '../utils/misc';
 
+export type FormMode = 'Register' | 'Login';
+
 const RegisterOrLogin = () => {
-  // using pathname for formMode ('register' or 'login') to allow naviation to /login or /register via browser url
-  const { pathname } = useLocation();
+  const { pathname } = useLocation(); // using pathname for formMode ('register' or 'login') to allow naviation to /login or /register via browser url
   const formattedPathname = capitalize(pathname) as FormMode;
-  const [formMode, setFormMode] = useState<FormMode>(formattedPathname);
+  const [formMode, setFormMode] = React.useState<FormMode>(formattedPathname);
 
   const minH = formMode === 'Login' ? '450px' : '490px';
 

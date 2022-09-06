@@ -1,4 +1,4 @@
-import { RequireOnlyOne } from '../types/utils';
+import { RequireOnlyOne, UpdateCommentsVotesRequest, UpdatePostVotesRequest } from '../../common/types';
 
 export type Table = 'session' | 'users';
 
@@ -89,22 +89,13 @@ export type DbColumnType =
   | PostsVoteColumn
   | CommentsVoteColumn;
 
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
-
-export type GetPostRequest = {
-  postSlugs: string;
-};
-
 export type GetPostDto = {
   userId: string;
   postId?: string;
   postSlugs?: string;
 };
 
-export type CreatePostRequest = {
+export type CreatePostDto = {
   userId: string;
   username: string;
   contentUrl: string;
@@ -112,39 +103,17 @@ export type CreatePostRequest = {
   body: string;
 };
 
-export interface EditPostRequest extends CreatePostRequest {
+export interface EditPostDto extends CreatePostDto {
   postSlugs: string;
 }
 
-export type AddCommentToPostRequest = {
+export type AddCommentToPostDto = {
   body: string;
   postId: string;
   userId: string;
   username: string;
-  parentCommentId: string | null;
+  parentCommentId?: string;
 };
-
-export type AddPostFavoriteRequest = {
-  postId: string;
-};
-
-export type UpdatePostVotesRequest = {
-  voteValue: 1 | -1;
-  postId: string;
-};
-
-export type RemovePostRequest = {
-  postId: string;
-};
-
-export type UpdateCommentsVotesRequest = {
-  voteValue: 1 | -1;
-  commentId: string;
-};
-
-export type ForgotPasswordRequest = RequireOnlyOne<Pick<DbUser, 'username' | 'email'>>;
-
-export type PasswordResetRequest = { newPassword: string };
 
 export interface CreateDbUserDto {
   username: string;
@@ -158,20 +127,12 @@ export interface EditDbUserDto {
   resetPwToken?: string;
 }
 
-export interface UpdatePostVotesDto {
+export interface UpdatePostVotesDto extends UpdatePostVotesRequest {
   userId: string;
-  voteValue: 1 | -1;
-  postId: string;
 }
 
-export interface UpdateCommentVotesDto {
+export interface UpdateCommentVotesDto extends UpdateCommentsVotesRequest {
   userId: string;
-  voteValue: 1 | -1;
-  commentId: string;
-}
-export interface PasswordResetDto {
-  token: string;
-  newPassword: string;
 }
 
 export type GetUserDto = RequireOnlyOne<Omit<DbUser, 'createdAt'>>;

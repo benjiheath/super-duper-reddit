@@ -1,3 +1,19 @@
+import React from 'react';
+import { FaEdit, FaEllipsisH, FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
+import { AlertPopup, PageBox, SrSpinner } from '../generic';
+import { useAddFavoriteMutation } from '../../hooks/mutations/useAddFavoriteMutation';
+import { useHistory, useParams } from 'react-router-dom';
+import { CommentType, PostType } from '../../../common/types/entities';
+import { useRemovePostMutation } from '../../hooks/mutations/useRemovePostMutation';
+import { useSuccessToast } from '../../hooks/useSrToast';
+import { checkIfUrlIsImg } from '../../utils/misc';
+import { useAuthContext } from '../../contexts/user/AuthContext';
+import { usePostQuery } from '../../hooks/queries/usePostQuery';
+import { useToggle } from '../../hooks/useToggle';
+import { PostedBy } from './Posts';
+import CommentBox from './CommentBox';
+import Comment from './Comment';
+import Votes from './Votes';
 import {
   Box,
   Divider,
@@ -16,22 +32,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React from 'react';
-import { FaEdit, FaEllipsisH, FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
-import { useHistory, useParams } from 'react-router-dom';
-import { CommentType, PostType } from '../../../common/types/entities';
-import { useAuthContext } from '../../contexts/user/AuthContext';
-import { useAddFavoriteMutation } from '../../hooks/mutations/useAddFavoriteMutation';
-import { useRemovePostMutation } from '../../hooks/mutations/useRemovePostMutation';
-import { usePostQuery } from '../../hooks/queries/usePostQuery';
-import { useSuccessToast } from '../../hooks/useSrToast';
-import { PostProps } from '../../types/posts';
-import { checkIfUrlIsImg } from '../../utils/misc';
-import { AlertPopup, PageBox, SrSpinner } from '../generic';
-import Comment from './Comment';
-import CommentBox from './CommentBox';
-import { PostedBy } from './Posts';
-import Votes from './Votes';
 
 type PostTitleProps = Pick<PostType, 'title' | 'contentUrl'>;
 
@@ -63,10 +63,13 @@ const PostTitle = (props: PostTitleProps) => {
   );
 };
 
+interface PostProps {
+  post: PostType;
+}
+
 const PostActionsMenu = (props: PostProps) => {
   const { post } = props;
   const { userId } = useAuthContext();
-  const [alertIsOpen, setAlertIsOpen] = React.useState(false);
   const history = useHistory();
   const successToast = useSuccessToast();
   const addFavoriteMutation = useAddFavoriteMutation({
@@ -75,11 +78,12 @@ const PostActionsMenu = (props: PostProps) => {
   });
   const removePostMutation = useRemovePostMutation();
   const [animateLikeBtn, setAnimateLikeBtn] = React.useState(false);
+  const [alertIsOpen, toggleAlert] = useToggle();
 
   const handleRemove = React.useCallback(async () => {
     await removePostMutation.mutateAsync(post.id);
     successToast('Post successfully removed');
-    setAlertIsOpen(false);
+    toggleAlert();
     history.push({ pathname: '/posts' });
   }, [post.id]);
 
@@ -147,9 +151,7 @@ const PostActionsMenu = (props: PostProps) => {
                 variant='primary'
                 _hover={{ bg: '#fff4f4', color: 'red', transition: '0.15s' }}
                 icon={<FaTrash />}
-                onClick={() => {
-                  setAlertIsOpen(true);
-                }}
+                onClick={toggleAlert}
               >
                 Remove
               </MenuItem>
@@ -159,9 +161,10 @@ const PostActionsMenu = (props: PostProps) => {
       </HStack>
       <AlertPopup
         title='Remove Post'
-        onClick={handleRemove}
+        confirmBtnText='Remove'
+        onConfirm={handleRemove}
         isOpen={alertIsOpen}
-        setIsOpen={setAlertIsOpen}
+        onClose={toggleAlert}
       />
     </>
   );
@@ -228,10 +231,13 @@ const Comments = (props: CommentsProps) => {
   );
 };
 
+interface PostParams {
+  postSlugs: string;
+}
+
 const Post = () => {
-  const { postSlugs } = useParams() as { postSlugs: string };
-  const { setResponseError } = useAuthContext();
-  const { data: post, isLoading, error } = usePostQuery({ postSlugs });
+  const { postSlugs } = useParams<PostParams>();
+  const { data: post, isLoading, error, isFetching } = usePostQuery({ postSlugs });
 
   React.useEffect(() => {
     if (!post) return;
@@ -244,11 +250,10 @@ const Post = () => {
   }, [post]);
 
   if (error) {
-    setResponseError(error);
     return null;
   }
 
-  if (isLoading || !post) {
+  if (isLoading || !post || isFetching) {
     return <SrSpinner />;
   }
 

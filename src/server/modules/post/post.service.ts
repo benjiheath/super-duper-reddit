@@ -1,19 +1,19 @@
 import { getTimeAgo } from '../../utils/misc.utils';
+import { SessionData } from 'express-session';
 import { QueryResult } from 'pg';
 import { createPostSlugs } from '../../../common/utils';
-import { PostType, CommentType } from '../../../common/types';
-import { SrError, SrErrorType } from '../../../common/utils/errors';
 import { DatabaseService } from '../../database/database.service';
+import { SrError, SrErrorType } from '../../../common/utils/errors';
 import {
-  DbPost,
-  DbComment,
-  GetPostDto,
-  EditPostRequest,
+  AddCommentRequest,
+  CommentType,
   CreatePostRequest,
-  UpdatePostVotesRequest,
-  AddCommentToPostRequest,
+  EditPostRequest,
+  PostType,
   UpdateCommentsVotesRequest,
-} from '../../database/database.types';
+  UpdatePostVotesRequest,
+} from '../../../common/types';
+import { DbComment, DbPost, GetPostDto } from '../../database/database.types';
 
 export class PostService {
   constructor(private databaseService: DatabaseService) {}
@@ -34,8 +34,11 @@ export class PostService {
     return this.databaseService.getComments(userId, postId);
   }
 
-  async createPost(request: CreatePostRequest): Promise<string> {
-    const { id, title } = await this.databaseService.createPost(request);
+  async createPost(request: CreatePostRequest, session: SessionData): Promise<string> {
+    const { userId, username } = session;
+
+    const { id, title } = await this.databaseService.createPost({ ...request, userId, username });
+
     const urlSlugs = createPostSlugs(id, title);
 
     await this.databaseService.updatePostSlugs(id, urlSlugs);
@@ -43,8 +46,16 @@ export class PostService {
     return urlSlugs;
   }
 
-  async editPost(request: EditPostRequest): Promise<void> {
-    await this.databaseService.editPost(request);
+  async editPost(request: EditPostRequest, session: SessionData): Promise<void> {
+    const { userId, username } = session;
+
+    const postToEdit = await this.getPost({ userId, postSlugs: request.postSlugs });
+
+    if (postToEdit.creatorUserId !== userId) {
+      throw new SrError({ type: SrErrorType.UnAuthorized });
+    }
+
+    await this.databaseService.editPost({ ...request, userId, username });
   }
 
   async getFormedPost(dto: GetPostDto): Promise<PostType> {
@@ -80,8 +91,9 @@ export class PostService {
     return formedPosts;
   }
 
-  addCommentToPost(request: AddCommentToPostRequest): Promise<QueryResult> {
-    return this.databaseService.addCommentToPost(request);
+  addCommentToPost(request: AddCommentRequest, session: SessionData): Promise<QueryResult> {
+    const { userId, username } = session;
+    return this.databaseService.addCommentToPost({ ...request, userId, username });
   }
 
   async updatePostVotes(request: UpdatePostVotesRequest, userId: string): Promise<PostType> {
@@ -103,7 +115,7 @@ export class PostService {
     const postToBeRemoved = await this.getPost({ userId, postId });
 
     if (!postToBeRemoved) {
-      throw new SrError({ type: SrErrorType.NotAllowed });
+      throw new SrError({ type: SrErrorType.ResourceDoesNotExist });
     }
 
     await this.databaseService.removePost(postId);

@@ -1,17 +1,8 @@
-import { useMutation } from 'react-query';
-import { PostType } from '../../../common/types';
+import { useMutation } from '@tanstack/react-query';
+import { EditPostRequest, PostType } from '../../../common/types';
 import { axiosPATCH } from '../../utils/axiosMethods';
 
-interface EditPostPayload {
-  title: string | null;
-  body: string | null;
-  contentUrl: string | null;
-  postSlugs: string;
-}
+const editPostMutation = async (payload: EditPostRequest) =>
+  await axiosPATCH<PostType>('posts', { data: payload, params: payload.postSlugs });
 
-const editPostMutation = async (payload: EditPostPayload) =>
-  await axiosPATCH<PostType>('posts/post', {
-    data: payload,
-  });
-
-export const useEditPostMutation = () => useMutation((payload: EditPostPayload) => editPostMutation(payload));
+export const useEditPostMutation = () => useMutation((payload: EditPostRequest) => editPostMutation(payload));

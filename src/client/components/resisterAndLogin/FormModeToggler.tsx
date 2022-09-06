@@ -1,10 +1,22 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { Text, Link } from '@chakra-ui/react';
 import { Link as RRLink } from 'react-router-dom';
-import { FormProps } from '../../types/general';
+import { FormMode } from '../../pages/RegisterLoginPage';
+import { UseFormReset, FieldValues } from 'react-hook-form';
 
-export const FormModeToggler = ({ formMode, setFormMode, reset }: FormProps) => {
+interface Props {
+  formMode: 'Register' | 'Login';
+  setFormMode: Dispatch<SetStateAction<FormMode>>;
+  reset: UseFormReset<FieldValues>;
+}
+
+export const FormModeToggler = ({ formMode, setFormMode, reset }: Props) => {
   const otherFormMode = formMode === 'Register' ? 'Login' : 'Register';
+
+  const handleClick = () => {
+    setFormMode(otherFormMode);
+    reset();
+  };
 
   return (
     <Text fontSize='sm' mt='25px !important'>
@@ -12,11 +24,8 @@ export const FormModeToggler = ({ formMode, setFormMode, reset }: FormProps) => 
       <Link
         as={RRLink}
         to={`/${otherFormMode.toLowerCase()}`}
+        onClick={handleClick}
         color='prim.600'
-        onClick={() => {
-          setFormMode(otherFormMode);
-          reset();
-        }}
         border='1px solid transparent'
         borderRadius='4px'
         p='0px 2px 2px'

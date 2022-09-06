@@ -1,16 +1,9 @@
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
+import { CreatePostRequest } from '../../../common/types';
 import { axiosPOST } from '../../utils/axiosMethods';
 
-interface CreatePostMutationPayload {
-  userId: string;
-  username: string;
-  title: string;
-  body: string | null;
-  contentUrl: string | null;
-}
-
-const createPostMutation = async (payload: CreatePostMutationPayload) =>
+const createPostMutation = async (payload: CreatePostRequest) =>
   await axiosPOST<string>('posts', { data: payload });
 
 export const useCreatePostMutation = () =>
-  useMutation((payload: CreatePostMutationPayload) => createPostMutation(payload));
+  useMutation((payload: CreatePostRequest) => createPostMutation(payload));

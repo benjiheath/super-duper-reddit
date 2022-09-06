@@ -1,22 +1,15 @@
-import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 import { SrError, SrErrorType } from '../../../common/utils/errors';
 import { DatabaseService } from '../../database/database.service';
-import {
-  CreateDbUserDto,
-  DbUser,
-  ForgotPasswordRequest,
-  GetUserDto,
-  PasswordResetDto,
-  EditDbUserDto,
-  UserColumn,
-} from '../../database/database.types';
+import { DbUser, GetUserDto, EditDbUserDto, UserColumn } from '../../database/database.types';
 import { sendRecEmail_test, generateReoveryEmailLink } from '../../utils/sendRecEmail_test';
+import { ForgotPasswordRequest, PasswordResetRequest, RegisterRequest } from '../../../common/types';
 
 export class UserService {
   constructor(private databaseService: DatabaseService) {}
 
-  async registerUser(request: CreateDbUserDto): Promise<DbUser> {
+  async registerUser(request: RegisterRequest): Promise<DbUser> {
     await this.checkUserIdentifiers(request);
 
     const hashedPassword = await bcrypt.hash(request.password, 10);
@@ -25,7 +18,6 @@ export class UserService {
   }
 
   async handleForgotPassword(request: ForgotPasswordRequest): Promise<string> {
-    // TODO updateUser needs to take username/email too
     const [[idType, id]] = Object.entries(request);
     const resetPwToken = uuidv4();
     const updatedUser = await this.updateUser(id, { resetPwToken });
@@ -49,7 +41,7 @@ export class UserService {
     return await this.databaseService.getUserValues(usernameOrId, values);
   }
 
-  async checkUserIdentifiers(request: Partial<CreateDbUserDto>) {
+  async checkUserIdentifiers(request: Partial<RegisterRequest>) {
     const alreadyExistingIdentifiers = await this.databaseService.checkUserIdentifiers(request);
 
     if (alreadyExistingIdentifiers) {
@@ -86,7 +78,7 @@ export class UserService {
     }
   }
 
-  async resetPassword(request: PasswordResetDto): Promise<DbUser> {
+  async resetPassword(request: PasswordResetRequest): Promise<DbUser> {
     const { newPassword, token } = request;
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 

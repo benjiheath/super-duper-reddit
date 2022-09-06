@@ -39,7 +39,7 @@ export const getConfig = (): Config => {
 
   const corsOptions: CorsOptions = {
     credentials: true,
-    origin: isProd ? '*' : urls.client,
+    origin: urls.client,
   };
 
   const sessionOptions: SessionOptions = {

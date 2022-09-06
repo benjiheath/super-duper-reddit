@@ -1,15 +1,18 @@
 import { Flex, HStack, Image, Link as ChakraLink, Text, VStack } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { Votes } from '.';
-import { useAuthContext } from '../../contexts/user/AuthContext';
+import { PostType } from '../../../common/types';
 import { usePostsQuery } from '../../hooks/queries/usePostsQuery';
-import { PostProps } from '../../types/posts';
 import { checkIfUrlIsImg } from '../../utils/misc';
 import { SrSpinner } from '../generic';
 
 interface PostedByProps {
   createdAtRelative: string;
   creatorUsername: string;
+}
+
+interface PostProps {
+  post: PostType;
 }
 
 export const PostedBy = (props: PostedByProps) => {
@@ -86,11 +89,9 @@ const PostCard = (props: PostProps) => {
 };
 
 const Posts = () => {
-  const { data, isLoading, error, isFetching, isRefetching } = usePostsQuery();
-  const { setResponseError } = useAuthContext();
+  const { data, isLoading, error, isFetching } = usePostsQuery();
 
   if (error) {
-    setResponseError(error);
     return <span>Error fetching posts</span>;
   }
 

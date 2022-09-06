@@ -24,6 +24,12 @@ export const theme = extendTheme({
         bg: 'gray.50',
         fontSize: '14px',
       },
+      body: {
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        alignItems: 'center',
+      },
     },
   },
   colors: {

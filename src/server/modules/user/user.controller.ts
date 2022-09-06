@@ -1,41 +1,62 @@
 import express from 'express';
-import { CreateDbUserDto, ForgotPasswordRequest, PasswordResetRequest } from '../../database/database.types';
 import { userService, sessionService } from '../../main';
-import { asyncWrap } from '../../utils/misc.utils';
+import { Handler } from '../../types/utils';
+import { getWrappedHandlers } from './../../utils/misc.utils';
+import {
+  ForgotPasswordRequest,
+  LoginResponse,
+  PasswordResetRequest,
+  RegisterRequest,
+} from './../../../common/types/fetching';
 
 declare module 'express-session' {
   interface SessionData {
-    userID?: string;
-    username?: string;
+    userId: string;
+    username: string;
   }
 }
 
-const register = asyncWrap<CreateDbUserDto, any>(async (req, res) => {
-  const { id: userId } = await userService.registerUser(req.body);
-  await sessionService.authenticateUser(req, userId);
-  res.status(201).send({ status: 'success', userId });
-});
+type Handlers = {
+  register: Handler.WithBody<RegisterRequest, LoginResponse>;
+  forgotPassword: Handler.WithBody<ForgotPasswordRequest>;
+  resetPassword: Handler.WithBody<PasswordResetRequest, LoginResponse>;
+};
 
-const forgotPassword = asyncWrap<ForgotPasswordRequest>(async (req, res) => {
-  const targetRecoveryEmail = userService.handleForgotPassword(req.body);
-  res.status(200).send(targetRecoveryEmail);
-});
+const handlers: Handlers = {
+  register: async (req, res) => {
+    const { id: userId, username } = await userService.registerUser(req.body);
+    await sessionService.authenticateUser(req, userId);
 
-const resetPassword = asyncWrap<PasswordResetRequest, any>(async (req, res) => {
-  const [{ token }, { newPassword }] = [req.params, req.body];
+    res.status(201).send({ status: 'success!', userId, username });
+  },
 
-  await userService.checkUserResetPasswordTokenValidity(token);
+  forgotPassword: async (req, res) => {
+    const targetRecoveryEmail = userService.handleForgotPassword(req.body);
 
-  const updatedUser = await userService.resetPassword({ token, newPassword });
-  await sessionService.authenticateUser(req, updatedUser.id);
+    res.status(200).send(targetRecoveryEmail);
+  },
 
-  res.status(200).send(updatedUser.username);
-});
+  resetPassword: async (req, res) => {
+    const { newPassword, token } = req.body;
+
+    await userService.checkUserResetPasswordTokenValidity(token);
+    const updatedUser = await userService.resetPassword({ token, newPassword });
+    await sessionService.authenticateUser(req, updatedUser.id);
+
+    res.status(200).send({
+      status: 'success!',
+      userId: updatedUser.id,
+      username: updatedUser.username,
+    });
+  },
+};
+
+const wrappedHandlers = getWrappedHandlers(handlers);
 
 const userRouter = express.Router();
 
-userRouter.post('/', register);
-userRouter.post('/account', forgotPassword);
-userRouter.patch('/account/:token', resetPassword);
+userRouter.post('/', wrappedHandlers.register);
+userRouter.post('/account', wrappedHandlers.forgotPassword);
+userRouter.patch('/account/:token', wrappedHandlers.resetPassword);
 
 export { userRouter };

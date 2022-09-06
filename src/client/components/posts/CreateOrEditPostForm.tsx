@@ -1,14 +1,14 @@
 import { Box, Button, Grid, Icon, VStack } from '@chakra-ui/react';
 import { DeepMap, FieldError, FieldValues, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
 import { FaUndo } from 'react-icons/fa';
+import { CreatePostRequest } from '../../../common/types';
 import { inputFields } from '../../constants';
-import { CreatePostFields } from '../../types/posts';
 import { ButtonSubmit, FormBox, FormTextArea } from '../generic';
-import { InputFields } from '../register/InputFields';
+import { InputFields } from '../resisterAndLogin/InputFields';
 
 interface Props {
   handleSubmit: UseFormHandleSubmit<FieldValues>;
-  onSubmit: (data: CreatePostFields) => Promise<void>;
+  onSubmit: (data: CreatePostRequest) => Promise<void>;
   register: UseFormRegister<FieldValues>;
   errors: DeepMap<FieldValues, FieldError>;
   isSubmitting: boolean;
@@ -33,7 +33,6 @@ const CreateOrEditPostForm = (props: Props) => {
               text={postSlugs ? 'Save' : 'Submit'}
               isLoading={isSubmitting}
               justifySelf='center'
-              m='unset'
             />
             <Button
               variant='basicHoverInv'

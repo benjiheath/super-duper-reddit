@@ -1,97 +1,32 @@
-import { useToast } from '@chakra-ui/react';
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
-import { useAuthContext } from '../../contexts/user/AuthContext';
+import { CreatePostRequest } from '../../../common/types';
 import { useCreatePostMutation } from '../../hooks/mutations/useCreatePostMutation';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { CreatePostFields } from '../../types/posts';
+import { useSavedChanges } from '../../hooks/useSavedChanges';
+import { useSuccessToast } from '../../hooks/useSrToast';
 import CreateOrEditPostForm from './CreateOrEditPostForm';
 
 const CreatePost = () => {
-  const { setResponseError, username, userId } = useAuthContext();
   const history = useHistory();
-  const toast = useToast();
   const createPostMutation = useCreatePostMutation();
-  const localStoragePostCreate = useLocalStorage<CreatePostFields>('creatingPost');
-  const {
-    register,
-    handleSubmit,
-    reset,
-    watch,
-    formState: { errors, isSubmitting },
-  } = useForm();
-  const [isDirty, setIsDirty] = React.useState(false); // temp workaround for reset btn (currently can't rely on formState's isDirty)
+  const successToast = useSuccessToast();
+  const { isDirty, clearSavedChanges, handleReset, formMethods } = useSavedChanges('editingPost');
 
-  if (!userId || !username) {
-    return null;
-  }
+  const { isSubmitting, errors } = formMethods.formState;
 
-  React.useEffect(() => {
-    const subscription = watch((value) => {
-      const changesHaveBeenMade = !Object.values(value).every((v) => v === '');
-      if (changesHaveBeenMade) {
-        localStoragePostCreate.setLsItem(value as CreatePostFields);
-      }
-      setIsDirty(changesHaveBeenMade);
-    });
+  const onSubmit = async (data: CreatePostRequest): Promise<void> => {
+    const newPostSlugs = await createPostMutation.mutateAsync(data);
 
-    return () => subscription.unsubscribe();
-  }, [watch]);
-
-  React.useEffect(() => {
-    const savedFormData = localStoragePostCreate.getLsItem();
-
-    if (!savedFormData) {
-      return;
-    }
-
-    const { title, contentUrl, body } = savedFormData;
-
-    // pre-filling fields with unsaved changes if necessary
-    reset({ title, contentUrl, body });
-
-    toast({
-      status: 'success',
-      title: 'Loaded unsaved changes',
-      position: 'top',
-      duration: 3000,
-      variant: 'pink',
-    });
-  }, []);
-
-  const onSubmit = async (data: CreatePostFields): Promise<void> => {
-    const newPostData = { userId, username, ...data };
-
-    try {
-      const newPostSlugs = await createPostMutation.mutateAsync(newPostData);
-
-      toast({
-        position: 'top',
-        title: 'Posted successfully',
-        duration: 1600,
-        status: 'success',
-        variant: 'srSuccess',
-      });
-
-      localStoragePostCreate.removeLsItem();
-      history.push({ pathname: `${newPostSlugs}` });
-    } catch (err) {
-      setResponseError(err);
-    }
+    successToast('Posted successfully', { variant: 'srSuccess' });
+    clearSavedChanges();
+    history.push(newPostSlugs);
   };
-
-  const handleReset = React.useCallback(() => {
-    setIsDirty(false);
-    localStoragePostCreate.removeLsItem();
-    reset({ title: '', body: '', contentUrl: '' });
-  }, [isDirty]);
 
   return (
     <CreateOrEditPostForm
-      handleSubmit={handleSubmit}
+      handleSubmit={formMethods.handleSubmit}
       onSubmit={onSubmit}
-      register={register}
+      register={formMethods.register}
       errors={errors}
       isSubmitting={isSubmitting}
       isResetDisabled={!isDirty}

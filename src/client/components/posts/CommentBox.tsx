@@ -1,6 +1,5 @@
 import { Box, BoxProps, Button, Flex, HStack, VStack } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { useAuthContext } from '../../contexts/user/AuthContext';
 import { useAddCommentMutation } from '../../hooks/mutations/useAddCommentMutation';
 import { CreateCommentFields } from '../../types/posts';
 import { ButtonSubmit, FormTextArea } from '../generic';
@@ -14,7 +13,6 @@ interface CommentBoxProps extends BoxProps {
 
 const CommentBox = (props: CommentBoxProps) => {
   const { postId, parentCommentId, stopReplying, postSlugs, ...rest } = props;
-  const { username, userId, setResponseError } = useAuthContext();
   const {
     register,
     reset,
@@ -22,28 +20,15 @@ const CommentBox = (props: CommentBoxProps) => {
     formState: { errors, isValid, isSubmitting },
   } = useForm({ mode: 'onChange' });
 
-  if (!username || !userId) {
-    return null;
-  }
-
   const addCommentMutation = useAddCommentMutation({ postSlugs });
 
-  const onSubmit = async (data: CreateCommentFields): Promise<void> => {
-    const newCommentData = {
-      body: data.body,
-      postId,
-      userId,
-      username,
-      parentCommentId: parentCommentId ?? null,
-    };
+  const onSubmit = async ({ body }: CreateCommentFields): Promise<void> => {
+    const newCommentData = { body, postId, parentCommentId };
 
-    await addCommentMutation
-      .mutateAsync(newCommentData)
-      .then(() => {
-        stopReplying?.();
-        reset();
-      })
-      .catch((err) => setResponseError(err));
+    await addCommentMutation.mutateAsync(newCommentData).then(() => {
+      stopReplying?.();
+      reset();
+    });
   };
 
   return (
@@ -62,7 +47,6 @@ const CommentBox = (props: CommentBoxProps) => {
               text='Save'
               isDisabled={!isValid}
               isLoading={isSubmitting}
-              m='0'
               size={!!stopReplying ? 'sm' : 'md'}
             />
             {stopReplying && (
