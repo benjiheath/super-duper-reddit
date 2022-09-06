@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { axiosOptions, apiUrl } from '../constants';
+import { apiUrl } from '../constants';
 import { Endpoint } from './../../common/types/fetching';
 
-enum HttpMethod {
+enum HttpMethods {
   GET = 'GET',
   POST = 'POST',
   PATCH = 'PATCH',
@@ -10,36 +10,28 @@ enum HttpMethod {
   PUT = 'PUT',
 }
 
-interface Options extends AxiosRequestConfig {
-  queries?: Record<string, any>;
-  params?: string;
-}
+export const axiosRequest = (method: HttpMethods) => {
+  const request = async <A>(endpoint: Endpoint, options?: AxiosRequestConfig): Promise<A> => {
+    const url = options?.params ? `${apiUrl}/${endpoint}/${options?.params}` : `${apiUrl}/${endpoint}`;
 
-export const axiosRequest = (method: HttpMethod) => {
-  const request = async <A = unknown>(endpoint: Endpoint, options?: Options): Promise<A> => {
-    const requestUrl = options?.params ? `${apiUrl}/${endpoint}/${options?.params}` : `${apiUrl}/${endpoint}`;
+    const res = await axios({
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      withCredentials: true,
+      method,
+      url,
+      ...options,
+    });
 
-    try {
-      const { data: res } = await axios({
-        method,
-        url: requestUrl,
-        params: options?.queries,
-        data: options?.data,
-        ...options,
-        ...axiosOptions,
-      });
-
-      return res;
-    } catch (err) {
-      throw err;
-    }
+    return res.data;
   };
 
   return request;
 };
 
-export const axiosGET = axiosRequest(HttpMethod.GET);
-export const axiosPOST = axiosRequest(HttpMethod.POST);
-export const axiosPATCH = axiosRequest(HttpMethod.PATCH);
-export const axiosDELETE = axiosRequest(HttpMethod.DELETE);
-export const axiosPUT = axiosRequest(HttpMethod.PUT);
+export const axiosGET = axiosRequest(HttpMethods.GET);
+export const axiosPOST = axiosRequest(HttpMethods.POST);
+export const axiosPATCH = axiosRequest(HttpMethods.PATCH);
+export const axiosDELETE = axiosRequest(HttpMethods.DELETE);
+export const axiosPUT = axiosRequest(HttpMethods.PUT);
