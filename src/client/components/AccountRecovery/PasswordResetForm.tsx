@@ -9,7 +9,7 @@ import ButtonSubmit from '../generic/ButtonSubmit';
 import FormBox from '../generic/FormBox';
 import AlertPop from '../resisterAndLogin/AlertPop';
 
-export default function PasswordResetForm() {
+export const PasswordResetForm = () => {
   const auth = useAuthContext();
   const successToast = useSuccessToast();
   const history = useHistory();
@@ -85,4 +85,4 @@ export default function PasswordResetForm() {
       </form>
     </FormBox>
   );
-}
+};

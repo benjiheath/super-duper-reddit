@@ -9,7 +9,7 @@ import RoutingLink from '../generic/RoutingLink';
 import AlertPop from '../resisterAndLogin/AlertPop';
 import FormBox from '../generic/FormBox';
 
-export default function RecoveryEmailForm() {
+export const RecoveryEmailForm = () => {
   const successToast = useSuccessToast();
   const methods = useForm();
   const recoverAccountMutation = useRecoverAccountMutation(methods.setError);
@@ -58,4 +58,4 @@ export default function RecoveryEmailForm() {
       </VStack>
     </FormBox>
   );
-}
+};

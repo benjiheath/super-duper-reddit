@@ -1,4 +1,4 @@
-import RecoveryEmailForm from './RecoveryEmailForm';
-import PasswordResetForm from './PasswordResetForm';
+import { PasswordResetForm } from './PasswordResetForm';
+import { RecoveryEmailForm } from './RecoveryEmailForm';
 
 export { RecoveryEmailForm, PasswordResetForm };
