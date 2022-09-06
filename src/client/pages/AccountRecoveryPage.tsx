@@ -1,6 +1,5 @@
-import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { RecoveryEmailForm, PasswordResetForm } from '../components/accountRecovery';
+import { PasswordResetForm, RecoveryEmailForm } from '../components/accountRecovery';
 
 const AccountRecovery = () => {
   const match = useRouteMatch();
