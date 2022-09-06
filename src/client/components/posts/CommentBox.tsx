@@ -26,8 +26,8 @@ const CommentBox = (props: CommentBoxProps) => {
     const newCommentData = { body, postId, parentCommentId };
 
     await addCommentMutation.mutateAsync(newCommentData).then(() => {
-        stopReplying?.();
-        reset();
+      stopReplying?.();
+      reset();
     });
   };
 
@@ -47,7 +47,6 @@ const CommentBox = (props: CommentBoxProps) => {
               text='Save'
               isDisabled={!isValid}
               isLoading={isSubmitting}
-              m='0'
               size={!!stopReplying ? 'sm' : 'md'}
             />
             {stopReplying && (
