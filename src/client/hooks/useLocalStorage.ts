@@ -1,20 +1,18 @@
-type Key = 'editingPost' | 'creatingPost';
-
-export const useLocalStorage = <A>(key: Key) => {
-  const setLsItem = (value: A) => {
+export const useLocalStorage = <A>(key: string) => {
+  const setItem = (value: A) => {
     const stringifiedValue = typeof value === 'string' ? value : JSON.stringify(value);
     localStorage.setItem(key, stringifiedValue);
   };
-  const getLsItem = (): A | null => {
+  const getItem = (): A | null => {
     const currentItem = localStorage.getItem(key);
     if (!currentItem) {
       return null;
     }
     return JSON.parse(currentItem);
   };
-  const removeLsItem = () => {
+  const removeItem = () => {
     localStorage.removeItem(key);
   };
 
-  return { setLsItem, getLsItem, removeLsItem };
+  return { setItem, getItem, removeItem };
 };
