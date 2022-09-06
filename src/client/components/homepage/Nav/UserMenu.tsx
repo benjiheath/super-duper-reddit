@@ -4,10 +4,13 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { useAuthContext } from '../../../contexts/user/AuthContext';
 import { axiosDELETE } from '../../../utils/axiosMethods';
+import { AlertPopup } from '../../generic';
+import { useToggle } from '../../../hooks/useToggle';
 
 const UserMenu = () => {
   const auth = useAuthContext();
   const queryClient = useQueryClient();
+  const [alertIsOpen, toggleAlert] = useToggle();
 
   const logOutHandler = async () => {
     await axiosDELETE('session');
@@ -29,7 +32,7 @@ const UserMenu = () => {
         {auth.username}
       </MenuButton>
       <MenuList borderColor='prim.100'>
-        <MenuItem variant='primary' _hover={{ bg: 'prim.50' }}>
+        <MenuItem variant='primary' _hover={{ bg: 'prim.50' }} onClick={toggleAlert}>
           Account
         </MenuItem>
         <MenuDivider />
@@ -39,6 +42,13 @@ const UserMenu = () => {
           </MenuItem>
         </Link>
       </MenuList>
+      <AlertPopup
+        body='To be implemented!'
+        onConfirm={toggleAlert}
+        isOpen={alertIsOpen}
+        title='Sowwy'
+        benign
+      />
     </Menu>
   );
 };

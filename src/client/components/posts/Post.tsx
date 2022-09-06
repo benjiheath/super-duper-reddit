@@ -75,11 +75,12 @@ const PostActionsMenu = (props: PostProps) => {
   });
   const removePostMutation = useRemovePostMutation();
   const [animateLikeBtn, setAnimateLikeBtn] = React.useState(false);
+  const [alertIsOpen, toggleAlert] = useToggle();
 
   const handleRemove = React.useCallback(async () => {
     await removePostMutation.mutateAsync(post.id);
     successToast('Post successfully removed');
-    setAlertIsOpen(false);
+    toggleAlert();
     history.push({ pathname: '/posts' });
   }, [post.id]);
 
@@ -147,9 +148,7 @@ const PostActionsMenu = (props: PostProps) => {
                 variant='primary'
                 _hover={{ bg: '#fff4f4', color: 'red', transition: '0.15s' }}
                 icon={<FaTrash />}
-                onClick={() => {
-                  setAlertIsOpen(true);
-                }}
+                onClick={toggleAlert}
               >
                 Remove
               </MenuItem>
@@ -159,9 +158,10 @@ const PostActionsMenu = (props: PostProps) => {
       </HStack>
       <AlertPopup
         title='Remove Post'
-        onClick={handleRemove}
+        confirmBtnText='Remove'
+        onConfirm={handleRemove}
         isOpen={alertIsOpen}
-        setIsOpen={setAlertIsOpen}
+        onClose={toggleAlert}
       />
     </>
   );
