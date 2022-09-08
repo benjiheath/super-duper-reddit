@@ -1,7 +1,7 @@
 import express from 'express';
 import { userService, sessionService } from '../../main';
 import { Handler } from '../../types/utils';
-import { getWrappedHandlers } from './../../utils/misc.utils';
+import { wrap } from './../../utils/misc.utils';
 import {
   ForgotPasswordRequest,
   LoginResponse,
@@ -51,7 +51,7 @@ const handlers: Handlers = {
   },
 };
 
-const wrappedHandlers = getWrappedHandlers(handlers);
+const wrappedHandlers = wrap(handlers);
 
 const userRouter = express.Router();
 

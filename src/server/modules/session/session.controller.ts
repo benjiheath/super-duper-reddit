@@ -1,5 +1,5 @@
 import express from 'express';
-import { getWrappedHandlers } from './../../utils/misc.utils';
+import { wrap } from './../../utils/misc.utils';
 import { Handler } from './../../types/utils';
 import { LoginRequest, LoginResponse } from './../../../common/types/fetching';
 import { sessionService } from '../../main';
@@ -27,7 +27,7 @@ const handlers: Handlers = {
   },
 };
 
-const wrappedHandlers = getWrappedHandlers(handlers);
+const wrappedHandlers = wrap(handlers);
 
 const sessionRouter = express.Router();
 

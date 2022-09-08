@@ -1,4 +1,3 @@
-import { DbColumnType } from '../../server/database/database.types';
 import { FieldError } from '../types';
 
 export enum SrErrorType {
@@ -57,14 +56,3 @@ export class SrError extends Error {
     }
   }
 }
-
-export const generateErrorType = (conditionColumn: DbColumnType) => {
-  switch (conditionColumn) {
-    case 'username':
-    case 'email':
-      return SrErrorType.AccountNotFound;
-
-    default:
-      return SrErrorType.UnknownError;
-  }
-};

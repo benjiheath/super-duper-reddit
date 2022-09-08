@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { parseDtoValues } from '../utils/misc.utils';
 import { parseColumnAndValue, nullifyEmptyStringValues } from './database.utils';
-import { Pool, QueryResult } from 'pg';
+import { Pool, QueryResult, QueryResultRow } from 'pg';
 import {
   UpdateCommentVotesDto,
   IdentifierCheckResult,
@@ -27,11 +27,11 @@ export class DatabaseService {
     this.pool = pool;
   }
 
-  private getFirst<A>(res: QueryResult<A>) {
+  private getFirst<A extends QueryResultRow>(res: QueryResult<A>) {
     return res.rows[0];
   }
 
-  private parseRows<A>(res: QueryResult<A>) {
+  private parseRows<A extends QueryResultRow>(res: QueryResult<A>) {
     return res.rows;
   }
 
@@ -303,7 +303,7 @@ export class DatabaseService {
             "creator_user_id", "creator_username", "content_url", "title", "body"
           )
           VALUES (
-            ${userId}, ${username}, ${contentUrl}, ${title}, ${body}
+            ${userId}, ${username}, ${contentUrl}, ${title}, "${body}"
           )
           RETURNING id, title
         `)
@@ -401,24 +401,8 @@ export class DatabaseService {
   }
 
   addCommentToPost(dto: AddCommentToPostDto): Promise<QueryResult> {
-    console.log({ dto });
     const { userId, username, parentCommentId, body, postId } = parseDtoValues(dto);
-    console.log(`
-    INSERT INTO "comments" (
-      "creator_user_id", 
-      "creator_username", 
-      "post_id",
-      "body", 
-      "parent_comment_id", 
-    )
-    VALUES (
-      ${userId}, 
-      ${username}, 
-      ${postId},
-      ${body}, 
-      ${parentCommentId}, 
-    )
-  `);
+
     return this.withConn(
       async (conn) =>
         await conn.query<DbPost>(`

@@ -1,4 +1,4 @@
-import { Box, BoxProps, Button, Flex, HStack, VStack } from '@chakra-ui/react';
+import { Box, BoxProps, Button, HStack, VStack } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { useAddCommentMutation } from '../../hooks/mutations/useAddCommentMutation';
 import { CreateCommentFields } from '../../types/posts';

@@ -1,3 +1,4 @@
+import { wrap } from './../../utils/misc.utils';
 import express from 'express';
 import {
   AddCommentRequest,
@@ -13,7 +14,6 @@ import {
 import { postService } from '../../main';
 import { Handler } from '../../types/utils';
 import { PostType } from './../../../common/types/entities';
-import { getWrappedHandlers } from './../../utils/misc.utils';
 
 type Handlers = {
   servePosts: Handler.NoArgs<PostType[]>;
@@ -78,7 +78,7 @@ const handlers: Handlers = {
   },
 };
 
-const wrappedHandlers = getWrappedHandlers(handlers);
+const wrappedHandlers = wrap(handlers);
 
 const postsRouter = express.Router();
 
@@ -87,8 +87,8 @@ postsRouter.get('/:slugs', wrappedHandlers.servePost);
 postsRouter.post('/', wrappedHandlers.createPost);
 postsRouter.post('/comments', wrappedHandlers.addCommentToPost);
 postsRouter.post('/favorites', wrappedHandlers.addFavorite);
-postsRouter.patch('/:id', wrappedHandlers.editPost);
 postsRouter.patch('/votes', wrappedHandlers.updatePostVotes);
+postsRouter.patch('/:id', wrappedHandlers.editPost);
 postsRouter.patch('/comments/votes', wrappedHandlers.updateCommentVotes);
 postsRouter.delete('/', wrappedHandlers.removePost);
 

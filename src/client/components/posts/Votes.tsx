@@ -31,11 +31,7 @@ const VoteIcon = (props: VoteIconProps) => {
   const isPost = mode === 'post';
 
   const handleClick = async () => {
-    try {
-      isPost ? updatePostVotesMutation.mutate() : updateCommentVotesMutation.mutate();
-    } catch (err) {
-      console.error('Err updating votes:', err);
-    }
+    isPost ? updatePostVotesMutation.mutate() : updateCommentVotesMutation.mutate();
   };
 
   const hoverFill = voteValue === 1 ? 'sec.800' : 'prim.600';
