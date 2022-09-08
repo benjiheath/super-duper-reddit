@@ -75,8 +75,16 @@ const Comment = (props: CommentProps) => {
   const [replying, setReplying] = React.useState(false);
   const disclosure = useDisclosure({ defaultIsOpen: true });
 
-  const handleReplyClick = () => setReplying(!replying);
-  const handleReplyFinish = () => setReplying(false);
+  const handleReplyClick = () => {
+    setReplying(!replying);
+
+    if (!disclosure.isOpen) {
+      disclosure.onOpen();
+    }
+  };
+  const handleCancelReply = () => {
+    setReplying(false);
+  };
 
   const renderCollapseIcon = (icon: IconType) => <Icon as={icon} ml={3} w={2} h={2} fill='prim.200' />;
 
@@ -95,11 +103,11 @@ const Comment = (props: CommentProps) => {
         </Box>
       </Flex>
       {!_.isEmpty(comment.children) && (
-        <Text cursor='pointer' onClick={() => disclosure.onToggle()}>
+        <Text cursor='pointer' onClick={disclosure.onToggle}>
           {renderCollapseIcon(disclosure.isOpen ? FaChevronUp : FaChevronDown)}
         </Text>
       )}
-      <Collapse in={disclosure.isOpen}>
+      <Collapse in={disclosure.isOpen || replying}>
         <Box
           ml={4}
           pl={4}
