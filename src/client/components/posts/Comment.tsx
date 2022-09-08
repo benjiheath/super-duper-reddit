@@ -68,10 +68,11 @@ const CommentActions = (props: CommentActionsProps) => {
 interface CommentProps extends StackProps {
   comment: NestedComment;
   postSlugs: string;
+  isChild: boolean;
 }
 
 const Comment = (props: CommentProps) => {
-  const { comment, postSlugs } = props;
+  const { comment, postSlugs, isChild } = props;
   const [replying, setReplying] = React.useState(false);
   const disclosure = useDisclosure({ defaultIsOpen: true });
 
@@ -122,11 +123,11 @@ const Comment = (props: CommentProps) => {
               parentCommentId={comment.id}
               postSlugs={postSlugs}
               width={300}
-              mt={-2}
+              mt={isChild ? -2 : 4}
             />
           </Collapse>
           {_.map(comment.children, (childComment) => (
-            <Comment comment={childComment} postSlugs={postSlugs} key={childComment.id} />
+            <Comment comment={childComment} postSlugs={postSlugs} key={childComment.id} isChild />
           ))}
         </Box>
       </Collapse>
