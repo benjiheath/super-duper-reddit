@@ -7,7 +7,7 @@ import { useSuccessToast } from '../../hooks/useSrToast';
 import CreateOrEditPostForm from './CreateOrEditPostForm';
 
 const EditPost = () => {
-  const { postSlugs } = useParams() as { postSlugs: string };
+  const { postSlugs } = useParams<{ postSlugs: string }>();
   const { data: post } = usePostQuery({ postSlugs });
   const editPostMutation = useEditPostMutation();
   const history = useHistory();

@@ -164,6 +164,7 @@ const PostActionsMenu = (props: PostProps) => {
         confirmBtnText='Remove'
         onConfirm={handleRemove}
         isOpen={alertIsOpen}
+        isWorking={removePostMutation.isLoading}
         onClose={toggleAlert}
       />
     </>

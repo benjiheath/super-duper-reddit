@@ -13,6 +13,7 @@ interface Props {
   title?: string;
   body?: string;
   isOpen: boolean;
+  isWorking?: boolean;
   confirmBtnText?: string;
   cancelBtnText?: string;
   benign?: boolean;
@@ -21,7 +22,7 @@ interface Props {
 }
 
 const AlertPopup = (props: Props) => {
-  const { title, body, isOpen, benign, confirmBtnText, cancelBtnText, onConfirm, onClose } = props;
+  const { title, body, isOpen, isWorking, benign, confirmBtnText, cancelBtnText, onConfirm, onClose } = props;
   const cancelRef = React.useRef<any>();
 
   return (
@@ -38,7 +39,7 @@ const AlertPopup = (props: Props) => {
                 {cancelBtnText ?? 'Cancel'}
               </Button>
             )}
-            <Button variant='primary' color='white' onClick={onConfirm} ml={3}>
+            <Button variant='primary' color='white' onClick={onConfirm} ml={3} isLoading={isWorking}>
               {confirmBtnText ?? benign ? 'Ok' : 'Confirm'}
             </Button>
           </AlertDialogFooter>
