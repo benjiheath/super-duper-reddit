@@ -92,15 +92,6 @@ const Comment = (props: CommentProps) => {
             {comment.body}
           </Text>
           <CommentActions comment={comment} handleReplyClick={handleReplyClick} postSlugs={postSlugs} />
-          <Collapse in={replying}>
-            <CommentBox
-              postId={comment.postId}
-              stopReplying={handleReplyFinish}
-              parentCommentId={comment.id}
-              postSlugs={postSlugs}
-              width={300}
-            />
-          </Collapse>
         </Box>
       </Flex>
       {!_.isEmpty(comment.children) && (
@@ -116,6 +107,16 @@ const Comment = (props: CommentProps) => {
           borderLeftColor='prim.100'
           pt={8}
         >
+          <Collapse in={replying}>
+            <CommentBox
+              postId={comment.postId}
+              stopReplying={handleCancelReply}
+              parentCommentId={comment.id}
+              postSlugs={postSlugs}
+              width={300}
+              mt={-2}
+            />
+          </Collapse>
           {_.map(comment.children, (childComment) => (
             <Comment comment={childComment} postSlugs={postSlugs} key={childComment.id} />
           ))}
