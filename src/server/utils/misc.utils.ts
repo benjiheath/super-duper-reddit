@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { RequestHandler } from 'express';
 import { DateTime } from 'luxon';
 import { DbComment, DbPost } from '../database/database.types';
-import { LooseObject } from '../types/utils';
+import { LooseObject, SrReqHandler } from '../types/utils';
 
 export const getTimeAgo = (date: string) => {
   const dateISO = new Date(Date.parse(date)).toISOString();
@@ -45,13 +45,13 @@ export const append = (string1: string) => {
 /**
  allows request handlers to automatically forward errors to the error-handling middleware
  */
-const wrapHandler = <A extends Function>(handler: A): RequestHandler => {
+const wrapHandler = (handler: SrReqHandler): SrReqHandler => {
   return (req, res, next) => {
     Promise.resolve(handler(req, res, next)).catch(next);
   };
 };
 
-export const wrap = <A>(handlers: { [K in keyof A]: Function }) => {
+export const wrap = <A>(handlers: { [K in keyof A]: SrReqHandler }) => {
   const wrappedHandlers = _.mapValues(handlers, (handler) => wrapHandler(handler));
-  return wrappedHandlers as Record<keyof typeof handlers, RequestHandler>;
+  return wrappedHandlers;
 };

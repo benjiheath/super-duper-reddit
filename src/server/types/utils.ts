@@ -35,7 +35,7 @@ export type AnyRequest<A = unknown> =
 
 type SrResponse<A> = Response<A>;
 
-type SrReqHandler<A, B> = (req: A, res: SrResponse<B>, next: NextFunction) => void;
+export type SrReqHandler<A = any, B = any> = (req: A, res: SrResponse<B>, next: NextFunction) => void;
 
 export namespace Handler {
   export type NoArgs<A = unknown> = SrReqHandler<RequestWithoutArgs, A>;
