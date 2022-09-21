@@ -303,7 +303,7 @@ export class DatabaseService {
             "creator_user_id", "creator_username", "content_url", "title", "body"
           )
           VALUES (
-            ${userId}, ${username}, ${contentUrl}, ${title}, "${body}"
+            ${userId}, ${username}, ${contentUrl}, ${title}, ${body}
           )
           RETURNING id, title
         `)

@@ -6,12 +6,13 @@ import { useHistory, useParams } from 'react-router-dom';
 import { CommentType, PostType } from '../../../common/types/entities';
 import { useRemovePostMutation } from '../../hooks/mutations/useRemovePostMutation';
 import { useSuccessToast } from '../../hooks/useSrToast';
-import { checkIfUrlIsImg } from '../../utils/misc';
+import { checkContentType } from '../../utils/misc';
 import { useAuthContext } from '../../contexts/user/AuthContext';
 import { usePostQuery } from '../../hooks/queries/usePostQuery';
 import { useToggle } from '../../hooks/useToggle';
 import { PostedBy } from './Posts';
 import CommentBox from './CommentBox';
+import Youtube from './Youtube';
 import Comment from './Comment';
 import Votes from './Votes';
 import {
@@ -23,6 +24,7 @@ import {
   Icon,
   IconButton,
   Image,
+  ImageProps,
   keyframes,
   Menu,
   MenuButton,
@@ -171,40 +173,58 @@ const PostActionsMenu = (props: PostProps) => {
   );
 };
 
+interface PostContentProps extends ImageProps {
+  contentUrl: string | null;
+}
+
+export const PostContent = (props: PostContentProps) => {
+  const { contentUrl, ...rest } = props;
+  if (!contentUrl) {
+    return <></>;
+  }
+
+  switch (checkContentType(contentUrl)) {
+    case 'youtube':
+      return <Youtube url={contentUrl} my={props?.my} />;
+    case 'image':
+      return (
+        <Image
+          {...rest}
+          src={contentUrl}
+          height={props?.height ?? '300px'}
+          borderRadius={props?.borderRadius ?? '8px'}
+          objectFit='cover'
+          alt='post image'
+        />
+      );
+    default:
+      return <></>;
+  }
+};
+
+const PostBody = ({ body }: Pick<PostType, 'body'>) => {
+  if (!body) {
+    return <></>;
+  }
+
+  return (
+    <Text outline='1px solid' bg='prim.50' outlineColor='prim.200' p='10px 16px' w='100%' borderRadius={6}>
+      {body}
+    </Text>
+  );
+};
+
 const PostMain = (props: PostProps) => {
   const { post } = props;
-  const { body, title, contentUrl } = post;
-
-  const image = checkIfUrlIsImg(post.contentUrl);
 
   return (
     <HStack justifyContent='start' w='100%' spacing={6}>
       <Votes item={post} mode='post' postSlugs={post.urlSlugs} postId={post.id} />
       <VStack alignItems='start' width='100%' spacing={2}>
-        <PostTitle title={title} contentUrl={contentUrl} />
+        <PostTitle title={post.title} contentUrl={post.contentUrl} />
         <PostedBy createdAtRelative={post.createdAtRelative} creatorUsername={post.creatorUsername} />
-        {image && post.contentUrl && post.currentStatus === 'normal' ? (
-          <Image
-            height='300px'
-            objectFit='cover'
-            src={post.contentUrl}
-            alt='post image'
-            borderRadius={8}
-            my='10px !important'
-          />
-        ) : null}
-        {body ? (
-          <Text
-            outline='1px solid'
-            bg='prim.50'
-            outlineColor='prim.200'
-            p='10px 16px'
-            w='100%'
-            borderRadius={6}
-          >
-            {body}
-          </Text>
-        ) : null}
+        <PostContent contentUrl={post.contentUrl} my='10px !important' />
+        <PostBody body={post.body} />
         <PostActionsMenu post={post} />
       </VStack>
     </HStack>

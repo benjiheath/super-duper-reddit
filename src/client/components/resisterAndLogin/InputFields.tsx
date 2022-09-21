@@ -1,4 +1,4 @@
-import { FormControl, FormLabel, VStack } from '@chakra-ui/react';
+import { FormControl, FormLabel } from '@chakra-ui/react';
 import { DeepMap, FieldError, FieldValues, UseFormRegister } from 'react-hook-form';
 import { InputFieldType } from '../../types/general';
 import InputField from '../generic/InputField';

@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { Votes } from '.';
 import { PostType } from '../../../common/types';
 import { usePostsQuery } from '../../hooks/queries/usePostsQuery';
-import { checkIfUrlIsImg } from '../../utils/misc';
 import { SrSpinner } from '../generic';
+import { PostContent } from './Post';
 
 interface PostedByProps {
   createdAtRelative: string;
@@ -46,16 +46,12 @@ const PostCardDetails = (props: PostProps) => {
     post.title
   );
 
-  const image = checkIfUrlIsImg(post.contentUrl);
-
   return (
     <VStack alignItems='start' spacing={1}>
       <Text fontWeight='bold' fontSize={20}>
         {contentUrl}
       </Text>
-      {image && post.contentUrl ? (
-        <Image height='100px' objectFit='cover' src={post.contentUrl} alt='post image' borderRadius={4} />
-      ) : null}
+      <PostContent contentUrl={post.contentUrl} height='100px' borderRadius={4} />
       <PostedBy createdAtRelative={post.createdAtRelative} creatorUsername={post.creatorUsername} />
       <Text>{post.commentCount} comments</Text>
     </VStack>

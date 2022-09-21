@@ -68,7 +68,7 @@ const CommentActions = (props: CommentActionsProps) => {
 interface CommentProps extends StackProps {
   comment: NestedComment;
   postSlugs: string;
-  isChild: boolean;
+  isChild?: boolean;
 }
 
 const Comment = (props: CommentProps) => {

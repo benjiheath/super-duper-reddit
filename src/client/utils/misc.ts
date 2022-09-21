@@ -15,10 +15,25 @@ export const getIdType = (id: string): 'email' | 'username' => {
   return id.includes('@') ? 'email' : 'username';
 };
 
-export const checkIfUrlIsImg = (url: string | null) => {
-  if (url?.endsWith('.png') || url?.endsWith('.jpg') || url?.endsWith('.jpeg') || url?.endsWith('.gif')) {
-    return true;
-  } else {
-    return false;
+const isImageUrl = (url: string) => {
+  return ['.png', '.jpg', '.jpeg', '.gif'].some((imgType) => url.includes(imgType));
+};
+
+const isYoutubeUrl = (url: string) => {
+  return ['youtube', 'youtu.be'].some((str) => url.includes(str));
+};
+
+export const checkContentType = (url: string | null) => {
+  if (!url) {
+    return null;
+  }
+
+  switch (true) {
+    case isYoutubeUrl(url):
+      return 'youtube';
+    case isImageUrl(url):
+      return 'image';
+    default:
+      return null;
   }
 };
