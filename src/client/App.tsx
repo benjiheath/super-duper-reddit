@@ -2,7 +2,6 @@ import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@ta
 import { AccountRecovery, PostsPage, RegisterOrLogin } from './pages';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { useHandleHttpError } from './hooks/useHandleHttpError';
-import { NavBar } from './components/homepage';
 import { Flex } from '@chakra-ui/react';
 import NotFound from './pages/NotFoundPage';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -31,7 +30,6 @@ export const App = () => {
           <Redirect to='/posts' />
         </Route>
         <Route path='/posts'>
-          <NavBar />
           <PostsPage />
         </Route>
         <Route exact path={['/register', '/login', '/reset-password', '/404']}>
