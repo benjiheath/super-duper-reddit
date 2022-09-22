@@ -51,7 +51,7 @@ const PostCardDetails = (props: PostProps) => {
       <Text fontWeight='bold' fontSize={20}>
         {contentUrl}
       </Text>
-      <PostContent contentUrl={post.contentUrl} height='100px' borderRadius={4} />
+      <PostContent contentUrl={post.contentUrl} height='100px' borderRadius={4} compact />
       <PostedBy createdAtRelative={post.createdAtRelative} creatorUsername={post.creatorUsername} />
       <Text>{post.commentCount} comments</Text>
     </VStack>

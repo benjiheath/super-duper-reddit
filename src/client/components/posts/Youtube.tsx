@@ -3,16 +3,25 @@ import _ from 'lodash';
 
 interface Props extends AspectRatioProps {
   url: string;
+  compact?: boolean;
 }
 
 const Youtube = (props: Props) => {
-  const { url, ...rest } = props;
+  const { url, compact, ...rest } = props;
 
-  const convertedUrl = props.url.replace('watch?v=', 'embed/').replace('youtu.be', 'youtube.com/embed/');
+  const convertedYoutubeUrl = props.url
+    .replace('watch?v=', 'embed/')
+    .replace('youtu.be', 'youtube.com/embed/');
 
   return (
-    <AspectRatio ratio={16 / 9} alignSelf={'normal'} borderRadius={20} {...rest}>
-      <iframe src={convertedUrl} allowFullScreen style={{ borderRadius: 8 }} />
+    <AspectRatio
+      ratio={16 / 9}
+      alignSelf={'normal'}
+      borderRadius={20}
+      width={compact ? 350 : undefined}
+      {...rest}
+    >
+      <iframe src={convertedYoutubeUrl} allowFullScreen style={{ borderRadius: 8 }} />
     </AspectRatio>
   );
 };

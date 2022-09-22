@@ -175,17 +175,18 @@ const PostActionsMenu = (props: PostProps) => {
 
 interface PostContentProps extends ImageProps {
   contentUrl: string | null;
+  compact?: boolean;
 }
 
 export const PostContent = (props: PostContentProps) => {
-  const { contentUrl, ...rest } = props;
+  const { contentUrl, compact, ...rest } = props;
   if (!contentUrl) {
     return <></>;
   }
 
   switch (checkContentType(contentUrl)) {
     case 'youtube':
-      return <Youtube url={contentUrl} my={props?.my} />;
+      return <Youtube url={contentUrl} my={props?.my} compact={compact} />;
     case 'image':
       return (
         <Image
