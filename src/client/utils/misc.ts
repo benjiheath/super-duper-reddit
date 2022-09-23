@@ -37,3 +37,11 @@ export const checkContentType = (url: string | null) => {
       return null;
   }
 };
+
+export const getYoutubeTitle = async (url: string): Promise<string> => {
+  const bla = await fetch(`https://noembed.com/embed?dataType=json&url=${url}`)
+    .then((res) => res.json())
+    .then((data) => data.title);
+
+  return bla;
+};

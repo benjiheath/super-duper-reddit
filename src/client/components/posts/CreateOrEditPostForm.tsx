@@ -1,14 +1,13 @@
 import React from 'react';
-import { Box, Button, Grid, Icon, VStack } from '@chakra-ui/react';
-import { DeepMap, FieldError, FieldValues, UseFormReturn } from 'react-hook-form';
 import { FaUndo } from 'react-icons/fa';
-import { CreatePostRequest } from '../../../common/types';
-import { inputFields } from '../../constants';
-import { getYoutubeTitle } from '../../hooks/queries/useYoutubeTitleQuery';
-import { isYoutubeUrl as checkIsYoutubeUrl } from '../../utils/misc';
-import { ButtonSubmit, FormBox, FormTextArea } from '../generic';
-import { InputFields } from '../resisterAndLogin/InputFields';
 import { Toggler } from '../generic/Toggler';
+import { InputFields } from '../resisterAndLogin/InputFields';
+import { inputFields } from '../../constants';
+import { CreatePostRequest } from '../../../common/types';
+import { Box, Button, Grid, Icon, VStack } from '@chakra-ui/react';
+import { ButtonSubmit, FormBox, FormTextArea } from '../generic';
+import { DeepMap, FieldError, FieldValues, UseFormReturn } from 'react-hook-form';
+import { getYoutubeTitle, isYoutubeUrl as checkIsYoutubeUrl } from '../../utils/misc';
 
 interface Props {
   onSubmit: (data: CreatePostRequest) => Promise<void>;
