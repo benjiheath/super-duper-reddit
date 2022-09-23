@@ -1,10 +1,10 @@
-import { PostType } from './../../common/types/entities';
-import React from 'react';
-import { CreatePostFields } from '../types/posts';
-import { useLocalStorage } from './useLocalStorage';
-import { UseFormReturn, FieldValues, useForm } from 'react-hook-form';
-import { useSuccessToast } from './useSrToast';
 import _ from 'lodash';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { CreatePostFields } from '../types/posts';
+import { PostType } from './../../common/types/entities';
+import { useLocalStorage } from './useLocalStorage';
+import { useSuccessToast } from './useSrToast';
 
 export type KeyPrefix = 'editingPost' | 'creatingPost';
 

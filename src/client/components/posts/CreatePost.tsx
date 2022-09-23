@@ -1,4 +1,3 @@
-import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { CreatePostRequest } from '../../../common/types';
 import { useCreatePostMutation } from '../../hooks/mutations/useCreatePostMutation';
@@ -24,9 +23,8 @@ const CreatePost = () => {
 
   return (
     <CreateOrEditPostForm
-      handleSubmit={formMethods.handleSubmit}
+      formMethods={formMethods}
       onSubmit={onSubmit}
-      register={formMethods.register}
       errors={errors}
       isSubmitting={isSubmitting}
       isResetDisabled={!isDirty}

@@ -8,10 +8,11 @@ interface Props {
   formMode?: 'Register' | 'Login';
   register: UseFormRegister<FieldValues>;
   errors: DeepMap<FieldValues, FieldError>;
+  renderSibling?: Record<string, () => JSX.Element>;
 }
 
 export const InputFields = (props: Props) => {
-  const { inputFields, formMode, register, errors } = props;
+  const { inputFields, formMode, register, renderSibling, errors } = props;
 
   if (formMode) {
     const inputFieldsToRender = inputFields.filter((field) =>
@@ -32,7 +33,13 @@ export const InputFields = (props: Props) => {
       {inputFields.map((field) => (
         <FormControl key={field.stateName}>
           <FormLabel color='prim.800'>{field.labelTitle}</FormLabel>
-          <InputField field={field} register={register} errors={errors} key={field.stateName} />
+          <InputField
+            field={field}
+            register={register}
+            errors={errors}
+            key={field.stateName}
+            renderSibling={renderSibling?.[field.stateName]}
+          />
         </FormControl>
       ))}
     </>

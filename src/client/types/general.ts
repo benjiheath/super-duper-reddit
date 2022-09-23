@@ -1,10 +1,11 @@
 import { InputProps } from '@chakra-ui/react';
+import { RegisterOptions } from 'react-hook-form';
 
 export interface ProviderProps {
   children: React.ReactNode;
 }
 
-export interface RegisterProps {
+export interface RegisterProps extends RegisterOptions {
   required: string;
   minLength: { value: number; message: string };
   maxLength: { value: number; message: string };

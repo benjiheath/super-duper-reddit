@@ -19,8 +19,8 @@ const isImageUrl = (url: string) => {
   return ['.png', '.jpg', '.jpeg', '.gif'].some((imgType) => url.includes(imgType));
 };
 
-const isYoutubeUrl = (url: string) => {
-  return ['youtube', 'youtu.be'].some((str) => url.includes(str));
+export const isYoutubeUrl = (url: string) => {
+  return ['youtube', 'youtu.be'].some((str) => url?.includes(str));
 };
 
 export const checkContentType = (url: string | null) => {

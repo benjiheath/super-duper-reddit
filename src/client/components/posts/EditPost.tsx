@@ -27,9 +27,8 @@ const EditPost = () => {
 
   return (
     <CreateOrEditPostForm
-      handleSubmit={formMethods.handleSubmit}
+      formMethods={formMethods}
       onSubmit={onSubmit}
-      register={formMethods.register}
       errors={errors}
       isSubmitting={isSubmitting}
       handleReset={handleReset}
