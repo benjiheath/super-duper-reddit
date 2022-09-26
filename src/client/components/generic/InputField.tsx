@@ -13,18 +13,20 @@ interface Props extends InputProps {
 const InputField = (props: Props) => {
   const { field, register, errors, renderSibling } = props;
   return (
-    <Flex alignItems='center'>
-      <Input
-        type={field.type}
-        placeholder={field.placeholder}
-        {...register(field.stateName, field.register)}
-        focusBorderColor='prim.200'
-        {...field.styleProps}
-        autoComplete={field?.autoComplete}
-      />
+    <>
+      <Flex alignItems='center' width='100%'>
+        <Input
+          type={field.type}
+          placeholder={field.placeholder}
+          {...register(field.stateName, field.register)}
+          focusBorderColor='prim.200'
+          {...field.styleProps}
+          autoComplete={field?.autoComplete}
+        />
+        {renderSibling?.()}
+      </Flex>
       {errors[field.stateName] && <AlertPop title={errors[field.stateName].message} mt={2} />}
-      {renderSibling?.()}
-    </Flex>
+    </>
   );
 };
 
